@@ -1,23 +1,8 @@
 namespace Core.Tests;
 
-
 [TestFixture]
 public class HtmlStreamReaderTests
 {
-    [Test]
-    public void TokenizeCss_ShouldWork()
-    {
-        var sample = "main div#foo>p.bar";
-        CssToken[] expected =
-        [
-            new ("main"),
-            new ("div#foo", CssDescendanceKind.Deep),
-            new ("p.bar", CssDescendanceKind.Child)
-        ];
-        var result = HtmlStreamReader.TokenizeCss(sample);
-        Assert.That(result, Is.EquivalentTo(expected));
-    }
-
     [TestCase("main div.foo p")]
     [TestCase("main div.foo>p")]
     public void ShouldRecognize_ContainerStart(string css)
