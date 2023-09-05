@@ -1,5 +1,6 @@
 namespace Core.Tests;
 
+
 [TestFixture]
 public class HtmlStreamReaderTests
 {
@@ -7,7 +8,12 @@ public class HtmlStreamReaderTests
     public void TokenizeCss_ShouldWork()
     {
         var sample = "main div#foo>p.bar";
-        var expected = new[] { "main", " div#foo", ">p.bar" };
+        CssToken[] expected =
+        [
+            new ("main"),
+            new ("div#foo", CssDescendanceKind.Deep),
+            new ("p.bar", CssDescendanceKind.Child)
+        ];
         var result = HtmlStreamReader.TokenizeCss(sample);
         Assert.That(result, Is.EquivalentTo(expected));
     }
