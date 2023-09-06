@@ -1,8 +1,4 @@
-using System.Collections.Frozen;
-
 namespace Core.Tools;
-
-internal record struct CssToken(char? ChildSelector, string Css);
 
 internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
 {
@@ -11,34 +7,46 @@ internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
     internal static CssTokenizer Default
         => new([' ', '>']);
 
-    internal FrozenSet<CssToken> TokenizeCss(string css)
-    {
-        var result = new Queue<CssToken>();
-        var iBase = 0;
+    internal Queue<CssToken> TokenizeCss(string css)
+        => ToCssTokens(Split(css.AsMemory()));
 
-        for (int i = 0; i < css.Length; i++)
+    private Queue<ReadOnlyMemory<char>> Split(ReadOnlyMemory<char> cssSpan)
+    {
+        var tokens = new Queue<ReadOnlyMemory<char>>();
+        while (cssSpan.IsEmpty is not true)
         {
-            if (tokenDelimeters.Contains(css[i]))
+            var index = cssSpan
+                .Span[1..] // skip 1st char, since it could be a delimeter.
+                .IndexOfAny(tokenDelimeters);
+
+            if (index == -1)
             {
-                var len = i - iBase;
-                var token = ExtractCssToken(css, iBase, len);
-                result.Enqueue(token);
-                iBase = i;
+                tokens.Enqueue(cssSpan);
+                break;
+            }
+            else
+            {
+                // TODO: MAYBE it's better to process the string in reverse order?
+                index++; // encount skipped char, previously.
+                tokens.Enqueue(cssSpan[..index]);
+                cssSpan = cssSpan[index..];
             }
         }
 
-        var finalToken = ExtractCssToken(css, iBase, css.Length - iBase);
-        result.Enqueue(finalToken);
-        return result.ToFrozenSet();
+        return tokens;
     }
 
-    private CssToken ExtractCssToken(string css, int iBase, int length)
+    private Queue<CssToken> ToCssTokens(Queue<ReadOnlyMemory<char>> tokens)
     {
-        return css.Substring(iBase, length) switch
+        var result = new Queue<CssToken>();
+        foreach (var token in tokens)
         {
-            var token when tokenDelimeters.Contains(token.First())
-                => new(token[0], token[1..]),
-            var token => new(null, token)
-        };
+            var firstChar = token.Span[0];
+            CssToken item = tokenDelimeters.Contains(firstChar)
+                ? new(firstChar, token[1..])
+                : new(null, token);
+            result.Enqueue(item);
+        }
+        return result;
     }        
 }
