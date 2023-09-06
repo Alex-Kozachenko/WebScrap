@@ -1,36 +1,42 @@
+using System.Collections.Frozen;
+
 namespace Core.Tools;
 
 internal record struct CssToken(char? ChildSelector, string Css);
 
-internal class CssTokenizer
+internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
 {
-    internal static CssToken[] TokenizeCss(string css)
+    private readonly Span<char> tokenDelimeters = tokenDelimeters;
+
+    internal static CssTokenizer Default
+        => new([' ', '>']);
+
+    internal FrozenSet<CssToken> TokenizeCss(string css)
     {
-        // TODO: make an ordered enumerable.
-        var result = new List<CssToken>();
+        var result = new Queue<CssToken>();
         var iBase = 0;
-        var separators = new[] { ' ', '>' };
+
         for (int i = 0; i < css.Length; i++)
         {
-            if (separators.Contains(css[i]))
+            if (tokenDelimeters.Contains(css[i]))
             {
                 var len = i - iBase;
-                result.Add(ExtractCssToken(css, iBase, len));
+                var token = ExtractCssToken(css, iBase, len);
+                result.Enqueue(token);
                 iBase = i;
             }
         }
 
-        result.Add(ExtractCssToken(css, iBase, css.Length - iBase));
-        return [.. result];
+        var finalToken = ExtractCssToken(css, iBase, css.Length - iBase);
+        result.Enqueue(finalToken);
+        return result.ToFrozenSet();
     }
 
-    private static CssToken ExtractCssToken(string css, int iBase, int length)
+    private CssToken ExtractCssToken(string css, int iBase, int length)
     {
-        Span<char> childSelectors = [' ', '>'];
-
         return css.Substring(iBase, length) switch
         {
-            var token when childSelectors.Contains(token.First())
+            var token when tokenDelimeters.Contains(token.First())
                 => new(token[0], token[1..]),
             var token => new(null, token)
         };

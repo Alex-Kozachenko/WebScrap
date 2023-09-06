@@ -17,7 +17,7 @@ public class CssTokenizerTests
             new ('>', "p"),
         ];
 
-        var result = CssTokenizer.TokenizeCss(sample)
+        var result = CssTokenizer.Default.TokenizeCss(sample)
             .Select(x => (x.ChildSelector, x.Css))
             .ToArray();
             
