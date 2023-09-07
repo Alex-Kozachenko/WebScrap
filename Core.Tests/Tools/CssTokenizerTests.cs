@@ -1,5 +1,3 @@
-using Core.Tools;
-
 namespace Core.Tools.Tests;
 
 [TestFixture]
