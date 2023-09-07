@@ -10,30 +10,31 @@ internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
     internal Queue<CssToken> TokenizeCss(string css)
         => ToCssTokens(Split(css.AsMemory()));
 
-    private Queue<ReadOnlyMemory<char>> Split(ReadOnlyMemory<char> cssSpan)
+    private Queue<ReadOnlyMemory<char>> Split(ReadOnlyMemory<char> cssLine)
     {
-        cssSpan = cssSpan.Trim();
+        cssLine = cssLine.Trim();
         var tokens = new List<ReadOnlyMemory<char>>();
-        while (cssSpan.IsEmpty is not true)
+        while (cssLine.IsEmpty is not true)
         {
-            var index = cssSpan
+            var lastDelimeterIndex = GetLastDelimeterIndex(cssLine);            
+            tokens.Add(cssLine[lastDelimeterIndex..]);
+            cssLine = cssLine[..lastDelimeterIndex];
+        }
+        tokens.Reverse(); 
+        return new(tokens);
+    }
+
+    private int GetLastDelimeterIndex(ReadOnlyMemory<char> cssLine)
+    {
+        var delimeterIndex = cssLine
                 .Span
                 .LastIndexOfAny(tokenDelimeters);
 
-            if (index is not -1)
-            {
-                tokens.Add(cssSpan[index..]);
-                cssSpan = cssSpan[..index];
-            }
-            else            
-            {
-                tokens.Add(cssSpan);
-                break;
-            }
-        }
-
-        tokens.Reverse();
-        return new(tokens);
+        return delimeterIndex switch
+        {
+            -1 => 0,
+            _ => delimeterIndex
+        };
     }
 
     private Queue<CssToken> ToCssTokens(Queue<ReadOnlyMemory<char>> tokens)

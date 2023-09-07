@@ -6,9 +6,8 @@ namespace Core.Tools.Tests;
 public class CssTokenizerTests
 {
     [Test]
-    public void TokenizeCss_ShouldWork()
+    public void TokenizeCss_ShouldProcess_Descendants()
     {
-        // TODO: name this test. I'm just outa ideas rn.
         var sample = "main div>p";
         (char?, string)[] expected = 
         [
