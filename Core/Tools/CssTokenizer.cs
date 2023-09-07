@@ -12,28 +12,28 @@ internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
 
     private Queue<ReadOnlyMemory<char>> Split(ReadOnlyMemory<char> cssSpan)
     {
-        var tokens = new Queue<ReadOnlyMemory<char>>();
+        cssSpan = cssSpan.Trim();
+        var tokens = new List<ReadOnlyMemory<char>>();
         while (cssSpan.IsEmpty is not true)
         {
             var index = cssSpan
-                .Span[1..] // skip 1st char, since it could be a delimeter.
-                .IndexOfAny(tokenDelimeters);
+                .Span
+                .LastIndexOfAny(tokenDelimeters);
 
-            if (index == -1)
+            if (index is not -1)
             {
-                tokens.Enqueue(cssSpan);
-                break;
+                tokens.Add(cssSpan[index..]);
+                cssSpan = cssSpan[..index];
             }
-            else
+            else            
             {
-                // TODO: MAYBE it's better to process the string in reverse order?
-                index++; // encount skipped char, previously.
-                tokens.Enqueue(cssSpan[..index]);
-                cssSpan = cssSpan[index..];
+                tokens.Add(cssSpan);
+                break;
             }
         }
 
-        return tokens;
+        tokens.Reverse();
+        return new(tokens);
     }
 
     private Queue<CssToken> ToCssTokens(Queue<ReadOnlyMemory<char>> tokens)
