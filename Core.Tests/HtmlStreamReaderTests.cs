@@ -3,20 +3,36 @@ namespace Core.Tests;
 [TestFixture]
 public class HtmlStreamReaderTests
 {
-    [TestCase("main div p")]
-    [TestCase("main div>p")]
-    public void Read_ShouldReturn_InnerText(string css)
+    [Test]
+    public void Read_ShouldReturn_InnerText()
     {
+        var css = "main div p";
         var html = """
-        <main>
-            <div>
-                <p> One </p>
-            </div>
-        </main>
+            <main>
+                <div>
+                    <p> One </p>
+                </div>
+            </main>
         """;
 
-        var expected ="p";
-        // var expected = " One "; // final case
+        var expected = " One ";
+        var readResult = new HtmlStreamReader().Read(html, css);
+        Assert.That(readResult, Is.EqualTo(expected));
+    }    
+
+    [Test]
+    public void Read_ShouldReturn_InnerText2()
+    {
+        var css = "main div p";
+        var html = """
+            <main>
+                <div>
+                    <p> One <p> Two </p> </p>
+                </div>
+            </main>
+        """;
+
+        var expected = " One ";
         var readResult = new HtmlStreamReader().Read(html, css);
         Assert.That(readResult, Is.EqualTo(expected));
     }    
