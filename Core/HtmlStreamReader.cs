@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Core.Tools;
 
 namespace Core;
@@ -7,36 +6,40 @@ public class HtmlStreamReader
 {
     public string Read(ReadOnlySpan<char> htmlSpan, string css)
     {
-        var cssTokens = CssTokenizer.Default.TokenizeCss(css);
+        htmlSpan = MoveToInnerTag(htmlSpan, css);
+        var innerRange = (htmlSpan.IndexOf('>') + 1)..htmlSpan.IndexOf('<');
+        return htmlSpan[innerRange].ToString();
+    }
 
-        ReadOnlySpan<char> tagValueSpan = null;
+    private static bool CheckHtmlStartsWithTag(ReadOnlySpan<char> html,
+            ReadOnlySpan<char> tag)
+    {
+        var beginTagIndex = html.IndexOf('<');
+        var currentTagFromHtml = html.Slice(
+            beginTagIndex + 1, 
+            tag.Length);
+
+        return currentTagFromHtml.SequenceEqual(tag);
+    }
+    
+    private static ReadOnlySpan<char> MoveToInnerTag(
+            ReadOnlySpan<char> htmlSpan, 
+            string css)
+    {
+        var cssTokens = CssTokenizer.Default.TokenizeCss(css);
         while (cssTokens.Count is not 0)
         {
-            var peek = cssTokens.Peek().Css.Span;
-            var beginTagIndex = htmlSpan.IndexOf('<') + 1;
-            tagValueSpan = htmlSpan.Slice(
-                beginTagIndex, 
-                peek.Length);
-
-            if (tagValueSpan.SequenceEqual(peek) is not true)
+            var currentCssTag = cssTokens.Dequeue().Css.Span;
+            // NOTE: structure critical. Please fix to flexible.
+            if (!CheckHtmlStartsWithTag(htmlSpan, currentCssTag))
             {
                 return string.Empty;
             }
-            // I am breaking the tags here.
-            // TODO: make indexes?
-            htmlSpan = htmlSpan[(beginTagIndex+peek.Length)..];
-            cssTokens.Dequeue();
+
+            var beginTagIndex = htmlSpan.IndexOf('<');
+            htmlSpan = htmlSpan[(beginTagIndex + 1)..]; // skip opening bracket <
         }
 
-        htmlSpan = htmlSpan[1..];
-        var enclosingTag = $"</{tagValueSpan}>".AsSpan(); // HACK: form a span instead of a string, please.
-
-        // find next </p>
-        // var endTagIndex = htmlSpan.IndexOf('</p>');
-        var regex = new Regex($".*</{tagValueSpan}>");
-        var match = regex.Match(htmlSpan.ToString());
-        
-        // is that a joke?
-        return match.Value[..($"</{tagValueSpan}>".Length+1)];
+        return htmlSpan;
     }
 }

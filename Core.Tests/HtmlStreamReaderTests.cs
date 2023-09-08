@@ -6,7 +6,7 @@ public class HtmlStreamReaderTests
     [Test]
     public void Read_ShouldReturn_InnerText()
     {
-        var css = "main div p";
+        var css = "main>div>p";
         var html = """
             <main>
                 <div>
@@ -23,7 +23,7 @@ public class HtmlStreamReaderTests
     [Test]
     public void Read_ShouldReturn_InnerText2()
     {
-        var css = "main div p";
+        var css = "main>div>p";
         var html = """
             <main>
                 <div>
