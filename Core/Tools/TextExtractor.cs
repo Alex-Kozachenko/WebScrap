@@ -1,4 +1,5 @@
 using System.Text;
+using static Core.Tools.TagNavigator;
 
 namespace Core.Tools;
 
@@ -7,20 +8,17 @@ internal static class TextExtractor
     internal static string Extract(ReadOnlySpan<char> html)
     {
         var result = new StringBuilder();
-        while (html.IsEmpty is not true)
+        while (html.Length is not 0)
         {
-            var innerText = GetNextInnerText(html);
+            var nextTag = html.GoToNextTag();
+            if (nextTag.Length is 0)
+            {
+                break;
+            }
+            var innerText = nextTag.GrabInnerText();
             result.Append(innerText);
-            html = html[innerText.Length..];
-            html = SkipTag(html);
+            html = nextTag;
         }
         return result.ToString();
     }
-
-    private static ReadOnlySpan<char> GetNextInnerText(
-            ReadOnlySpan<char> html)
-        => html[..html.IndexOf('<')];
-    
-    private static ReadOnlySpan<char> SkipTag(ReadOnlySpan<char> html)
-        => html[(html.IndexOf('>') + 1)..];
 }

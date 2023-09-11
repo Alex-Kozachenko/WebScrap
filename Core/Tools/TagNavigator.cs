@@ -2,9 +2,10 @@ namespace Core.Tools;
 
 internal static class TagNavigator
 {
-    private const int tagNameOffset = 1;
+    private const int tagCharOffset = 1;
+
     internal static ReadOnlySpan<char> GoToDeepestTag(
-            ReadOnlySpan<char> html,
+            this ReadOnlySpan<char> html,
             Queue<CssToken> cssTokens)
     {
         var cssLine = string.Concat(cssTokens.Select(x => x.ToString()));
@@ -21,18 +22,40 @@ internal static class TagNavigator
         }
     }
 
+    internal static ReadOnlySpan<char> GrabInnerText(this ReadOnlySpan<char> html)
+    {
+        html = html[tagCharOffset..];
+        var nextTagIndex = html.IndexOf('<') switch
+        {
+            -1 => html.Length,
+            var i => i
+        };
+
+        return html[html.IndexOf('>')..nextTagIndex];
+    }
+        
+
     private static void AssertCurrentTag(
-        ReadOnlySpan<char> html,
+        this ReadOnlySpan<char> html,
         ReadOnlySpan<char> currentTag,
         ReadOnlySpan<char> cssQuery)
     {
-        if (html[tagNameOffset..].StartsWith(currentTag) is not true)
+        if (html.StartsWith(currentTag) is not true)
         {
             throw new InvalidOperationException(
                 $"Unable to locate a htmltag under current css: {cssQuery}");
         }
     }
 
-    private static ReadOnlySpan<char> GoToNextTag(ReadOnlySpan<char> html)
-        => html[tagNameOffset..][html.IndexOf('<')..];
+    internal static ReadOnlySpan<char> GoToNextTag(this ReadOnlySpan<char> html)
+    {
+        var nextTagIndex = html.IndexOf('<') switch
+        {
+            -1 => html.Length - 1,
+            var i => i
+        };
+
+        return html[tagCharOffset..][nextTagIndex..];
+    }
+        
 }
