@@ -1,3 +1,5 @@
+using static Core.Tools.TextExtractor;
+
 namespace Core.Tools;
 
 internal static class TagNavigator
@@ -22,10 +24,6 @@ internal static class TagNavigator
 
     internal static int GetIndexOfNextTagName(ReadOnlySpan<char> html)
         => html.IndexOf('<') + 1;
-
-    internal static ReadOnlySpan<char> GetNextInnerText(
-            ReadOnlySpan<char> html)
-        => html[(html.IndexOf('>') + 1)..html.IndexOf('<')];
 
     private static bool CheckHtmlStartsWithTag(
             ReadOnlySpan<char> html,

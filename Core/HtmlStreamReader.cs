@@ -1,5 +1,6 @@
 using Core.Tools;
 using static Core.Tools.TagNavigator;
+using static Core.Tools.TextExtractor;
 
 namespace Core;
 
