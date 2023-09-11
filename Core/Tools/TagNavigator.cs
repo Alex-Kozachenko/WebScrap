@@ -1,33 +1,37 @@
-using static Core.Tools.TextExtractor;
-
 namespace Core.Tools;
 
 internal static class TagNavigator
 {
     internal static ReadOnlySpan<char> GoToDeepestTag(
-            ReadOnlySpan<char> htmlSpan,
+            ReadOnlySpan<char> html,
             Queue<CssToken> cssTokens)
     {
-        while (cssTokens.Count is not 0)
+        var cssLine = string.Concat(cssTokens.Select(x => x.ToString()));
+        html = GoToNextTag(html);
+        while (true)
         {
-            var currentCssTag = cssTokens.Dequeue().Css.Span;
-            if (!CheckHtmlStartsWithTag(htmlSpan, currentCssTag))
+            var tag = cssTokens.Dequeue().Css.Span;            
+            AssertCurrentTag(html, tag, cssLine);
+            if (cssTokens.Count is 0)
             {
-                return string.Empty;
+                return html;
             }
-
-            htmlSpan = htmlSpan[GetIndexOfNextTagName(htmlSpan)..];
+            html = GoToNextTag(html);
         }
-
-        return htmlSpan;
     }
 
-    internal static int GetIndexOfNextTagName(ReadOnlySpan<char> html)
-        => html.IndexOf('<') + 1;
+    private static void AssertCurrentTag(
+        ReadOnlySpan<char> html,
+        ReadOnlySpan<char> currentTag,
+        ReadOnlySpan<char> cssQuery)
+    {
+        if (html[1..].StartsWith(currentTag) is not true)
+        {
+            throw new InvalidOperationException(
+                $"Unable to locate a htmltag under current css: {cssQuery}");
+        }
+    }
 
-    private static bool CheckHtmlStartsWithTag(
-            ReadOnlySpan<char> html,
-            ReadOnlySpan<char> tagName)
-        => html.Slice(GetIndexOfNextTagName(html), tagName.Length)
-               .SequenceEqual(tagName);
+    private static ReadOnlySpan<char> GoToNextTag(ReadOnlySpan<char> html)
+        => html[1..][html.IndexOf('<')..];
 }

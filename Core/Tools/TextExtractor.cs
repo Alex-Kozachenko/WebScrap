@@ -17,7 +17,7 @@ internal static class TextExtractor
         return result.ToString();
     }
 
-    internal static ReadOnlySpan<char> GetNextInnerText(
+    private static ReadOnlySpan<char> GetNextInnerText(
             ReadOnlySpan<char> html)
         => html[..html.IndexOf('<')];
     

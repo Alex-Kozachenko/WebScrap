@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using NUnit.Framework.Internal;
 using static Core.Tools.TextExtractor;
 
@@ -20,13 +19,9 @@ public class TextExtractorTests
 
         var expected = "One Two One Two Three Four";
         var result = Extract(html);
-        result = StripReduntantSymbols(result);
+        result = result.Strip();
         Assert.That(result, Is.EqualTo(expected));
     }
 
-    private static string StripReduntantSymbols(string text) 
-        => new Regex("\\W")
-            .Replace(text, " ")
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-            .Aggregate((aggr, next) => aggr + " " + next);
+    
 }

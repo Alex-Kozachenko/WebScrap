@@ -17,8 +17,8 @@ public class HtmlStreamReaderTests
             </main>
         """;
 
-        var expected = " One ";
-        var readResult = Read(html, css).ToString();
+        var expected = "One";
+        var readResult = Read(html, css).Strip();
         Assert.That(readResult, Is.EqualTo(expected));
     }    
 
@@ -34,8 +34,8 @@ public class HtmlStreamReaderTests
             </main>
         """;
 
-        var expected = " One Two ";
-        var readResult = Read(html, css).ToString();
+        var expected = "One Two";
+        var readResult = Read(html, css).Strip();
         Assert.That(readResult, Is.EqualTo(expected));
     }
 

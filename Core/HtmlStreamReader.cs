@@ -12,6 +12,6 @@ public class HtmlStreamReader
     {
         var cssTokens = CssTokenizer.Default.TokenizeCss(css);
         html = GoToDeepestTag(html, cssTokens);
-        return GetNextInnerText(html);
+        return Extract(html);
     }
 }
