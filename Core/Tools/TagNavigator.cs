@@ -2,6 +2,7 @@ namespace Core.Tools;
 
 internal static class TagNavigator
 {
+    private const int tagNameOffset = 1;
     internal static ReadOnlySpan<char> GoToDeepestTag(
             ReadOnlySpan<char> html,
             Queue<CssToken> cssTokens)
@@ -25,7 +26,7 @@ internal static class TagNavigator
         ReadOnlySpan<char> currentTag,
         ReadOnlySpan<char> cssQuery)
     {
-        if (html[1..].StartsWith(currentTag) is not true)
+        if (html[tagNameOffset..].StartsWith(currentTag) is not true)
         {
             throw new InvalidOperationException(
                 $"Unable to locate a htmltag under current css: {cssQuery}");
@@ -33,5 +34,5 @@ internal static class TagNavigator
     }
 
     private static ReadOnlySpan<char> GoToNextTag(ReadOnlySpan<char> html)
-        => html[1..][html.IndexOf('<')..];
+        => html[tagNameOffset..][html.IndexOf('<')..];
 }
