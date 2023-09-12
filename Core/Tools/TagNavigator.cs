@@ -2,9 +2,7 @@ namespace Core.Tools;
 
 internal static class TagNavigator
 {
-    private const int tagCharOffset = 1;
-
-    internal static ReadOnlySpan<char> GoToDeepestTag(
+    internal static ReadOnlySpan<char> GoToTagByCss(
             this ReadOnlySpan<char> html,
             Queue<CssToken> cssTokens)
     {
@@ -13,7 +11,7 @@ internal static class TagNavigator
         while (true)
         {
             var tag = cssTokens.Dequeue().Css.Span;            
-            AssertCurrentTag(html, tag, cssLine);
+            AssertCurrentTag(html[1..], tag, cssLine);
             if (cssTokens.Count is 0)
             {
                 return html;
@@ -22,18 +20,33 @@ internal static class TagNavigator
         }
     }
 
-    internal static ReadOnlySpan<char> GrabInnerText(this ReadOnlySpan<char> html)
+    internal static ReadOnlySpan<char> GoToNextTag(this ReadOnlySpan<char> html)
     {
-        html = html[tagCharOffset..];
-        var nextTagIndex = html.IndexOf('<') switch
+        const int tagCharOffset = 1; // in case we are standing on <
+        var nextTagIndex = html[tagCharOffset..].IndexOf('<');
+        return nextTagIndex switch
         {
-            -1 => html.Length,
-            var i => i
+            -1 => html[..^1],
+            _ => html[tagCharOffset..][nextTagIndex..],
         };
-
-        return html[html.IndexOf('>')..nextTagIndex];
     }
-        
+
+    internal static ReadOnlySpan<char> GoToTagBody(this ReadOnlySpan<char> html)
+    {
+        // HACK: the design went really dirty so i am patching up like this. Just wanna see its working.
+        if (html.IsEmpty)
+        {
+            return html;
+        }
+
+        const int tagCharOffset = 1; // in case we are standing on <
+        var tagBodyIndex = html[tagCharOffset..].IndexOf('>');
+        return tagBodyIndex switch
+        {
+            -1 => html[..^1],
+            _ => html[tagCharOffset..][(tagBodyIndex + 1)..],
+        };
+    }
 
     private static void AssertCurrentTag(
         this ReadOnlySpan<char> html,
@@ -43,19 +56,11 @@ internal static class TagNavigator
         if (html.StartsWith(currentTag) is not true)
         {
             throw new InvalidOperationException(
-                $"Unable to locate a htmltag under current css: {cssQuery}");
+                $"""
+                    Unable to locate a tag:"{currentTag}"
+                    under for css: "{cssQuery}"
+                    html: {html}
+                """);
         }
-    }
-
-    internal static ReadOnlySpan<char> GoToNextTag(this ReadOnlySpan<char> html)
-    {
-        var nextTagIndex = html.IndexOf('<') switch
-        {
-            -1 => html.Length - 1,
-            var i => i
-        };
-
-        return html[tagCharOffset..][nextTagIndex..];
-    }
-        
+    }   
 }

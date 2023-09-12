@@ -10,15 +10,23 @@ internal static class TextExtractor
         var result = new StringBuilder();
         while (html.Length is not 0)
         {
-            var nextTag = html.GoToNextTag();
-            if (nextTag.Length is 0)
+            var body = html
+                .GoToTagBody();
+
+            if (body.Length is 0)
             {
                 break;
             }
-            var innerText = nextTag.GrabInnerText();
-            result.Append(innerText);
-            html = nextTag;
+            result.Append(body.ReadInnerText());
+            html = body.GoToNextTag();
         }
         return result.ToString();
     }
+
+    private static ReadOnlySpan<char> ReadInnerText(this ReadOnlySpan<char> tagBody)
+        => tagBody.IndexOf('<') switch
+        {
+            -1 => tagBody[..^1],
+            var nextTagIndex => tagBody[..nextTagIndex],
+        };
 }
