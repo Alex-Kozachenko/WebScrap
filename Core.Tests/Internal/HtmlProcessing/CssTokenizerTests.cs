@@ -1,4 +1,4 @@
-namespace Core.Tools.Tests;
+namespace Core.Internal.HtmlProcessing.Tests;
 
 [TestFixture]
 public class CssTokenizerTests

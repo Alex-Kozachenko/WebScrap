@@ -1,4 +1,4 @@
-namespace Core.Tools;
+namespace Core.Internal.Data;
 
 internal record struct CssToken(char? ChildSelector, ReadOnlyMemory<char> Css)
 {

@@ -1,7 +1,7 @@
 using NUnit.Framework.Internal;
-using static Core.Tools.TextExtractor;
+using static Core.Internal.HtmlProcessing.TextExtractor;
 
-namespace Core.Tests;
+namespace Core.Internal.HtmlProcessing.Tests;
 
 [TestFixture]
 public class TextExtractorTests

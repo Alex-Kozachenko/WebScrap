@@ -1,10 +1,11 @@
-namespace Core.Tools;
+namespace Core.Internal.HtmlProcessing;
 
 internal static class TagNavigator
 {
     internal static ReadOnlySpan<char> GoToTagByCss(
             this ReadOnlySpan<char> html,
             Queue<CssToken> cssTokens)
+            
     {
         var cssLine = string.Concat(cssTokens.Select(x => x.ToString()));
         html = GoToNextTag(html);

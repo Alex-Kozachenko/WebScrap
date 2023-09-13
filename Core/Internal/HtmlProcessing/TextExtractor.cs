@@ -1,7 +1,7 @@
 using System.Text;
-using static Core.Tools.TagNavigator;
+using static Core.Internal.HtmlProcessing.TagNavigator;
 
-namespace Core.Tools;
+namespace Core.Internal.HtmlProcessing;
 
 internal static class TextExtractor
 {

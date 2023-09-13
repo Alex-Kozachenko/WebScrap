@@ -1,4 +1,4 @@
-namespace Core.Tools;
+namespace Core.Internal.HtmlProcessing;
 
 internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
 {

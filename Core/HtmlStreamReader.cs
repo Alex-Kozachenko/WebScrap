@@ -1,6 +1,5 @@
-using Core.Tools;
-using static Core.Tools.TagNavigator;
-using static Core.Tools.TextExtractor;
+using static Core.Internal.HtmlProcessing.TagNavigator;
+using static Core.Internal.HtmlProcessing.TextExtractor;
 
 namespace Core;
 
