@@ -5,7 +5,6 @@ internal static class TagNavigator
     internal static ReadOnlySpan<char> GoToTagByCss(
             this ReadOnlySpan<char> html,
             Queue<CssToken> cssTokens)
-            
     {
         var cssLine = string.Concat(cssTokens.Select(x => x.ToString()));
         html = GoToNextTag(html);
@@ -40,12 +39,19 @@ internal static class TagNavigator
             return html;
         }
 
-        const int tagCharOffset = 1; // in case we are standing on <
-        var tagBodyIndex = html[tagCharOffset..].IndexOf('>');
-        return tagBodyIndex switch
+
+        var (openingTagIndex, closingTagIndex) = (html.IndexOf('<'), html.IndexOf('>'));
+
+        if (openingTagIndex is not 0)
+        {
+            // NOTE: forces the user to read current tag body.
+            return html; 
+        }
+
+        return closingTagIndex switch
         {
             -1 => html[..^1],
-            _ => html[tagCharOffset..][(tagBodyIndex + 1)..],
+            _ => html[(closingTagIndex + 1)..],
         };
     }
 
