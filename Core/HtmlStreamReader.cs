@@ -1,3 +1,4 @@
+using Core.Internal.HtmlProcessing;
 using static Core.Internal.HtmlProcessing.TagNavigator;
 using static Core.Internal.HtmlProcessing.TextExtractor;
 

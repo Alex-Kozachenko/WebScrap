@@ -1,5 +1,4 @@
 using System.Text;
-using static Core.Internal.HtmlProcessing.TagNavigator;
 
 namespace Core.Internal.HtmlProcessing;
 
