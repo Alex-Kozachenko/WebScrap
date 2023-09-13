@@ -1,27 +1,19 @@
 using NUnit.Framework.Internal;
-using static Core.Internal.HtmlProcessing.TextExtractor;
 
 namespace Core.Internal.HtmlProcessing.Tests;
 
 [TestFixture]
 public class TextExtractorTests
 {
-    [Test]
-    public void Extract_ShouldRead_InnerText_In_NestedTags()
+    [TestCase("12<p>34</p>", "1234")]
+    [TestCase("<p>12</p>","12")]
+    [TestCase("12</p>34", "1234")]
+    [TestCase("</p>12","12")]
+    [TestCase("12<p>34<p>56</p>78</p>", "12345678")]
+    public void ReadBody_ShouldWork(string html, string expected)
     {
-        var html = """
-            <p> One
-                <p> Two
-                    One Two <span> Three </span> <b> Four </b>
-                </p>
-            </p>
-        """;
-
-        var expected = "One Two One Two Three Four";
-        var result = Extract(html);
-        result = result.Strip();
-        Assert.That(result, Is.EqualTo(expected));
+        var actual = TextExtractor.ReadBody(html).ToString();
+        Assert.That(actual, Is.EquivalentTo(expected));
     }
-
     
 }

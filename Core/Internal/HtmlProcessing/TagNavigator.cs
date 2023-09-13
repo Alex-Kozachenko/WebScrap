@@ -22,36 +22,12 @@ internal static class TagNavigator
 
     internal static ReadOnlySpan<char> GoToNextTag(this ReadOnlySpan<char> html)
     {
-        const int tagCharOffset = 1; // in case we are standing on <
+        const int tagCharOffset = 1; // in case the cursor is standing on <
         var nextTagIndex = html[tagCharOffset..].IndexOf('<');
         return nextTagIndex switch
         {
             -1 => html[..^1],
             _ => html[tagCharOffset..][nextTagIndex..],
-        };
-    }
-
-    internal static ReadOnlySpan<char> GoToTagBody(this ReadOnlySpan<char> html)
-    {
-        // HACK: the design went really dirty so i am patching up like this. Just wanna see its working.
-        if (html.IsEmpty)
-        {
-            return html;
-        }
-
-
-        var (openingTagIndex, closingTagIndex) = (html.IndexOf('<'), html.IndexOf('>'));
-
-        if (openingTagIndex is not 0)
-        {
-            // NOTE: forces the user to read current tag body.
-            return html; 
-        }
-
-        return closingTagIndex switch
-        {
-            -1 => html[..^1],
-            _ => html[(closingTagIndex + 1)..],
         };
     }
 

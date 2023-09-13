@@ -11,7 +11,8 @@ public class HtmlStreamReader
         ReadOnlyMemory<char> css)
     {
         var cssTokens = CssTokenizer.Default.TokenizeCss(css);
-        html = html.GoToTagByCss(cssTokens);
-        return Extract(html);
+        return html
+            .GoToTagByCss(cssTokens)
+            .ReadBody();
     }
 }

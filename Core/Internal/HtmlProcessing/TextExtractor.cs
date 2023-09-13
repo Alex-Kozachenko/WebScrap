@@ -1,31 +1,36 @@
-using System.Text;
-
 namespace Core.Internal.HtmlProcessing;
 
 internal static class TextExtractor
 {
-    internal static string Extract(ReadOnlySpan<char> html)
+    internal static string ReadBody(this ReadOnlySpan<char> html)
     {
-        var result = new StringBuilder();
-        while (html.Length is not 0)
-        {
-            var body = html
-                .GoToTagBody();
+        const int aMagickNumberWhichForcesToSkipClosingTag = 1;
+        var (nextOpeningBracketIndex, nextClosingBracketIndex) =
+            (html.IndexOf('<'), html.IndexOf('>'));
 
-            if (body.Length is 0)
-            {
-                break;
-            }
-            result.Append(body.ReadInnerText());
-            html = body.GoToNextTag();
+        if (nextOpeningBracketIndex is 0)
+        {
+            return html
+                [nextClosingBracketIndex..]
+                [aMagickNumberWhichForcesToSkipClosingTag..]
+                .ReadBody();
         }
-        return result.ToString();
-    }
+        
+        var isCurrentPositionInsideTag = 
+            nextOpeningBracketIndex > nextClosingBracketIndex;
 
-    private static ReadOnlySpan<char> ReadInnerText(this ReadOnlySpan<char> tagBody)
-        => tagBody.IndexOf('<') switch
+        if (isCurrentPositionInsideTag)
         {
-            -1 => tagBody[..^1],
-            var nextTagIndex => tagBody[..nextTagIndex],
+            return html
+                [nextClosingBracketIndex..]
+                [aMagickNumberWhichForcesToSkipClosingTag..]
+                .ReadBody();
+        }
+
+        return nextOpeningBracketIndex switch
+        {
+            -1 => new string(html),
+            var i => new string(html[..i]) + ReadBody(html[i..]),
         };
+    }
 }
