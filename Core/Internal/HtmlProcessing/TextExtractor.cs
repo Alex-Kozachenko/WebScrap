@@ -3,34 +3,14 @@ namespace Core.Internal.HtmlProcessing;
 internal static class TextExtractor
 {
     internal static string ReadBody(this ReadOnlySpan<char> html)
-    {
-        const int aMagickNumberWhichForcesToSkipClosingTag = 1;
-        var (nextOpeningBracketIndex, nextClosingBracketIndex) =
-            (html.IndexOf('<'), html.IndexOf('>'));
-
-        if (nextOpeningBracketIndex is 0)
+        => (html.IndexOf('<'), html.IndexOf('>')) switch
         {
-            return html
-                [nextClosingBracketIndex..]
-                [aMagickNumberWhichForcesToSkipClosingTag..]
-                .ReadBody();
-        }
-        
-        var isCurrentPositionInsideTag = 
-            nextOpeningBracketIndex > nextClosingBracketIndex;
-
-        if (isCurrentPositionInsideTag)
-        {
-            return html
-                [nextClosingBracketIndex..]
-                [aMagickNumberWhichForcesToSkipClosingTag..]
-                .ReadBody();
-        }
-
-        return nextOpeningBracketIndex switch
-        {
-            -1 => new string(html),
-            var i => new string(html[..i]) + ReadBody(html[i..]),
+            (_, 0) => html[1..].ReadBody(),
+            (-1, _) => new string(html), // opening tag not found.
+            (0, var close) => html[close..].ReadBody(), // skip opening tag content.
+            (var open, var close) // current position is on the middle of a tag.
+                when open > close 
+                => html[close..].ReadBody(),
+            (var open, _) => new string(html[..open]) + ReadBody(html[open..]),
         };
-    }
 }

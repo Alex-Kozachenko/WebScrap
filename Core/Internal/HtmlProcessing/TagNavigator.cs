@@ -4,19 +4,18 @@ internal static class TagNavigator
 {
     internal static ReadOnlySpan<char> GoToTagByCss(
             this ReadOnlySpan<char> html,
-            Queue<CssToken> cssTokens)
+            ReadOnlyMemory<char> css)
     {
-        var cssLine = string.Concat(cssTokens.Select(x => x.ToString()));
-        html = GoToNextTag(html);
+        var cssTokens = CssTokenizer.Default.TokenizeCss(css);
         while (true)
         {
-            var tag = cssTokens.Dequeue().Css.Span;            
-            AssertCurrentTag(html[1..], tag, cssLine);
+            html = GoToNextTag(html);
+            var tag = cssTokens.Dequeue().Css.Span;  
+            AssertCurrentTag(html[1..], tag, css);
             if (cssTokens.Count is 0)
             {
                 return html;
             }
-            html = GoToNextTag(html);
         }
     }
 
@@ -34,16 +33,19 @@ internal static class TagNavigator
     private static void AssertCurrentTag(
         this ReadOnlySpan<char> html,
         ReadOnlySpan<char> currentTag,
-        ReadOnlySpan<char> cssQuery)
+        ReadOnlyMemory<char> css)
     {
         if (html.StartsWith(currentTag) is not true)
         {
             throw new InvalidOperationException(
                 $"""
                     Unable to locate a tag:"{currentTag}"
-                    under for css: "{cssQuery}"
+                    under for css: "{css}"
                     html: {html}
                 """);
         }
-    }   
+    }
+
+    private static string ToCss(IEnumerable<CssToken> cssTokens)
+        => string.Concat(cssTokens.Select(x => x.ToString()));
 }

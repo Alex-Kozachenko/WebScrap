@@ -10,9 +10,8 @@ public class HtmlStreamReader
         ReadOnlySpan<char> html, 
         ReadOnlyMemory<char> css)
     {
-        var cssTokens = CssTokenizer.Default.TokenizeCss(css);
         return html
-            .GoToTagByCss(cssTokens)
+            .GoToTagByCss(css)
             .ReadBody();
     }
 }
