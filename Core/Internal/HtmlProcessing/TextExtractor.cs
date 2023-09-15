@@ -33,7 +33,7 @@ internal static class TextExtractor
         ReadOnlySpan<char> html,
         StringBuilder stringBuilder,
         int closingTagIndex)
-        => html[closingTagIndex..].ReadBody(stringBuilder);
+        => ReadBody(html[closingTagIndex..], stringBuilder);
 
     private static ReadOnlySpan<char> ReadBody(
         ReadOnlySpan<char> html,
