@@ -1,6 +1,6 @@
 using Core.Internal.HtmlProcessing;
-using static Core.Internal.HtmlProcessing.TagNavigator;
-using static Core.Internal.HtmlProcessing.TextExtractor;
+using static Core.Internal.HtmlProcessing.TagsLocator;
+using static Core.Internal.HtmlProcessing.Extractors.TextExtractor;
 
 namespace Core;
 
@@ -8,10 +8,11 @@ public class HtmlStreamReader
 {
     public static ReadOnlySpan<char> Read(
         ReadOnlySpan<char> html, 
-        ReadOnlyMemory<char> css)
+        ReadOnlySpan<char> css)
     {
-        return html
-            .GoToTagByCss(css)
-            .ReadBody();
+        var tag =  LocateTagsByCss(html, css);
+        throw new NotImplementedException();
+        // var body = tag.ReadBody();
+        // return body;
     }
 }

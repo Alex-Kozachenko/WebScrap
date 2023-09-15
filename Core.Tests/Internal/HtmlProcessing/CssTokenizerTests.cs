@@ -6,7 +6,7 @@ public class CssTokenizerTests
     [Test]
     public void TokenizeCss_ShouldProcess_Descendants()
     {
-        var sample = "main div>p".AsMemory();
+        var sample = "main div>p";
         (char?, string)[] expected = 
         [
             new (null, "main"),

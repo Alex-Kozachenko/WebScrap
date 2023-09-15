@@ -1,20 +1,22 @@
 using System.Text;
 
-namespace Core.Internal.HtmlProcessing;
+namespace Core.Internal.HtmlProcessing.Extractors;
 
 internal static class TextExtractor
 {
-    internal static ReadOnlySpan<char> ReadBody(this ReadOnlySpan<char> html)
+    public static ReadOnlySpan<char> ReadBody(this ReadOnlySpan<char> html)
     {
+        AssertHtmlStart(html);  
+        html = HtmlTagExtractor.ExtractTag(html);    
         var sb = new StringBuilder();
         ReadBody(html, sb);
         return sb.ToString();
-    }
-    
+    }   
+
     private static ReadOnlySpan<char> ReadBody(
         ReadOnlySpan<char> html, 
         StringBuilder builder)
-        => (html.IndexOf('<'), html.IndexOf('>')) switch
+        => html.GetTagRange() switch
         {
             (_, 0) 
                 => ReadBody(html[1..], builder),
@@ -28,6 +30,9 @@ internal static class TextExtractor
             (var open, _) 
                 => ReadBody(html, builder, open),
         };
+
+    private static (int Begin, int End) GetTagRange(this ReadOnlySpan<char> html)
+        => (html.IndexOf('<'), html.IndexOf('>'));
 
     private static ReadOnlySpan<char> SkipOpeningTag(
         ReadOnlySpan<char> html,
@@ -50,5 +55,15 @@ internal static class TextExtractor
     {
         stringBuilder.Append(html);
         return html;
+    }
+
+    private static void AssertHtmlStart(ReadOnlySpan<char> html)
+    {
+        if (html.GetTagRange().Begin is not 0
+            || char.IsLetter(html[1]) is not true)
+        {
+            var message = "Html should start with opening html-tag.";
+            throw new InvalidOperationException(message);
+        }
     }
 }

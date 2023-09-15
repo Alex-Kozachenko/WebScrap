@@ -7,27 +7,27 @@ internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
     internal static CssTokenizer Default
         => new([' ', '>']);
 
-    internal Queue<CssToken> TokenizeCss(ReadOnlyMemory<char> css)
+    internal Queue<CssToken> TokenizeCss(ReadOnlySpan<char> css)
         => ToCssTokens(Split(css));
 
-    private Queue<ReadOnlyMemory<char>> Split(ReadOnlyMemory<char> css)
+    private Queue<ReadOnlyMemory<char>> Split(ReadOnlySpan<char> css)
     {
         css = css.Trim();
         var tokens = new List<ReadOnlyMemory<char>>();
         while (css.IsEmpty is not true)
         {
             var lastDelimeterIndex = GetLastDelimeterIndex(css);            
-            tokens.Add(css[lastDelimeterIndex..]);
+            var token = new ReadOnlyMemory<char>(css[lastDelimeterIndex..].ToArray());
+            tokens.Add(token);
             css = css[..lastDelimeterIndex];
         }
         tokens.Reverse(); 
         return new(tokens);
     }
 
-    private int GetLastDelimeterIndex(ReadOnlyMemory<char> cssLine)
+    private int GetLastDelimeterIndex(ReadOnlySpan<char> cssLine)
     {
         var delimeterIndex = cssLine
-                .Span
                 .LastIndexOfAny(tokenDelimeters);
 
         return delimeterIndex switch
