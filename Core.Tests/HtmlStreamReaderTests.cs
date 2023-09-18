@@ -5,7 +5,6 @@ namespace Core.Tests;
 [TestFixture(Description = "Tests for trivial css children selector: >.")]
 public class HtmlStreamReaderTests
 {
-    [Test]
     public void Read_ShouldReturn_InnerText()
     {
         var css = "main>div>p";
@@ -22,7 +21,6 @@ public class HtmlStreamReaderTests
         Assert.That(readResult, Is.EqualTo(expected));
     }    
 
-    [Test]
     public void Read_ShouldReturn_InnerText_Including_NestedInnerText()
     {
         var css = "main>div>p";
@@ -39,7 +37,6 @@ public class HtmlStreamReaderTests
         Assert.That(readResult, Is.EqualTo(expected));
     }
 
-    [Test] 
     public void Read_ShouldReturn_InnerText_FromMultipleTags()
     {
         var css = "main>div>p";

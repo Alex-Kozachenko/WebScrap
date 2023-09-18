@@ -5,7 +5,7 @@ namespace Core.Internal.HtmlProcessing;
 /// </summary>
 internal class HtmlTagReader
 {
-    public static HtmlTag ProcessTagName(
+    public static HtmlTag ReadHtmlTag(
         ReadOnlySpan<char> html)
     {
         html = HtmlValidator.ToValidHtml(html);

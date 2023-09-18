@@ -12,10 +12,9 @@ internal static class HtmlValidator
     private static void AssertHtmlStart(ReadOnlySpan<char> html)
     {
         var openingTagIndex = html.IndexOf('<');
-        if (openingTagIndex is not 0
-            || char.IsLetter(html[1]) is not true)
+        if (openingTagIndex is not 0)
         {
-            var message = "Html should start with opening html-tag.";
+            var message = "Html should start with <";
             throw new InvalidOperationException(message);
         }
     }

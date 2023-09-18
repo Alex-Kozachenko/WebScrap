@@ -1,5 +1,4 @@
 using static Core.Internal.HtmlProcessing.TagsLocator;
-using Core.Internal.HtmlProcessing;
 
 namespace Core.Internal.HtmlProcessing.Tests;
 
@@ -55,9 +54,10 @@ public class TagsLocatorTests
         var css = "main>div>p";
         var html = """
         <main>
+            <p>
+            </p>
             <div>
-            </div>
-            <div>
+                <span> Nonsense </span>
                 <p> One </p>
             </div>
         </main>

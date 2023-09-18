@@ -25,49 +25,33 @@ internal static class HtmlTagExtractor
     private static int ProcessTagName(
         ReadOnlySpan<char> html, 
         Stack<ReadOnlyMemory<char>> tags)
-        => TryProcessClosingTagName(html, tags)
-        ?? TryProcessOpeningTagName(html, tags) 
-        ?? throw new ArgumentException($"html doesn't start with tag! {html}");
-
-    private static int? TryProcessOpeningTagName(
-        ReadOnlySpan<char> html, 
-        Stack<ReadOnlyMemory<char>> tags)
     {
-        if (html.StartsWith("<") is not true)
+        var htmlTag = HtmlTagReader.ReadHtmlTag(html);
+        if (htmlTag.IsOpening)
         {
-            return null;
+            // HACK: it's not designed to call ToArray
+            // need to push Span into stack somehow.
+            tags.Push(htmlTag.Name.ToArray());
+        }
+        else 
+        {
+            if (tags.Pop().Span.SequenceEqual(htmlTag.Name) is not true)
+            {
+                throw new InvalidOperationException($"""
+                    -----
+                    Incorrect tag met. 
+                    Expected: {tags.Peek()}, 
+                    Actual: {htmlTag.Name}. 
+                    -----
+                    {html}
+                """);
+            }
         }
 
-        var openingTag = html[1..html.IndexOfAny(' ', '>')];
-        // HACK: it's not designed to call ToArray
-        // need to push Span into stack somehow.
-        tags.Push(openingTag.ToArray());
-        return openingTag.Length + 2; // <>
-    }
-
-    private static int? TryProcessClosingTagName(
-        ReadOnlySpan<char> html, 
-        Stack<ReadOnlyMemory<char>> tags)
-    {
-        if (html.StartsWith("</") is not true)
-        {
-            return null;
-        }
-
-        var closingTag = html[2..html.IndexOf('>')];
-        if (tags.Peek().Span.SequenceEqual(closingTag) is not true)
-        {
-            throw new InvalidOperationException($"""
-                -----
-                Incorrect tag met. 
-                Expected: {tags.Peek()}, 
-                Actual: {closingTag}. 
-                -----
-                {html}
-            """);
-        }
-
-        tags.Pop();
-        return closingTag.Length + 3; // </>
+        const int openingTagOffset = 1;
+        const int countingOffset = 1;
+        return html[1..].IndexOf('>') // HACK: stinks.
+            + openingTagOffset 
+            + countingOffset;
     }
 }

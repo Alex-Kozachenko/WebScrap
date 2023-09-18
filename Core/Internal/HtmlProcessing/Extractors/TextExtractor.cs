@@ -6,6 +6,7 @@ internal static class TextExtractor
 {
     public static ReadOnlySpan<char> ReadBody(this ReadOnlySpan<char> html)
     {
+        html = HtmlValidator.ToValidHtml(html);
         html = HtmlTagExtractor.ExtractTag(html);    
         var sb = new StringBuilder();
         ReadBody(html, sb);
