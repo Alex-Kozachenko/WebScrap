@@ -1,16 +1,13 @@
 namespace Core.Internal.HtmlProcessing;
 
-internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
+internal static class CssTokenizer
 {
-    private readonly Span<char> tokenDelimeters = tokenDelimeters;
+    private static readonly char[] tokenDelimeters = [' ', '>'];
 
-    internal static CssTokenizer Default
-        => new([' ', '>']);
-
-    internal Queue<CssToken> TokenizeCss(ReadOnlySpan<char> css)
+    public static Queue<CssToken> TokenizeCss(ReadOnlySpan<char> css)
         => ToCssTokens(Split(css));
 
-    private Queue<ReadOnlyMemory<char>> Split(ReadOnlySpan<char> css)
+    private static Queue<ReadOnlyMemory<char>> Split(ReadOnlySpan<char> css)
     {
         css = css.Trim();
         var tokens = new List<ReadOnlyMemory<char>>();
@@ -25,19 +22,7 @@ internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
         return new(tokens);
     }
 
-    private int GetLastDelimeterIndex(ReadOnlySpan<char> cssLine)
-    {
-        var delimeterIndex = cssLine
-                .LastIndexOfAny(tokenDelimeters);
-
-        return delimeterIndex switch
-        {
-            -1 => 0,
-            _ => delimeterIndex
-        };
-    }
-
-    private Queue<CssToken> ToCssTokens(Queue<ReadOnlyMemory<char>> tokens)
+    private static Queue<CssToken> ToCssTokens(Queue<ReadOnlyMemory<char>> tokens)
     {
         var result = new Queue<CssToken>();
         foreach (var token in tokens)
@@ -49,5 +34,17 @@ internal readonly ref struct CssTokenizer(Span<char> tokenDelimeters)
             result.Enqueue(item);
         }
         return result;
-    }        
+    }
+    
+    private static int GetLastDelimeterIndex(ReadOnlySpan<char> cssLine)
+    {
+        var delimeterIndex = cssLine
+                .LastIndexOfAny(tokenDelimeters);
+
+        return delimeterIndex switch
+        {
+            -1 => 0,
+            _ => delimeterIndex
+        };
+    } 
 }

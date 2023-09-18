@@ -6,7 +6,6 @@ internal static class TextExtractor
 {
     public static ReadOnlySpan<char> ReadBody(this ReadOnlySpan<char> html)
     {
-        AssertHtmlStart(html);  
         html = HtmlTagExtractor.ExtractTag(html);    
         var sb = new StringBuilder();
         ReadBody(html, sb);
@@ -22,16 +21,16 @@ internal static class TextExtractor
                 => ReadBody(html[1..], builder),
             (-1, _) 
                 => ReadEnd(html, builder),
-            (0, var close) 
-                => SkipOpeningTag(html, builder, close),
-            (var open, var close)
-                when open > close 
-                => SkipOpeningTag(html, builder, close),
-            (var open, _) 
-                => ReadBody(html, builder, open),
+            (0, var end) 
+                => SkipOpeningTag(html, builder, end),
+            (var begin, var end)
+                when begin > end 
+                => SkipOpeningTag(html, builder, end),
+            (var begin, _) 
+                => ReadBody(html, builder, begin),
         };
 
-    private static (int Begin, int End) GetTagRange(this ReadOnlySpan<char> html)
+    private static (int, int) GetTagRange(this ReadOnlySpan<char> html)
         => (html.IndexOf('<'), html.IndexOf('>'));
 
     private static ReadOnlySpan<char> SkipOpeningTag(
@@ -55,15 +54,5 @@ internal static class TextExtractor
     {
         stringBuilder.Append(html);
         return html;
-    }
-
-    private static void AssertHtmlStart(ReadOnlySpan<char> html)
-    {
-        if (html.GetTagRange().Begin is not 0
-            || char.IsLetter(html[1]) is not true)
-        {
-            var message = "Html should start with opening html-tag.";
-            throw new InvalidOperationException(message);
-        }
-    }
+    }    
 }

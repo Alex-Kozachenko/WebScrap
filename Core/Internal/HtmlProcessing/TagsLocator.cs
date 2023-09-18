@@ -1,31 +1,33 @@
 using Core.Internal.HtmlProcessing.Extractors;
+using static Core.Internal.HtmlProcessing.HtmlBlockValidator;
+using static Core.Internal.HtmlProcessing.CssTokenizer;
 
 namespace Core.Internal.HtmlProcessing;
 
 internal static class TagsLocator
 {
     public static List<ArraySegment<char>> LocateTagsByCss(
-        ReadOnlySpan<char> container,
+        ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
+        html = ToValidHtml(html);
         var result = new List<ArraySegment<char>>();
-        container = container.TrimStart();
-        var cssTokens = CssTokenizer.Default.TokenizeCss(css);
+        var cssTokens = TokenizeCss(css);
         while (true)
         {
-            var tag = cssTokens.Dequeue().Css.Span;  
-            AssertCurrentTag(container[1..], tag, css);
+            var tag = cssTokens.Dequeue();  
+            AssertCurrentTag(html[1..], tag, css);
             if (cssTokens.Count is 0)
             {
-                // HACK:
-                var body = container.ReadBody().ToArray();
+                // HACK: redundant copying invoked.
+                var body = html.ReadBody().ToArray();
                 var arraySegment = new ArraySegment<char>(body);
                 result.Add(arraySegment);
                 return result;
             }
             
-            var nextTagIndex = GetNextTagIndex(container[1..]) + 1;
-            container = container[nextTagIndex..];
+            var nextTagIndex = GetNextTagIndex(html[1..]) + 1;
+            html = html[nextTagIndex..];
         }
     }
 
@@ -38,9 +40,10 @@ internal static class TagsLocator
 
     private static void AssertCurrentTag(
         ReadOnlySpan<char> html,
-        ReadOnlySpan<char> currentTag,
+        CssToken cssToken,
         ReadOnlySpan<char> css)
     {
+        var currentTag = cssToken.Css.Span;
         if (html.StartsWith(currentTag) is not true)
         {
             throw new InvalidOperationException(

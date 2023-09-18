@@ -1,3 +1,5 @@
+using static Core.Internal.HtmlProcessing.CssTokenizer;
+
 namespace Core.Internal.HtmlProcessing.Tests;
 
 [TestFixture]
@@ -14,7 +16,7 @@ public class CssTokenizerTests
             new ('>', "p"),
         ];
 
-        (char?, string)[] result = CssTokenizer.Default.TokenizeCss(sample)
+        (char?, string)[] result = TokenizeCss(sample)
             .Select(x => (x.ChildSelector, x.Css.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
