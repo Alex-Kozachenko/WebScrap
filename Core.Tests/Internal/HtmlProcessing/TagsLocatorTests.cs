@@ -67,4 +67,26 @@ public class TagsLocatorTests
         var actual = new string(LocateTagsByCss(html, css).First()).Strip();
         Assert.That(actual, Is.EquivalentTo(expected));
     }
+
+    [Test]
+    public void LocateTagsByCss_ShouldWork_OnMultipleBranches()
+    {
+        var css = "main>div>p";
+        var html = """
+        <main>
+            <br />
+            <div>
+                <p> One </p>
+            </div>
+            <br />
+            <div>
+                <p> Two</p>
+            </div>
+        </main>
+        """;
+
+        string[] expected = ["One","Two"];
+        var actual = LocateTagsByCss(html, css).Select(x => new string(x).Strip()).ToArray();
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
 }

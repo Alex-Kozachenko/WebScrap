@@ -1,13 +1,15 @@
+using System.Collections.Immutable;
+
 namespace Core.Internal.HtmlProcessing;
 
 internal static class CssTokenizer
 {
     private static readonly char[] tokenDelimeters = [' ', '>'];
 
-    public static Queue<CssToken> TokenizeCss(ReadOnlySpan<char> css)
+    public static ImmutableArray<CssToken> TokenizeCss(ReadOnlySpan<char> css)
         => ToCssTokens(Split(css));
 
-    private static Queue<ReadOnlyMemory<char>> Split(ReadOnlySpan<char> css)
+    private static ImmutableArray<ReadOnlyMemory<char>> Split(ReadOnlySpan<char> css)
     {
         css = css.Trim();
         var tokens = new List<ReadOnlyMemory<char>>();
@@ -19,10 +21,11 @@ internal static class CssTokenizer
             css = css[..lastDelimeterIndex];
         }
         tokens.Reverse(); 
-        return new(tokens);
+        return [..tokens];
     }
 
-    private static Queue<CssToken> ToCssTokens(Queue<ReadOnlyMemory<char>> tokens)
+    private static ImmutableArray<CssToken> ToCssTokens(
+        ImmutableArray<ReadOnlyMemory<char>> tokens)
     {
         var result = new Queue<CssToken>();
         foreach (var token in tokens)
@@ -33,7 +36,7 @@ internal static class CssTokenizer
                 : new(null, token);
             result.Enqueue(item);
         }
-        return result;
+        return [..result];
     }
     
     private static int GetLastDelimeterIndex(ReadOnlySpan<char> cssLine)

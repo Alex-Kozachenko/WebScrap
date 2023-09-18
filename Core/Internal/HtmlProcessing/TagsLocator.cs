@@ -9,24 +9,36 @@ internal static class TagsLocator
         ReadOnlySpan<char> css)
     {
         html = HtmlValidator.ToValidHtml(html);
-        var result = new List<ArraySegment<char>>();
+        List<ArraySegment<char>> result = [];
         var cssTokens = CssTokenizer.TokenizeCss(css);
-        while (true)
+        Stack<ArraySegment<char>> openedSuitableTags = [];
+        while (html.Length is not 0)
         {
-            var cssTag = cssTokens.Peek();
+            // HACK: legit hell on earth.
+            var cssTag = openedSuitableTags.Count < cssTokens.Length - 1
+                ? cssTokens[openedSuitableTags.Count]
+                : new CssToken();
+
             var htmlTag = HtmlTagReader.ReadHtmlTag(html);
             if (htmlTag.Name.StartsWith(cssTag.Css.Span))
             {
                 if (htmlTag.IsOpening)
                 {
-                    cssTokens.Dequeue();
-                    if (cssTokens.Count is 0)
+                    openedSuitableTags.Push(htmlTag.Name.ToArray());
+                    if (openedSuitableTags.Count == cssTokens.Length)
                     {
                         // HACK: redundant copying invoked.
                         var body = html.ReadBody().ToArray();
                         var arraySegment = new ArraySegment<char>(body);
                         result.Add(arraySegment);
-                        return result;
+                    }
+                }
+                else
+                {
+                    if (openedSuitableTags.Peek().Array.SequenceEqual(
+                        htmlTag.Name.ToArray()))
+                    {
+                        openedSuitableTags.Pop();
                     }
                 }
             }
@@ -34,6 +46,8 @@ internal static class TagsLocator
             var nextTagIndex = GetNextTagIndex(html[1..]) + 1;
             html = html[nextTagIndex..];
         }
+
+        return result;
     }
 
     public static int GetNextTagIndex(ReadOnlySpan<char> html)
