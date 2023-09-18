@@ -1,6 +1,4 @@
 using Core.Internal.HtmlProcessing.Extractors;
-using static Core.Internal.HtmlProcessing.HtmlBlockValidator;
-using static Core.Internal.HtmlProcessing.CssTokenizer;
 
 namespace Core.Internal.HtmlProcessing;
 
@@ -10,9 +8,9 @@ internal static class TagsLocator
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
-        html = ToValidHtml(html);
+        html = HtmlValidator.ToValidHtml(html);
         var result = new List<ArraySegment<char>>();
-        var cssTokens = TokenizeCss(css);
+        var cssTokens = CssTokenizer.TokenizeCss(css);
         while (true)
         {
             var tag = cssTokens.Dequeue();  
@@ -37,6 +35,11 @@ internal static class TagsLocator
             -1 => html.Length,
             var nextTagIndex => nextTagIndex
         };
+
+    private static HtmlTag ReadCurrentTag(ReadOnlySpan<char> html)
+    {
+        throw new NotImplementedException();
+    }
 
     private static void AssertCurrentTag(
         ReadOnlySpan<char> html,

@@ -48,4 +48,23 @@ public class TagsLocatorTests
         var actual = new string(LocateTagsByCss(html, css).First()).Strip();
         Assert.That(actual, Is.EquivalentTo(expected));
     }
+
+    [Test]
+    public void LocateTagsByCss_ShouldWork_WhenSuccessfullBranch_IsInterrupted()
+    {
+        var css = "main>div>p";
+        var html = """
+        <main>
+            <div>
+            </div>
+            <div>
+                <p> One </p>
+            </div>
+        </main>
+        """;
+
+        var expected = "One";
+        var actual = new string(LocateTagsByCss(html, css).First()).Strip();
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
 }

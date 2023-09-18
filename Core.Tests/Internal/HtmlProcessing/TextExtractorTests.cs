@@ -23,7 +23,7 @@ public class TextExtractorTests
     }
 
     [Test]
-    public void TrimTag_ShouldWork()
+    public void ExtractTag_ShouldWork()
     {
         var expected = """
             <div>

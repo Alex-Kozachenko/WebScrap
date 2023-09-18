@@ -4,6 +4,9 @@ namespace Core.Internal.HtmlProcessing.Extractors;
 
 internal static class HtmlTagExtractor
 {
+    /// <summary>
+    /// Reads html from beginning tag, until the beginning tag is closed.
+    /// </summary>
     public static ReadOnlySpan<char> ExtractTag(ReadOnlySpan<char> html)
     {
         Stack<ReadOnlyMemory<char>> tags = new();

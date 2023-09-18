@@ -1,6 +1,6 @@
 namespace Core.Internal.HtmlProcessing;
 
-internal static class HtmlBlockValidator
+internal static class HtmlValidator
 {
     public static ReadOnlySpan<char> ToValidHtml(ReadOnlySpan<char> html)
     {
