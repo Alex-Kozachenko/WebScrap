@@ -4,6 +4,12 @@ namespace Core.Internal.HtmlProcessing;
 
 internal static class TagsLocator
 {
+    /// <summary>
+    /// Locates the html-tags by css-like string.
+    /// </summary>
+    /// <returns>
+    /// Plain html for tags which has been found by the css-like selector.
+    /// </returns>
     public static List<ArraySegment<char>> LocateTagsByCss(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
@@ -12,10 +18,11 @@ internal static class TagsLocator
         List<ArraySegment<char>> result = [];
         var cssTokens = CssTokenizer.TokenizeCss(css);
         Stack<ArraySegment<char>> openedSuitableTags = [];
+
         while (html.Length is not 0)
         {
             // HACK: legit hell on earth.
-            var cssTag = openedSuitableTags.Count < cssTokens.Length - 1
+            var cssTag = openedSuitableTags.Count < cssTokens.Length
                 ? cssTokens[openedSuitableTags.Count]
                 : new CssToken();
 
@@ -35,7 +42,7 @@ internal static class TagsLocator
                 }
                 else
                 {
-                    if (openedSuitableTags.Peek().Array.SequenceEqual(
+                    if (openedSuitableTags.Peek().Array!.SequenceEqual(
                         htmlTag.Name.ToArray()))
                     {
                         openedSuitableTags.Pop();
@@ -56,9 +63,4 @@ internal static class TagsLocator
             -1 => html.Length,
             var nextTagIndex => nextTagIndex
         };
-
-    private static HtmlTag ReadCurrentTag(ReadOnlySpan<char> html)
-    {
-        throw new NotImplementedException();
-    }
 }
