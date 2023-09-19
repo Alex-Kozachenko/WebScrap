@@ -8,7 +8,7 @@ internal static class HtmlTagExtractor
     /// <summary>
     /// Reads html from beginning tag, until the beginning tag is closed.
     /// </summary>
-    public static ReadOnlySpan<char> ExtractTag(ReadOnlySpan<char> html)
+    public static ReadOnlySpan<char> ExtractEntireTag(ReadOnlySpan<char> html)
     {
         Stack<ReadOnlyMemory<char>> tags = new();
         
@@ -16,18 +16,21 @@ internal static class HtmlTagExtractor
         
         do {
             processed += GetNextTagIndex(html[processed..]);
-            processed += ProcessTagName(html[processed..], tags);
+
+            ReadHtmlTag(html[processed..])
+                .StackHtmlTag(tags);
             
+            processed += GetInnerTextIndex(html[processed..]);
+
         } while (tags.Count is not 0);
         
         return html[..processed];
     }
-
-    private static int ProcessTagName(
-        ReadOnlySpan<char> html, 
+    
+    private static void StackHtmlTag(
+        this HtmlTag htmlTag, 
         Stack<ReadOnlyMemory<char>> tags)
     {
-        var htmlTag = ReadHtmlTag(html);
         if (htmlTag.IsOpening)
         {
             // HACK: it's not designed to call ToArray
@@ -44,15 +47,8 @@ internal static class HtmlTagExtractor
                     Expected: {tags.Peek()}, 
                     Actual: {htmlTag.Name}. 
                     -----
-                    {html}
                 """);
             }
         }
-
-        const int openingTagOffset = 1;
-        const int countingOffset = 1;
-        return html[1..].IndexOf('>') // HACK: stinks.
-            + openingTagOffset 
-            + countingOffset;
     }
 }

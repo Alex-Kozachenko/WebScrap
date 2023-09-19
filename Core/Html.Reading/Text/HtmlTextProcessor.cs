@@ -1,27 +1,28 @@
 using System.Text;
 using static Core.Html.Tools.HtmlValidator;
+using static Core.Html.Tools.TagsNavigator;
 using static Core.Html.Reading.Tags.HtmlTagExtractor;
 
 namespace Core.Html.Reading.Text;
 
 internal static class HtmlTextProcessor
 {
-    public static ReadOnlySpan<char> ReadBody(ReadOnlySpan<char> html)
+    public static ReadOnlySpan<char> Process(ReadOnlySpan<char> html)
     {
         html = ToValidHtml(html);
-        html = ExtractTag(html);
+        html = ExtractEntireTag(html);
         var sb = new StringBuilder();
-        ReadBody(html, sb);
+        Process(html, sb);
         return sb.ToString();
     }   
 
-    private static ReadOnlySpan<char> ReadBody(
+    private static ReadOnlySpan<char> Process(
         ReadOnlySpan<char> html, 
         StringBuilder builder)
         => GetTagRange(html) switch
         {
             (_, 0) 
-                => ReadBody(html[1..], builder),
+                => Process(html[1..], builder),
             (-1, _) 
                 => ReadEnd(html, builder),
             (0, var end) 
@@ -33,14 +34,11 @@ internal static class HtmlTextProcessor
                 => ReadBody(html, builder, begin),
         };
 
-    private static (int, int) GetTagRange(ReadOnlySpan<char> html)
-        => (html.IndexOf('<'), html.IndexOf('>'));
-
     private static ReadOnlySpan<char> SkipOpeningTag(
         ReadOnlySpan<char> html,
         StringBuilder stringBuilder,
         int closingTagIndex)
-        => ReadBody(html[closingTagIndex..], stringBuilder);
+        => Process(html[closingTagIndex..], stringBuilder);
 
     private static ReadOnlySpan<char> ReadBody(
         ReadOnlySpan<char> html,
@@ -48,7 +46,7 @@ internal static class HtmlTextProcessor
         int bodyEndIndex)
     {
         stringBuilder.Append(html[..bodyEndIndex]);
-        return ReadBody(html[bodyEndIndex..], stringBuilder);
+        return Process(html[bodyEndIndex..], stringBuilder);
     }
 
     private static ReadOnlySpan<char> ReadEnd(

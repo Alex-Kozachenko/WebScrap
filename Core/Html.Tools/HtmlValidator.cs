@@ -2,6 +2,7 @@ namespace Core.Html.Tools;
 
 internal static class HtmlValidator
 {
+    // TODO: make a dedicated object like `ValidHtml`, so this check wont be nessesary every time.
     public static ReadOnlySpan<char> ToValidHtml(ReadOnlySpan<char> html)
     {
         html = html.TrimStart();

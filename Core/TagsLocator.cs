@@ -42,7 +42,7 @@ public static class TagsLocator
                     if (openedSuitableTags.Count == cssTokens.Length)
                     {
                         // HACK: redundant copying invoked.
-                        var body = ReadBody(html).ToArray();
+                        var body = Process(html).ToArray();
                         var arraySegment = new ArraySegment<char>(body);
                         result.Add(arraySegment);
                     }

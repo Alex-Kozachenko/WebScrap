@@ -5,7 +5,7 @@ using static Core.Html.Reading.Tags.HtmlTagExtractor;
 public class HtmlTagExtractorTests
 {
     [Test]
-    public void ExtractTag_ShouldWork()
+    public void ExtractEntireTag_ShouldWork()
     {
         var expected = """
             <div>
@@ -20,7 +20,7 @@ public class HtmlTagExtractorTests
             <div> <p> Lorem ipsum </p> </div>            
         """;
 
-        var actual = ExtractTag(html).ToString();
+        var actual = ExtractEntireTag(html).ToString();
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }
