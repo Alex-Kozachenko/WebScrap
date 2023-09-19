@@ -1,11 +1,11 @@
 using static Core.Internal.HtmlProcessing.TagsLocator;
+using static Core.Tests.TestHelpers.IsHelpers;
 
 namespace Core.Internal.HtmlProcessing.Tests;
 
 [TestFixture]
 public class TagsLocatorTests
 {
-
     #region cases
     [TestCase(
         "_____<p></p>",
@@ -43,9 +43,10 @@ public class TagsLocatorTests
         </main>
         """;
 
-        var expected = "One";
-        var actual = new string(LocateTagsByCss(html, css).First()).Strip();
-        Assert.That(actual, Is.EquivalentTo(expected));
+        var expected = " One ";
+
+        var actual = LocateTagsByCss(html, css);
+        Assert.That(actual, EquivalentTo([expected]));
     }
 
     [Test]
@@ -62,10 +63,10 @@ public class TagsLocatorTests
             </div>
         </main>
         """;
+        var expected = " One ";
 
-        var expected = "One";
-        var actual = new string(LocateTagsByCss(html, css).First()).Strip();
-        Assert.That(actual, Is.EquivalentTo(expected));
+        var actual = LocateTagsByCss(html, css);
+        Assert.That(actual, EquivalentTo([expected]));
     }
 
     [Test]
@@ -76,17 +77,34 @@ public class TagsLocatorTests
         <main>
             <br />
             <div>
-                <p> One </p>
+                <p>One</p>
             </div>
             <br />
             <div>
-                <p> Two</p>
+                <p>Two</p>
             </div>
         </main>
         """;
-
         string[] expected = ["One","Two"];
-        var actual = LocateTagsByCss(html, css).Select(x => new string(x).Strip()).ToArray();
-        Assert.That(actual, Is.EquivalentTo(expected));
+
+        var actual = LocateTagsByCss(html, css);
+        Assert.That(actual, EquivalentTo(expected));
+    }
+
+    [Test]
+    public void LocateTagsByCss_ShouldReturn_InnerText()
+    {
+        var css = "main>div>p";
+        var html = """
+        <main>
+            <div>
+                <p>One cup of <strong>a caffeine</strong> for a <i>good</i> start! </p>
+            </div>
+        </main>
+        """;
+        var expected = "One cup of a caffeine for a good start! ";
+
+        var actual = LocateTagsByCss(html, css);
+        Assert.That(actual, EquivalentTo([expected]));
     }
 }

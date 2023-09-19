@@ -17,8 +17,8 @@ public class HtmlStreamReaderTests
         """;
 
         var expected = "One";
-        var readResult = Read(html, css).Strip();
-        Assert.That(readResult, Is.EqualTo(expected));
+        var readResult = Read(html, css);
+        Assert.That(readResult.SequenceEqual(expected));
     }    
 
     public void Read_ShouldReturn_InnerText_Including_NestedInnerText()
@@ -33,8 +33,8 @@ public class HtmlStreamReaderTests
         """;
 
         var expected = "One Two";
-        var readResult = Read(html, css).Strip();
-        Assert.That(readResult, Is.EqualTo(expected));
+        var readResult = Read(html, css);
+        Assert.That(readResult.SequenceEqual(expected));
     }
 
     public void Read_ShouldReturn_InnerText_FromMultipleTags()
@@ -51,8 +51,8 @@ public class HtmlStreamReaderTests
         """;
 
         var expected = "One Two";
-        var readResult = Read(html, css).Strip();
-        Assert.That(readResult, Is.EqualTo(expected));
+        var readResult = Read(html, css);
+        Assert.That(readResult.SequenceEqual(expected));
     }
 
     #region ideas

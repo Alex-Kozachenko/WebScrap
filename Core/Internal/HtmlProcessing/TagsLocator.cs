@@ -8,7 +8,7 @@ internal static class TagsLocator
     /// Locates the html-tags by css-like string.
     /// </summary>
     /// <returns>
-    /// Plain html for tags which has been found by the css-like selector.
+    /// Plain html (inner text) for tags which has been found by the css-like selector.
     /// </returns>
     public static List<ArraySegment<char>> LocateTagsByCss(
         ReadOnlySpan<char> html,
