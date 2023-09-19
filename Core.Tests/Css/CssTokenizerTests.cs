@@ -1,6 +1,4 @@
-using static Core.Internal.HtmlProcessing.CssTokenizer;
-
-namespace Core.Internal.HtmlProcessing.Tests;
+using static Core.Css.CssTokenizer;
 
 [TestFixture]
 public class CssTokenizerTests

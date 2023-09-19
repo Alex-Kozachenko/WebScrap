@@ -1,15 +1,12 @@
-using NUnit.Framework.Internal;
-using Core.Internal.HtmlProcessing.Extractors;
-
-namespace Core.Internal.HtmlProcessing.Tests;
+using static Core.Html.Reading.Text.HtmlTextProcessor;
 
 [TestFixture]
-public class TextExtractorTests
+public class HtmlTextProcessorTests
 {
     [TestCase("<p>12</p>","12")]
     public void ReadBody_ShouldWork(string html, string expected)
     {
-        var actual = HtmlProcessor.ReadBody(html).ToString();
+        var actual = ReadBody(html).ToString();
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -18,7 +15,7 @@ public class TextExtractorTests
     [TestCase("</p>12")]
     public void ReadBody_ShouldThrow(string html)
     {
-        Assert.That(() => HtmlProcessor.ReadBody(html), Throws.Exception);
+        Assert.That(() => ReadBody(html), Throws.Exception);
         
     }
 }

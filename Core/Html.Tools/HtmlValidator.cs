@@ -1,4 +1,4 @@
-namespace Core.Internal.HtmlProcessing;
+namespace Core.Html.Tools;
 
 internal static class HtmlValidator
 {

@@ -1,10 +1,10 @@
 using System.Text;
-using static Core.Internal.HtmlProcessing.HtmlValidator;
-using static Core.Internal.HtmlProcessing.Extractors.HtmlTagExtractor;
+using static Core.Html.Tools.HtmlValidator;
+using static Core.Html.Reading.Tags.HtmlTagExtractor;
 
-namespace Core.Internal.HtmlProcessing.Extractors;
+namespace Core.Html.Reading.Text;
 
-internal static class HtmlProcessor
+internal static class HtmlTextProcessor
 {
     public static ReadOnlySpan<char> ReadBody(ReadOnlySpan<char> html)
     {

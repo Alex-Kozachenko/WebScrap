@@ -1,7 +1,5 @@
-using static Core.Internal.HtmlProcessing.TagsLocator;
+using static Core.TagsLocator;
 using static Core.Tests.TestHelpers.IsHelpers;
-
-namespace Core.Internal.HtmlProcessing.Tests;
 
 [TestFixture]
 public class TagsLocatorTests

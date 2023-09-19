@@ -1,6 +1,4 @@
-using Core.Internal.HtmlProcessing;
-using static Core.Internal.HtmlProcessing.TagsLocator;
-using static Core.Internal.HtmlProcessing.Extractors.HtmlProcessor;
+using static Core.TagsLocator;
 
 namespace Core;
 
@@ -10,7 +8,7 @@ public class HtmlStreamReader
         ReadOnlySpan<char> html, 
         ReadOnlySpan<char> css)
     {
-        var tag =  LocateTagsByCss(html, css);
+        var tag = LocateTagsByCss(html, css);
         throw new NotImplementedException();
         // var body = tag.ReadBody();
         // return body;

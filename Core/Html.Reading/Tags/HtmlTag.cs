@@ -1,4 +1,4 @@
-namespace Core.Internal.Data;
+namespace Core.Html.Reading.Tags;
 
 internal readonly ref struct HtmlTag(ReadOnlySpan<char> name, bool isOpening)
 {

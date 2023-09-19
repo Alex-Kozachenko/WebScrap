@@ -1,7 +1,5 @@
 using NUnit.Framework.Internal;
-using Core.Internal.HtmlProcessing.Extractors;
-
-namespace Core.Internal.HtmlProcessing.Tests;
+using static Core.Html.Reading.Tags.HtmlTagExtractor;
 
 [TestFixture]
 public class HtmlTagExtractorTests
@@ -22,7 +20,7 @@ public class HtmlTagExtractorTests
             <div> <p> Lorem ipsum </p> </div>            
         """;
 
-        var actual = HtmlTagExtractor.ExtractTag(html).ToString();
+        var actual = ExtractTag(html).ToString();
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }

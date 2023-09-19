@@ -1,7 +1,7 @@
-using static Core.Internal.HtmlProcessing.TagsNavigator;
-using static Core.Internal.HtmlProcessing.HtmlTagReader;
+using static Core.Html.Tools.TagsNavigator;
+using static Core.Html.Reading.Tags.HtmlTagReader;
 
-namespace Core.Internal.HtmlProcessing.Extractors;
+namespace Core.Html.Reading.Tags;
 
 internal static class HtmlTagExtractor
 {

@@ -1,6 +1,6 @@
-using static Core.Internal.HtmlProcessing.HtmlValidator;
+using static Core.Html.Tools.HtmlValidator;
 
-namespace Core.Internal.HtmlProcessing;
+namespace Core.Html.Reading.Tags;
 
 /// <summary>
 /// Produces shallow <see cref="HtmlTag"/>= object.

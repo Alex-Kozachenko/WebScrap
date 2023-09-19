@@ -1,11 +1,15 @@
-using static Core.Internal.HtmlProcessing.Extractors.HtmlProcessor;
-using static Core.Internal.HtmlProcessing.TagsNavigator;
-using static Core.Internal.HtmlProcessing.HtmlTagReader;
-using static Core.Internal.HtmlProcessing.CssTokenizer;
+using Core.Css;
+using static Core.Css.CssTokenizer;
+using static Core.Html.Tools.HtmlValidator;
+using static Core.Html.Tools.TagsNavigator;
+using static Core.Html.Reading.Text.HtmlTextProcessor;
+using static Core.Html.Reading.Tags.HtmlTagReader;
 
-namespace Core.Internal.HtmlProcessing;
+namespace Core;
 
-internal static class TagsLocator
+// NOTE: it seems a tiny tags locator became a center of the project
+// TODO: decouple this.
+public static class TagsLocator
 {
     /// <summary>
     /// Locates the html-tags by css-like string.
@@ -17,7 +21,7 @@ internal static class TagsLocator
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
-        html = HtmlValidator.ToValidHtml(html);
+        html = ToValidHtml(html);
         List<ArraySegment<char>> result = [];
         var cssTokens = TokenizeCss(css);
         Stack<ArraySegment<char>> openedSuitableTags = [];
