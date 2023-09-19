@@ -1,4 +1,6 @@
-using Core.Internal.HtmlProcessing.Extractors;
+using static Core.Internal.HtmlProcessing.Extractors.TextExtractor;
+using static Core.Internal.HtmlProcessing.HtmlTagReader;
+using static Core.Internal.HtmlProcessing.CssTokenizer;
 
 namespace Core.Internal.HtmlProcessing;
 
@@ -16,7 +18,7 @@ internal static class TagsLocator
     {
         html = HtmlValidator.ToValidHtml(html);
         List<ArraySegment<char>> result = [];
-        var cssTokens = CssTokenizer.TokenizeCss(css);
+        var cssTokens = TokenizeCss(css);
         Stack<ArraySegment<char>> openedSuitableTags = [];
 
         while (html.Length is not 0)
@@ -26,7 +28,7 @@ internal static class TagsLocator
                 ? cssTokens[openedSuitableTags.Count]
                 : new CssToken();
 
-            var htmlTag = HtmlTagReader.ReadHtmlTag(html);
+            var htmlTag = ReadHtmlTag(html);
             if (htmlTag.Name.StartsWith(cssTag.Css.Span))
             {
                 if (htmlTag.IsOpening)
@@ -35,7 +37,7 @@ internal static class TagsLocator
                     if (openedSuitableTags.Count == cssTokens.Length)
                     {
                         // HACK: redundant copying invoked.
-                        var body = html.ReadBody().ToArray();
+                        var body = ReadBody(html).ToArray();
                         var arraySegment = new ArraySegment<char>(body);
                         result.Add(arraySegment);
                     }

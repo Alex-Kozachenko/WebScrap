@@ -1,4 +1,5 @@
 using static Core.Internal.HtmlProcessing.TagsLocator;
+using static Core.Internal.HtmlProcessing.HtmlTagReader;
 
 namespace Core.Internal.HtmlProcessing.Extractors;
 
@@ -26,7 +27,7 @@ internal static class HtmlTagExtractor
         ReadOnlySpan<char> html, 
         Stack<ReadOnlyMemory<char>> tags)
     {
-        var htmlTag = HtmlTagReader.ReadHtmlTag(html);
+        var htmlTag = ReadHtmlTag(html);
         if (htmlTag.IsOpening)
         {
             // HACK: it's not designed to call ToArray

@@ -1,3 +1,5 @@
+using static Core.Internal.HtmlProcessing.HtmlValidator;
+
 namespace Core.Internal.HtmlProcessing;
 
 /// <summary>
@@ -8,7 +10,7 @@ internal class HtmlTagReader
     public static HtmlTag ReadHtmlTag(
         ReadOnlySpan<char> html)
     {
-        html = HtmlValidator.ToValidHtml(html);
+        html = ToValidHtml(html);
         _ = TryProcessClosingTagName(html, out var htmlTag)
             || TryProcessOpeningTagName(html, out htmlTag);
             

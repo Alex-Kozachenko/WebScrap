@@ -1,13 +1,15 @@
 using System.Text;
+using static Core.Internal.HtmlProcessing.HtmlValidator;
+using static Core.Internal.HtmlProcessing.Extractors.HtmlTagExtractor;
 
 namespace Core.Internal.HtmlProcessing.Extractors;
 
 internal static class TextExtractor
 {
-    public static ReadOnlySpan<char> ReadBody(this ReadOnlySpan<char> html)
+    public static ReadOnlySpan<char> ReadBody(ReadOnlySpan<char> html)
     {
-        html = HtmlValidator.ToValidHtml(html);
-        html = HtmlTagExtractor.ExtractTag(html);    
+        html = ToValidHtml(html);
+        html = ExtractTag(html);
         var sb = new StringBuilder();
         ReadBody(html, sb);
         return sb.ToString();
@@ -16,7 +18,7 @@ internal static class TextExtractor
     private static ReadOnlySpan<char> ReadBody(
         ReadOnlySpan<char> html, 
         StringBuilder builder)
-        => html.GetTagRange() switch
+        => GetTagRange(html) switch
         {
             (_, 0) 
                 => ReadBody(html[1..], builder),
@@ -31,7 +33,7 @@ internal static class TextExtractor
                 => ReadBody(html, builder, begin),
         };
 
-    private static (int, int) GetTagRange(this ReadOnlySpan<char> html)
+    private static (int, int) GetTagRange(ReadOnlySpan<char> html)
         => (html.IndexOf('<'), html.IndexOf('>'));
 
     private static ReadOnlySpan<char> SkipOpeningTag(
