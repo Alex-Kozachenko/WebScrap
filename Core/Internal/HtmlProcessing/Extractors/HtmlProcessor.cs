@@ -4,7 +4,7 @@ using static Core.Internal.HtmlProcessing.Extractors.HtmlTagExtractor;
 
 namespace Core.Internal.HtmlProcessing.Extractors;
 
-internal static class TextExtractor
+internal static class HtmlProcessor
 {
     public static ReadOnlySpan<char> ReadBody(ReadOnlySpan<char> html)
     {

@@ -1,4 +1,5 @@
-using static Core.Internal.HtmlProcessing.Extractors.TextExtractor;
+using static Core.Internal.HtmlProcessing.Extractors.HtmlProcessor;
+using static Core.Internal.HtmlProcessing.TagsNavigator;
 using static Core.Internal.HtmlProcessing.HtmlTagReader;
 using static Core.Internal.HtmlProcessing.CssTokenizer;
 
@@ -58,11 +59,4 @@ internal static class TagsLocator
 
         return result;
     }
-
-    public static int GetNextTagIndex(ReadOnlySpan<char> html)
-        => html.IndexOf('<') switch
-        {
-            -1 => html.Length,
-            var nextTagIndex => nextTagIndex
-        };
 }

@@ -1,4 +1,4 @@
-using static Core.Internal.HtmlProcessing.TagsLocator;
+using static Core.Internal.HtmlProcessing.TagsNavigator;
 using static Core.Internal.HtmlProcessing.HtmlTagReader;
 
 namespace Core.Internal.HtmlProcessing.Extractors;

@@ -9,7 +9,7 @@ public class TextExtractorTests
     [TestCase("<p>12</p>","12")]
     public void ReadBody_ShouldWork(string html, string expected)
     {
-        var actual = TextExtractor.ReadBody(html).ToString();
+        var actual = HtmlProcessor.ReadBody(html).ToString();
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -18,7 +18,7 @@ public class TextExtractorTests
     [TestCase("</p>12")]
     public void ReadBody_ShouldThrow(string html)
     {
-        Assert.That(() => TextExtractor.ReadBody(html), Throws.Exception);
+        Assert.That(() => HtmlProcessor.ReadBody(html), Throws.Exception);
         
     }
 }

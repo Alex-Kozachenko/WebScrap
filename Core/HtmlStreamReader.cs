@@ -1,6 +1,6 @@
 using Core.Internal.HtmlProcessing;
 using static Core.Internal.HtmlProcessing.TagsLocator;
-using static Core.Internal.HtmlProcessing.Extractors.TextExtractor;
+using static Core.Internal.HtmlProcessing.Extractors.HtmlProcessor;
 
 namespace Core;
 
