@@ -1,5 +1,5 @@
-using Core.Css;
-using static Core.Css.CssTokenizer;
+using Core.Css.Tools;
+using static Core.Css.Tools.CssTokenizer;
 using static Core.Html.Tools.HtmlValidator;
 using static Core.Html.Tools.TagsNavigator;
 using static Core.Html.Reading.Text.HtmlTextProcessor;
