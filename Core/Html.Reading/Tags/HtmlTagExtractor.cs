@@ -1,9 +1,8 @@
-using static Core.Html.Reading.Tags.HtmlTagReader;
-using static Core.Html.Reading.Tags.HtmlTagKind;
-using Core.Common;
+using Core.Processors;
 
 namespace Core.Html.Reading.Tags;
 
+// TODO: delete.
 internal static class HtmlTagExtractor
 {
     /// <summary>
@@ -11,7 +10,7 @@ internal static class HtmlTagExtractor
     /// </summary>
     public static int GetEntireTagLength(ReadOnlySpan<char> html)
     {
-        var processor = new HtmlTagExtractorProcessor();
+        var processor = new TagsProcessor();
         processor.Run(html);
         return processor.Processed;
     }
@@ -21,12 +20,4 @@ internal static class HtmlTagExtractor
     /// </summary>
     public static ReadOnlySpan<char> ExtractEntireTag(ReadOnlySpan<char> html)
         => html[..GetEntireTagLength(html)]; // TODO: remove redundancy!
-
-    public static ReadOnlySpan<char> ExtractTagName(ReadOnlySpan<char> html) 
-        => GetHtmlTagKind(html) switch
-        {
-            Opening => html[1..html.IndexOfAny(' ', '>')],
-            Closing => html[2..html.IndexOf('>')],
-            _ => throw new NotImplementedException()
-        };
 }

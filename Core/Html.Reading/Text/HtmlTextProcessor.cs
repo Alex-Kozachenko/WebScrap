@@ -5,6 +5,8 @@ using static Core.Html.Reading.Tags.HtmlTagExtractor;
 
 namespace Core.Html.Reading.Text;
 
+
+// TODO: remove confusion between Core.Processors obj family.
 internal static class HtmlTextProcessor
 {
     public static ReadOnlySpan<char> Process(ReadOnlySpan<char> html)
