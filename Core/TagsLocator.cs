@@ -2,8 +2,9 @@ using Core.Css.Tools;
 using static Core.Css.Tools.CssTokenizer;
 using static Core.Html.Tools.HtmlValidator;
 using static Core.Html.Tools.TagsNavigator;
-using static Core.Html.Reading.Text.HtmlTextProcessor;
 using static Core.Html.Reading.Tags.HtmlTagReader;
+using static Core.Html.Reading.Tags.HtmlTagExtractor;
+using System.Collections.Immutable;
 
 namespace Core;
 
@@ -15,16 +16,22 @@ public static class TagsLocator
     /// Locates the html-tags by css-like string.
     /// </summary>
     /// <returns>
-    /// Plain html (inner text) for tags which has been found by the css-like selector.
+    /// Ranges for tags.
     /// </returns>
-    public static List<ArraySegment<char>> LocateTagsByCss(
+    public static ImmutableArray<Range> LocateTagRanges(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
         html = ToValidHtml(html);
-        List<ArraySegment<char>> result = [];
         var cssTokens = TokenizeCss(css);
+
+        List<Range> result = [];
+
+        // TODO: refactor.
         Stack<ArraySegment<char>> openedSuitableTags = [];
+        // TODO: refactor.
+        int processed = 0;
+        var originalRange = ..html.Length;
 
         while (html.Length is not 0)
         {
@@ -41,10 +48,9 @@ public static class TagsLocator
                     openedSuitableTags.Push(htmlTag.Name.ToArray());
                     if (openedSuitableTags.Count == cssTokens.Length)
                     {
-                        // HACK: redundant copying invoked.
-                        var body = Process(html).ToArray();
-                        var arraySegment = new ArraySegment<char>(body);
-                        result.Add(arraySegment);
+                        var bodyLength = GetTagLength(html);
+                        var bodyRange = processed..(processed + bodyLength);
+                        result.Add(bodyRange);
                     }
                 }
                 else
@@ -56,11 +62,12 @@ public static class TagsLocator
                     }
                 }
             }
-            
+
             var nextTagIndex = GetNextTagIndex(html[1..]) + 1;
+            processed += html[..nextTagIndex].Length;
             html = html[nextTagIndex..];
         }
 
-        return result;
+        return [.. result];
     }
 }

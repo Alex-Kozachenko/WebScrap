@@ -8,7 +8,7 @@ internal static class HtmlTagExtractor
     /// <summary>
     /// Reads html from beginning tag, until the beginning tag is closed.
     /// </summary>
-    public static ReadOnlySpan<char> ExtractEntireTag(ReadOnlySpan<char> html)
+    public static int GetTagLength(ReadOnlySpan<char> html)
     {
         Stack<ReadOnlyMemory<char>> tags = new();
         
@@ -24,8 +24,14 @@ internal static class HtmlTagExtractor
 
         } while (tags.Count is not 0);
         
-        return html[..processed];
+        return processed;
     }
+
+    /// <summary>
+    /// Reads html from beginning tag, until the beginning tag is closed.
+    /// </summary>
+    public static ReadOnlySpan<char> ExtractEntireTag(ReadOnlySpan<char> html)
+        => html[..GetTagLength(html)]; // TODO: remove redundancy!
     
     private static void StackHtmlTag(
         this HtmlTag htmlTag, 
