@@ -4,6 +4,8 @@ using static Core.Html.Reading.Tags.HtmlTagReader;
 using System.Collections.Immutable;
 using static Core.Html.Reading.Tags.HtmlTagKind;
 using static Core.Html.Reading.Tags.HtmlTagExtractor;
+using Core.Common;
+using Core.Html.Tools;
 
 namespace Core;
 
@@ -25,37 +27,35 @@ public static class TagsLocator
         var processor = new CssProcessor(css);
         List<Range> result = [];
         var processed = 0;
-        var originalRange = ..html.Length;
 
-        while (html.Length is not 0)
+        do
         {
-            // Prepare 
             // Process
-            Process(html, processor, processed, result);
+            Process(html[processed..], processor, processed, result);
+            
             // Proceed
-            var nextTagIndex = GetNextTagIndex(html[1..]) + 1;
-            processed += html[..nextTagIndex].Length;
-            html = html[nextTagIndex..];
-        }
+            processed++;
+            processed += TagsNavigator.GetNextTagIndex(html[processed..]);
+        } while (processed < html.Length);
 
         return [.. result];
     }
 
     private static void Process(
-        ReadOnlySpan<char> currentHtml, 
+        ReadOnlySpan<char> html, 
         CssProcessor processor,
         int processed,
         List<Range> result)
     {
-        var tagName = ExtractTagName(currentHtml);
-        switch (GetHtmlTagKind(currentHtml))
+        var tagName = ExtractTagName(html);
+        switch (GetHtmlTagKind(html))
         {
             case Opening: 
             {
                 processor.ProcessOpeningTag(tagName);
                 if (processor.IsCssCompleted)
                 {
-                    var tagLength = GetEntireTagLength(currentHtml);
+                    var tagLength = GetEntireTagLength(html);
                     var bodyRange = processed..(processed + tagLength);
                     result.Add(bodyRange);
                 }

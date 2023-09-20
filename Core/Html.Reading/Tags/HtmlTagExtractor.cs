@@ -1,10 +1,9 @@
-using static Core.Html.Tools.TagsNavigator;
 using static Core.Html.Reading.Tags.HtmlTagReader;
 using static Core.Html.Reading.Tags.HtmlTagKind;
+using Core.Common;
 
 namespace Core.Html.Reading.Tags;
 
-// HACK: Cyclomatics on TagsCounter!
 internal static class HtmlTagExtractor
 {
     /// <summary>
@@ -12,39 +11,9 @@ internal static class HtmlTagExtractor
     /// </summary>
     public static int GetEntireTagLength(ReadOnlySpan<char> html)
     {
-        var processed = 0;
-        var tagsCounter = new TagsCounter();
-        do {
-            // Prepare
-            processed += GetNextTagIndex(html[processed..]);
-
-            // Process
-            Process(html[processed..], tagsCounter);
-            
-            // Proceed
-            processed += GetInnerTextIndex(html[processed..]);
-
-        } while (tagsCounter.HasTags);
-        
-        return processed;
-    }
-
-    private static void Process(ReadOnlySpan<char> currentHtml, TagsCounter processor)
-    {
-        var tagName = ExtractTagName(currentHtml);
-        switch (GetHtmlTagKind(currentHtml))
-        {
-            case Opening: 
-            {
-                processor.ProcessOpeningTag(tagName);
-                break;
-            }
-            case Closing:
-            {
-                processor.ProcessClosingTag(tagName);
-                break;
-            }
-        }
+        var processor = new HtmlTagExtractorProcessor();
+        processor.Run(html);
+        return processor.Processed;
     }
 
     /// <summary>

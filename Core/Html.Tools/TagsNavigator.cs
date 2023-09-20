@@ -12,8 +12,8 @@ internal static class TagsNavigator
     internal static int GetInnerTextIndex(ReadOnlySpan<char> html)
         => html.IndexOf('<') switch
         {
-            0 => GetInnerTextIndex(html[1..]) + 1, // openingTagOffset 
-            _ => html.IndexOf('>') + 1 // closingTagOffset
+            0 => GetInnerTextIndex(html[1..]) + 1,
+            _ => html.IndexOf('>') + 1
         };
 
     internal static (int Begin, int End) GetTagRange(ReadOnlySpan<char> html)

@@ -1,11 +1,11 @@
-using Core.Css.Tools;
+using Core.Common;
+using Core.Css;
 using System.Collections.Immutable;
-using static Core.Css.Tools.CssTokenizer;
-using static Core.Html.Reading.Tags.HtmlTagExtractor;
+using static Core.Css.CssTokenizer;
 
 namespace Core;
 
-internal class CssProcessor(ReadOnlySpan<char> css)
+internal class CssProcessor(ReadOnlySpan<char> css) : IProcessor
 {
     private readonly Memory<char> lastTagName = new char[10];
     private int tagsMetCounter = 0;

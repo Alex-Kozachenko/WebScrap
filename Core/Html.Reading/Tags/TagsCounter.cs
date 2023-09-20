@@ -1,21 +1,18 @@
-using static Core.Html.Reading.Tags.HtmlTagExtractor;
+using Core.Common;
 
 namespace Core.Html.Reading.Tags;
 
-// HACK: Cyclomatics on HtmlTagExtractor!
-internal struct TagsCounter()
+internal struct TagsCounter() : IProcessor
 {
     Stack<ReadOnlyMemory<char>> tags = new();
     internal bool HasTags => tags.Count != 0;
 
-    internal void ProcessOpeningTag(ReadOnlySpan<char> tagName)
+    public void ProcessOpeningTag(ReadOnlySpan<char> tagName)
     {
-        // HACK: it's not designed to call ToArray
-        // need to push Span into stack somehow.
         tags.Push(tagName.ToArray());
     }
 
-    internal void ProcessClosingTag(ReadOnlySpan<char> tagName)
+    public void ProcessClosingTag(ReadOnlySpan<char> tagName)
     {
         var lastTagName = tags.Pop().Span;
         if (lastTagName.SequenceEqual(tagName) is not true)

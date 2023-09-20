@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace Core.Css.Tools;
+namespace Core.Css;
 
 internal static class CssTokenizer
 {
