@@ -1,60 +1,63 @@
 using static Core.Html.Tools.TagsNavigator;
 using static Core.Html.Reading.Tags.HtmlTagReader;
+using static Core.Html.Reading.Tags.HtmlTagKind;
 
 namespace Core.Html.Reading.Tags;
 
+// HACK: Cyclomatics on TagsCounter!
 internal static class HtmlTagExtractor
 {
     /// <summary>
     /// Reads html from beginning tag, until the beginning tag is closed.
     /// </summary>
-    public static int GetTagLength(ReadOnlySpan<char> html)
+    public static int GetEntireTagLength(ReadOnlySpan<char> html)
     {
-        Stack<ReadOnlyMemory<char>> tags = new();
-        
         var processed = 0;
-        
+        var tagsCounter = new TagsCounter();
         do {
+            // Prepare
             processed += GetNextTagIndex(html[processed..]);
 
-            ReadHtmlTag(html[processed..])
-                .StackHtmlTag(tags);
+            // Process
+            Process(html[processed..], tagsCounter);
             
+            // Proceed
             processed += GetInnerTextIndex(html[processed..]);
 
-        } while (tags.Count is not 0);
+        } while (tagsCounter.HasTags);
         
         return processed;
+    }
+
+    private static void Process(ReadOnlySpan<char> currentHtml, TagsCounter processor)
+    {
+        var tagName = ExtractTagName(currentHtml);
+        switch (GetHtmlTagKind(currentHtml))
+        {
+            case Opening: 
+            {
+                processor.ProcessOpeningTag(tagName);
+                break;
+            }
+            case Closing:
+            {
+                processor.ProcessClosingTag(tagName);
+                break;
+            }
+        }
     }
 
     /// <summary>
     /// Reads html from beginning tag, until the beginning tag is closed.
     /// </summary>
     public static ReadOnlySpan<char> ExtractEntireTag(ReadOnlySpan<char> html)
-        => html[..GetTagLength(html)]; // TODO: remove redundancy!
-    
-    private static void StackHtmlTag(
-        this HtmlTag htmlTag, 
-        Stack<ReadOnlyMemory<char>> tags)
-    {
-        if (htmlTag.IsOpening)
+        => html[..GetEntireTagLength(html)]; // TODO: remove redundancy!
+
+    public static ReadOnlySpan<char> ExtractTagName(ReadOnlySpan<char> html) 
+        => GetHtmlTagKind(html) switch
         {
-            // HACK: it's not designed to call ToArray
-            // need to push Span into stack somehow.
-            tags.Push(htmlTag.Name.ToArray());
-        }
-        else 
-        {
-            if (tags.Pop().Span.SequenceEqual(htmlTag.Name) is not true)
-            {
-                throw new InvalidOperationException($"""
-                    -----
-                    Incorrect tag met. 
-                    Expected: {tags.Peek()}, 
-                    Actual: {htmlTag.Name}. 
-                    -----
-                """);
-            }
-        }
-    }
+            Opening => html[1..html.IndexOfAny(' ', '>')],
+            Closing => html[2..html.IndexOf('>')],
+            _ => throw new NotImplementedException()
+        };
 }

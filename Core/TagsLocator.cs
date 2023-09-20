@@ -1,10 +1,9 @@
-using Core.Css.Tools;
-using static Core.Css.Tools.CssTokenizer;
 using static Core.Html.Tools.HtmlValidator;
 using static Core.Html.Tools.TagsNavigator;
 using static Core.Html.Reading.Tags.HtmlTagReader;
-using static Core.Html.Reading.Tags.HtmlTagExtractor;
 using System.Collections.Immutable;
+using static Core.Html.Reading.Tags.HtmlTagKind;
+using static Core.Html.Reading.Tags.HtmlTagExtractor;
 
 namespace Core;
 
@@ -23,51 +22,50 @@ public static class TagsLocator
         ReadOnlySpan<char> css)
     {
         html = ToValidHtml(html);
-        var cssTokens = TokenizeCss(css);
-
+        var processor = new CssProcessor(css);
         List<Range> result = [];
-
-        // TODO: refactor.
-        Stack<ArraySegment<char>> openedSuitableTags = [];
-        // TODO: refactor.
-        int processed = 0;
+        var processed = 0;
         var originalRange = ..html.Length;
 
         while (html.Length is not 0)
         {
-            // HACK: legit hell on earth.
-            var cssTag = openedSuitableTags.Count < cssTokens.Length
-                ? cssTokens[openedSuitableTags.Count]
-                : new CssToken();
-
-            var htmlTag = ReadHtmlTag(html);
-            if (htmlTag.Name.StartsWith(cssTag.Css.Span))
-            {
-                if (htmlTag.IsOpening)
-                {
-                    openedSuitableTags.Push(htmlTag.Name.ToArray());
-                    if (openedSuitableTags.Count == cssTokens.Length)
-                    {
-                        var bodyLength = GetTagLength(html);
-                        var bodyRange = processed..(processed + bodyLength);
-                        result.Add(bodyRange);
-                    }
-                }
-                else
-                {
-                    if (openedSuitableTags.Peek().Array!.SequenceEqual(
-                        htmlTag.Name.ToArray()))
-                    {
-                        openedSuitableTags.Pop();
-                    }
-                }
-            }
-
+            // Prepare 
+            // Process
+            Process(html, processor, processed, result);
+            // Proceed
             var nextTagIndex = GetNextTagIndex(html[1..]) + 1;
             processed += html[..nextTagIndex].Length;
             html = html[nextTagIndex..];
         }
 
         return [.. result];
+    }
+
+    private static void Process(
+        ReadOnlySpan<char> currentHtml, 
+        CssProcessor processor,
+        int processed,
+        List<Range> result)
+    {
+        var tagName = ExtractTagName(currentHtml);
+        switch (GetHtmlTagKind(currentHtml))
+        {
+            case Opening: 
+            {
+                processor.ProcessOpeningTag(tagName);
+                if (processor.IsCssCompleted)
+                {
+                    var tagLength = GetEntireTagLength(currentHtml);
+                    var bodyRange = processed..(processed + tagLength);
+                    result.Add(bodyRange);
+                }
+                break;
+            }
+            case Closing:
+            {
+                processor.ProcessClosingTag(tagName);
+                break;
+            }
+        }
     }
 }

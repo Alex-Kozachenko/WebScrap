@@ -1,3 +1,5 @@
+using static Core.Html.Tools.TagsNavigator;
+
 namespace Core.Html.Tools;
 
 internal static class HtmlValidator
@@ -6,13 +8,12 @@ internal static class HtmlValidator
     public static ReadOnlySpan<char> ToValidHtml(ReadOnlySpan<char> html)
     {
         html = html.TrimStart();
-        AssertHtmlStart(html);
+        AssertHtmlStart(GetTagRange(html).Begin);
         return html;
     }
 
-    private static void AssertHtmlStart(ReadOnlySpan<char> html)
+    private static void AssertHtmlStart(int openingTagIndex)
     {
-        var openingTagIndex = html.IndexOf('<');
         if (openingTagIndex is not 0)
         {
             var message = "Html should start with <";
