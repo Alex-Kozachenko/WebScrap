@@ -1,13 +1,11 @@
-using Core.Html.Reading.Tags;
-
 namespace Core.Processors;
 
 internal abstract class ProcessorBase
 {
     public int Processed { get; private set; }
-    public abstract bool IsDone { get; }
+    protected abstract bool IsDone { get; }
 
-    public void Run(ReadOnlySpan<char> html)
+    protected void Run(ReadOnlySpan<char> html)
     {
         do
         {
@@ -18,9 +16,19 @@ internal abstract class ProcessorBase
         } while (IsDone is false);
     }
 
-    public abstract int Prepare(ReadOnlySpan<char> html);
+    protected abstract int Prepare(ReadOnlySpan<char> html);
 
-    public void Process(ReadOnlySpan<char> html)
+    protected abstract int Proceed(ReadOnlySpan<char> html);
+
+    protected abstract void ProcessOpeningTag(
+        ReadOnlySpan<char> html,
+        ReadOnlySpan<char> tagName);
+
+    protected abstract void ProcessClosingTag(
+        ReadOnlySpan<char> html,
+        ReadOnlySpan<char> tagName);
+
+    private void Process(ReadOnlySpan<char> html)
     {
         var tagName = ExtractTagName(html);
         var kind = GetHtmlTagKind(html);
@@ -33,16 +41,6 @@ internal abstract class ProcessorBase
             ProcessClosingTag(html, tagName);
         }
     }
-
-    public abstract int Proceed(ReadOnlySpan<char> html);
-
-    protected abstract void ProcessOpeningTag(
-        ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tagName);
-
-    protected abstract void ProcessClosingTag(
-        ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tagName);
 
     private static ReadOnlySpan<char> ExtractTagName(ReadOnlySpan<char> html) 
         => GetHtmlTagKind(html) switch

@@ -1,40 +1,49 @@
 using Core.Css;
-using Core.Html.Reading.Tags;
 using Core.Html.Tools;
 using System.Collections.Immutable;
+using static Core.Processors.TagsProcessor;
 
 namespace Core.Processors;
 
-internal class CssProcessor(ReadOnlySpan<char> css, int htmlLength) : ProcessorBase
+internal class CssProcessor(
+    ReadOnlySpan<char> css,
+    int htmlLength)
+    : ProcessorBase
 {
-    private readonly ImmutableArray<CssToken> cssTokens = CssTokenizer.TokenizeCss(css);
-    private readonly int htmlLength = htmlLength;
-    private List<Range> ranges = new();
-    private readonly Memory<char> lastTagName = new char[10];
+    private readonly ImmutableArray<CssToken> expectedTags 
+        = CssTokenizer.TokenizeCss(css);
+    private readonly List<Range> ranges = new();
     private int tagsMetCounter = 0;
-    
-    public ImmutableArray<Range> Ranges => ranges.ToImmutableArray();
-    public override bool IsDone => Processed >= htmlLength;
+    protected override bool IsDone => Processed >= htmlLength;
 
-    public override int Prepare(ReadOnlySpan<char> html) => 0;
+    public static ImmutableArray<Range> CalculateRanges(
+        ReadOnlySpan<char> html,
+        ReadOnlySpan<char> css)
+    {
+        html = HtmlValidator.ToValidHtml(html);
+        var processor = new CssProcessor(css, html.Length);
+        processor.Run(html);
+        return [.. processor.ranges];
+    }
 
-    public override int Proceed(ReadOnlySpan<char> html)
+    protected override int Prepare(ReadOnlySpan<char> html) => 0;
+
+    protected override int Proceed(ReadOnlySpan<char> html)
         => TagsNavigator.GetNextTagIndex(html[1..]) + 1;
 
     protected override void ProcessOpeningTag(
-        ReadOnlySpan<char> html, 
+        ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
         if (IsCssTagMet(tagName))
         {
-            SetLastTagName(tagName);
             tagsMetCounter++;
         }
 
-        var isCssCompleted = tagsMetCounter == cssTokens.Length;
+        var isCssCompleted = tagsMetCounter == expectedTags.Length;
         if (isCssCompleted)
         {
-            var tagLength = HtmlTagExtractor.GetEntireTagLength(html);
+            var tagLength = GetEntireTagLength(html);
             var bodyRange = Processed..(Processed + tagLength);
             ranges.Add(bodyRange);
         }
@@ -44,31 +53,24 @@ internal class CssProcessor(ReadOnlySpan<char> css, int htmlLength) : ProcessorB
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
-        if (IsCssTagMet(tagName) 
-            && IsLastTagEqualTo(tagName))
+        if (IsCssTagMet(tagName))
         {
             tagsMetCounter--;
-        }        
-    }
-
-    private bool IsLastTagEqualTo(ReadOnlySpan<char> tagName)
-    {
-        var trimmed = lastTagName.TrimEnd((char)0);
-        return trimmed.Span.SequenceEqual(tagName);
+        }
     }
 
     private bool IsCssTagMet(ReadOnlySpan<char> tagName)
     {
-        var cssTag = tagsMetCounter < cssTokens.Length
-            ? cssTokens[tagsMetCounter]
-            : new CssToken();
+        var index = tagsMetCounter switch 
+        {
+            <0 => throw new ArgumentOutOfRangeException(
+                $"{nameof(tagsMetCounter)} = {tagsMetCounter}"),
+            var i when i < expectedTags.Length
+               => i,
+            _ => expectedTags.Length - 1,
+        };
 
+        var cssTag = expectedTags[index];
         return tagName.StartsWith(cssTag.Css.Span);
-    }
-
-    private void SetLastTagName(ReadOnlySpan<char> tagName)
-    {
-        lastTagName.Span.Clear();
-        tagName.CopyTo(lastTagName.Span);
     }
 }

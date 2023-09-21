@@ -1,7 +1,7 @@
 using System.Text;
 using static Core.Html.Tools.HtmlValidator;
 using static Core.Html.Tools.TagsNavigator;
-using static Core.Html.Reading.Tags.HtmlTagExtractor;
+using Core.Processors;
 
 namespace Core.Html.Reading.Text;
 
@@ -9,10 +9,11 @@ namespace Core.Html.Reading.Text;
 // TODO: remove confusion between Core.Processors obj family.
 internal static class HtmlTextProcessor
 {
-    public static ReadOnlySpan<char> Process(ReadOnlySpan<char> html)
+    public static ReadOnlySpan<char> Process(
+        ReadOnlySpan<char> html)
     {
         html = ToValidHtml(html);
-        html = ExtractEntireTag(html);
+        html = TagsProcessor.ExtractEntireTag(html);
         var sb = new StringBuilder();
         Process(html, sb);
         return sb.ToString();

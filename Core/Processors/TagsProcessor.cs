@@ -4,14 +4,30 @@ namespace Core.Processors;
 
 internal class TagsProcessor : ProcessorBase
 {
-    private Stack<ReadOnlyMemory<char>> tags = new();
-    public override bool IsDone => tags.Count is 0;
+    private readonly Stack<ReadOnlyMemory<char>> tags = new();
+    protected override bool IsDone => tags.Count is 0;
 
-    public override int Prepare(ReadOnlySpan<char> html)
+    public static int GetEntireTagLength(ReadOnlySpan<char> html)
+    {
+        var processor = new TagsProcessor();
+        processor.Run(html);
+        return processor.Processed;
+    }
+
+    public static ReadOnlySpan<char> ExtractEntireTag(ReadOnlySpan<char> html)
+    {
+        var processor = new TagsProcessor();
+        processor.Run(html);
+        return html[..processor.Processed];
+    }
+
+    protected override int Prepare(ReadOnlySpan<char> html)
         => TagsNavigator.GetNextTagIndex(html);
 
-    public override int Proceed(ReadOnlySpan<char> html)
-        => TagsNavigator.GetInnerTextIndex(html);
+    protected override int Proceed(ReadOnlySpan<char> html)
+    {
+        return TagsNavigator.GetInnerTextIndex(html);
+    }
 
     protected override void ProcessOpeningTag(
         ReadOnlySpan<char> html, 
