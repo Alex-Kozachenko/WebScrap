@@ -22,7 +22,4 @@ internal static class TagsNavigator
             0 => GetInnerTextIndex(html[1..]) + 1,
             _ => html.IndexOf('>') + 1
         };
-
-    internal static (int Begin, int End) GetTagRange(ReadOnlySpan<char> html)
-        => (html.IndexOf('<'), html.IndexOf('>'));
 }

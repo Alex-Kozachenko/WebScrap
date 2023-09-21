@@ -4,7 +4,7 @@ using static Core.Tests.TestHelpers.IsHelpers;
 namespace Core.Processors.Tests;
 
 [TestFixture]
-public class CssLocatorTests
+public class CssProcessorTests
 {
     [Test]
     public void CalculateRanges_ShouldWork()
@@ -70,6 +70,7 @@ public class CssLocatorTests
         Assert.That(actual, EquivalentTo(expected));
     }
 
+    [Test]
     public void CalculateRanges_ShouldReturn_InnerText()
     {
         var css = "main>div>p";

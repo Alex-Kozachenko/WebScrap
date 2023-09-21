@@ -6,8 +6,6 @@ namespace Core.Processors.Tests;
 [TestFixture]
 public class TagsProcessorTests
 {
-    private TagsProcessor processor = new();
-
     [Test]
     public void ExtractEntireTag_SingleTag_ShouldWork()
     {

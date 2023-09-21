@@ -1,25 +1,28 @@
+using Core.Processors.Common;
 using System.Text;
-using static Core.Tools.Html.HtmlValidator;
 using static Core.Tools.Html.TagsNavigator;
 
 namespace Core.Processors;
 
-internal class TextProcessor(int htmlLength) : ProcessorBase
+
+/// <summary>
+/// Extracts plain text from html, 
+/// removing any technical chars inside.
+/// Basically, stripping the html.
+/// </summary>
+internal class HtmlStripProcessor(int htmlLength) : ProcessorBase
 {
     private Queue<Range> ranges = new();
     protected override bool IsDone => Processed >= htmlLength;
 
     public static ReadOnlySpan<char> ExtractText(ReadOnlySpan<char> html)
     {
-        var processor = new TextProcessor(html.Length);
+        var processor = new HtmlStripProcessor(html.Length);
         processor.Run(html);
         return processor.ExtractString(html);
     }
 
-    protected override int Prepare(ReadOnlySpan<char> html)
-    {
-        return 0;
-    }
+    protected override int Prepare(ReadOnlySpan<char> html) => 0;
 
     protected override int Proceed(ReadOnlySpan<char> html)
     {

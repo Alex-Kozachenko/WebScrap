@@ -1,9 +1,9 @@
-using static Core.Processors.TextProcessor;
+using static Core.Processors.HtmlStripProcessor;
 
 namespace Core.Processors.Tests;
 
 [TestFixture]
-public class TextProcessorTests
+public class HtmlStripProcessorTests
 {
     [TestCase("<p>12</p>","12")]
     public void ExtractText_ShouldWork(string html, string expected)

@@ -1,3 +1,4 @@
+using Core.Processors.Common;
 using Core.Tools.Css;
 using Core.Tools.Html;
 using System.Collections.Immutable;
@@ -5,6 +6,11 @@ using static Core.Processors.TagsProcessor;
 
 namespace Core.Processors;
 
+/// <summary>
+/// Processes the html with provided css-like-selectors,
+/// and returns detected html which conforms 
+/// the css from the parameter.
+/// </summary>
 internal class CssProcessor(
     ReadOnlySpan<char> css,
     int htmlLength)
@@ -20,7 +26,6 @@ internal class CssProcessor(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
-        html = HtmlValidator.ToValidHtml(html);
         var processor = new CssProcessor(css, html.Length);
         processor.Run(html);
         return [.. processor.ranges];

@@ -1,7 +1,15 @@
+using Core.Processors.Common;
 using Core.Tools.Html;
 
 namespace Core.Processors;
 
+/// <summary>
+/// Processes one html tag with its children.
+/// </summary>
+/// <remarks>
+/// - Knows when to stop, 
+/// so it will ignore anything beyond targeted tag.
+/// </remarks>
 internal class TagsProcessor : ProcessorBase
 {
     private readonly Stack<ReadOnlyMemory<char>> tags = new();

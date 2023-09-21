@@ -1,5 +1,15 @@
-namespace Core.Processors;
+namespace Core.Processors.Common;
 
+/// <summary>
+/// Represents a process of linear html-traversing,
+/// with help of <see cref="Processed"/> property.
+/// </summary>
+/// <remarks>
+/// - It is concerned about any html tag, 
+/// reacting on opening and closing tag as well.
+/// - Highly depends on <see cref="Processed"/> property value, 
+/// which is controlled by derived classes.
+/// </remarks>
 internal abstract class ProcessorBase
 {
     public int Processed { get; private set; }
@@ -59,13 +69,5 @@ internal abstract class ProcessorBase
             ('<', _) => HtmlTagKind.Opening,
             _ => throw new ArgumentException($"Html doesnt start with tag. {html}")
         };
-    }
-
-
-    // TODO: remove.
-    private enum HtmlTagKind
-    {
-        Opening,
-        Closing
     }
 }
