@@ -1,6 +1,7 @@
 using NUnit.Framework.Internal;
-using Core.Processors;
 using static Core.Processors.TagsProcessor;
+
+namespace Core.Processors.Tests;
 
 [TestFixture]
 public class TagsProcessorTests

@@ -1,6 +1,6 @@
-using static Core.Html.Tools.TagsNavigator;
+using static Core.Tools.Html.TagsNavigator;
 
-namespace Core.Html.Tools;
+namespace Core.Tools.Html;
 
 internal static class HtmlValidator
 {

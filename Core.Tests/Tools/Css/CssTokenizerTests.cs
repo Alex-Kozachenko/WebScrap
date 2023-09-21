@@ -1,4 +1,6 @@
-using static Core.Css.CssTokenizer;
+using static Core.Tools.Css.CssTokenizer;
+
+namespace Core.Tools.Css.Tests;
 
 [TestFixture]
 public class CssTokenizerTests

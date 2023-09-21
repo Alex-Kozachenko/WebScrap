@@ -1,4 +1,6 @@
-using static Core.Html.Tools.TagsNavigator;
+using static Core.Tools.Html.TagsNavigator;
+
+namespace Core.Tools.Html.Tests;
 
 [TestFixture]
 public class TagsNavigatorTests

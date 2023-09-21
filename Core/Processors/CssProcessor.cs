@@ -1,5 +1,5 @@
-using Core.Css;
-using Core.Html.Tools;
+using Core.Tools.Css;
+using Core.Tools.Html;
 using System.Collections.Immutable;
 using static Core.Processors.TagsProcessor;
 

@@ -1,4 +1,4 @@
-using Core.Html.Tools;
+using Core.Tools.Html;
 
 namespace Core.Processors;
 

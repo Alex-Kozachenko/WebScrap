@@ -1,6 +1,8 @@
 using static Core.Processors.CssProcessor;
 using static Core.Tests.TestHelpers.IsHelpers;
 
+namespace Core.Processors.Tests;
+
 [TestFixture]
 public class CssLocatorTests
 {

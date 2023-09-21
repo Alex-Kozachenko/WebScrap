@@ -1,7 +1,14 @@
-namespace Core.Html.Tools;
+namespace Core.Tools.Html;
 
 internal static class TagsNavigator
 {
+    internal static int GetNextTagIndexSkipCurrent(ReadOnlySpan<char> html)
+        => html.IndexOf('<') switch
+        {
+            0 => GetNextTagIndex(html[1..]) +1,
+            _ => GetNextTagIndex(html)
+        };
+
     internal static int GetNextTagIndex(ReadOnlySpan<char> html)
         => html.IndexOf('<') switch
         {
