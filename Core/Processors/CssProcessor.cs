@@ -10,14 +10,14 @@ namespace Core.Processors;
 /// and returns detected html which conforms 
 /// the css from the parameter.
 /// </summary>
-internal class CssProcessor(
+public class CssProcessor(
     ReadOnlySpan<char> css,
     int htmlLength)
     : ProcessorBase
 {
     private readonly ImmutableArray<CssToken> expectedTags
         = CssTokenizer.TokenizeCss(css);
-    private readonly List<int> tagIndexes = new();
+    private readonly List<int> tagIndexes = [];
     private int tagsMetCounter = 0;
     protected override bool IsDone => Processed >= htmlLength;
 
@@ -30,7 +30,8 @@ internal class CssProcessor(
         return [.. processor.tagIndexes];
     }
 
-    protected override int Prepare(ReadOnlySpan<char> html) => 0;
+    protected override int Prepare(ReadOnlySpan<char> html) 
+        => 0;
 
     protected override int Proceed(ReadOnlySpan<char> html)
         => TagsNavigator.GetNextTagIndex(html[1..]) + 1;
@@ -39,16 +40,13 @@ internal class CssProcessor(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
-        if (IsCssTagMet(tagName))
+        if (!IsCssTagMet(tagName))
         {
-            tagsMetCounter++;
-
-            var isCssCompleted = tagsMetCounter == expectedTags.Length;
-            if (isCssCompleted)
-            {
-                tagIndexes.Add(Processed);
-            }
+            return;
         }
+        tagsMetCounter++;
+        TryProcessCompletedCss();
+        
     }
 
     protected override void ProcessClosingTag(
@@ -58,6 +56,14 @@ internal class CssProcessor(
         if (IsCssTagMet(tagName))
         {
             tagsMetCounter--;
+        }
+    }
+
+    private void TryProcessCompletedCss()
+    {
+        if (tagsMetCounter == expectedTags.Length)
+        {
+            tagIndexes.Add(Processed);
         }
     }
 

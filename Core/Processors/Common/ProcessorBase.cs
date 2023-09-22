@@ -10,7 +10,7 @@ namespace Core.Processors.Common;
 /// - Highly depends on <see cref="Processed"/> property value, 
 /// which is controlled by derived classes.
 /// </remarks>
-internal abstract class ProcessorBase
+public abstract class ProcessorBase
 {
     public int Processed { get; private set; }
     protected abstract bool IsDone { get; }

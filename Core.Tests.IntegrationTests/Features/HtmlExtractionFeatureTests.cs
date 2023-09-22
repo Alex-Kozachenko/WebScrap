@@ -1,3 +1,4 @@
+using Core.Processors;
 using static Core.IntegrationTests.TestHelpers.IsHelpers;
 
 namespace Core.Features.IntegrationTests;

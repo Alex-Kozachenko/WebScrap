@@ -4,15 +4,14 @@ using static Core.Tools.Html.TagsNavigator;
 
 namespace Core.Processors;
 
-
 /// <summary>
 /// Extracts plain text from html, 
 /// removing any technical chars inside.
 /// Basically, stripping the html.
 /// </summary>
-internal class HtmlStripProcessor(int htmlLength) : ProcessorBase
+public class HtmlStripProcessor(int htmlLength) : ProcessorBase
 {
-    private Queue<Range> ranges = new();
+    private readonly Queue<Range> ranges = [];
     protected override bool IsDone => Processed >= htmlLength;
 
     public static ReadOnlySpan<char> ExtractText(ReadOnlySpan<char> html)
@@ -22,7 +21,8 @@ internal class HtmlStripProcessor(int htmlLength) : ProcessorBase
         return processor.ExtractString(html);
     }
 
-    protected override int Prepare(ReadOnlySpan<char> html) => 0;
+    protected override int Prepare(ReadOnlySpan<char> html) 
+        => 0;
 
     protected override int Proceed(ReadOnlySpan<char> html)
     {

@@ -10,7 +10,7 @@ namespace Core.Processors;
 /// - Knows when to stop, 
 /// so it will ignore anything beyond targeted tag.
 /// </remarks>
-internal class TagsProcessor : ProcessorBase
+public class TagsProcessor : ProcessorBase
 {
     private readonly Stack<ReadOnlyMemory<char>> tags = new();
     protected override bool IsDone => tags.Count is 0;
