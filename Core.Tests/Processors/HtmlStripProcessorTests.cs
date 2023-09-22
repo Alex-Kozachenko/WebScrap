@@ -14,7 +14,7 @@ public class HtmlStripProcessorTests
 
     [TestCase("12<p>34</p>")]
     [TestCase("12</p>34")]
-    public void ExtractText_ShouldThrow(string html)
+    public void ExtractText_ShouldFail(string html)
     {
         Assert.That(() => ExtractText(html), Throws.Exception);        
     }

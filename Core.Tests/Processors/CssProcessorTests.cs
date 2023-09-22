@@ -1,90 +1,92 @@
 using static Core.Processors.CssProcessor;
-using static Core.Tests.TestHelpers.IsHelpers;
 
 namespace Core.Processors.Tests;
 
 [TestFixture]
 public class CssProcessorTests
 {
-    [Test]
-    public void CalculateRanges_ShouldWork()
+
+    [TestCase]
+    public void CalculateTagIndexes_WithMultipleTags_ShouldReturn_MultipleIndexes()
     {
-        var css = "main>div>p";
-        var html = """
-        <main>
-            <div>
-                <p> One </p>
-            </div>
-        </main>
-        """;
-
-        var expected = "<p> One </p>";
-
-        var range = CalculateRanges(html, css).First();
-        var actual = html[range];
-
-        Assert.That(actual, Is.EqualTo(expected));
+        var css = "p";
+        var (html, pointers) = (
+            "<p>__</p>__<p>__", 
+            "^          ^");
+        var expected = PointersToIndexes(pointers);
+        var result = CalculateTagIndexes(html, css);
+        Assert.That(result, Is.EquivalentTo(expected));
     }
 
-    [Test]
-    public void CalculateRanges_ShouldWork_WhenSuccessfullBranch_IsInterrupted()
+    [TestCase(
+        "<p>__</p>__<p>__",
+        "")]
+    [TestCase(
+        "<div><p>_",
+        "     ^")]
+    [TestCase(
+        "<div><p>_<p>_",
+        "     ^")]
+    [TestCase(
+        "<div>_<a></a>_<p>_",
+        "              ^")]
+    [TestCase(
+        "<div><aside><p>_",
+        "")]
+    [TestCase(
+        "<div><div><p>_",
+        "          ^")]
+    [TestCase(
+        "<div></div>_<p>_",
+        "")]
+    [TestCase(
+        "<div>_<div></div>_<p>_",
+        "                  ^")]
+    public void CalculateTagIndexes_WithComplexCss_ShouldReturn_MultipleIndexes(
+        string html,
+        string pointers)
     {
-        var css = "main>div>p";
-        var html = """
-        <main>
-            <p>
-            </p>
-            <div>
-                <span> Nonsense </span>
-                <p> One </p>
-            </div>
-        </main>
-        """;
-        var expected = "<p> One </p>";
-
-        var range = CalculateRanges(html, css).First();
-        var actual = html[range];
-        Assert.That(actual, Is.EqualTo(expected));
+        var css = "div>p";
+        var expected = PointersToIndexes(pointers);
+        var result = CalculateTagIndexes(html, css);
+        Assert.That(result, Is.EquivalentTo(expected));
     }
 
-    [Test]
-    public void CalculateRanges_ShouldWork_OnMultipleBranches()
-    {
-        var css = "main>div>p";
-        var html = """
-        <main>
-            <br />
-            <div>
-                <p>One</p>
-            </div>
-            <br />
-            <div>
-                <p>Two</p>
-            </div>
-        </main>
-        """;
-        string[] expected = ["<p>One</p>","<p>Two</p>"];
 
-        var ranges = CalculateRanges(html, css);
-        var actual = ranges.Select(r => html[r]).ToArray();
-        Assert.That(actual, EquivalentTo(expected));
+
+    [TestCase]
+    public void CalculateTagIndexes_WithSingleTag_ShouldReturn_SingleIndex()
+    {
+        var css = "p";
+        var html = "<p>__</p>";
+        var expected = 0;
+        var result = CalculateTagIndexes(html, css).First();
+        Assert.That(result, Is.EqualTo(expected));
     }
 
-    [Test]
-    public void CalculateRanges_ShouldReturn_InnerText()
+    [TestCase("_____<p></p>")]
+    [TestCase("p>__<p>")]
+    [TestCase("__</p>__" )]
+    public void CalculateTagIndexes_IncorrectHtml_ShouldFail(
+        string sample)
     {
-        var css = "main>div>p";
-        var html = """
-        <main>
-            <div>
-                <p>One cup of <strong>a caffeine</strong> for a <i>good</i> start! </p>
-            </div>
-        </main>
-        """;
-        var expected = "<p>One cup of <strong>a caffeine</strong> for a <i>good</i> start! </p>";
+        var css = "p";
+        Assert.That(
+            () => CalculateTagIndexes(sample, css), 
+            Throws.ArgumentException);
+    }
 
-        var range = CalculateRanges(html, css).First();
-        var actual = html[range];
-        Assert.That(actual, Is.EqualTo(expected));
+    private static int[] PointersToIndexes(ReadOnlySpan<char> pointers)
+    {
+        var result = new List<int>();
+        for (var i = 0; i < pointers.Length; i++)
+        {
+            var ch = pointers[i];
+            if (ch == '^')
+            {
+                result.Add(i);
+            }
+        }
+        return [..result];
     }
 }

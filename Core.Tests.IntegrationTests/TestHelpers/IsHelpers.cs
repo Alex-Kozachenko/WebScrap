@@ -1,6 +1,6 @@
 using NUnit.Framework.Constraints;
 
-namespace Core.Tests.TestHelpers;
+namespace Core.IntegrationTests.TestHelpers;
 
 internal static class IsHelpers
 {

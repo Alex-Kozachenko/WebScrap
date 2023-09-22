@@ -2,7 +2,6 @@ using Core.Processors.Common;
 using Core.Tools.Css;
 using Core.Tools.Html;
 using System.Collections.Immutable;
-using static Core.Processors.TagsProcessor;
 
 namespace Core.Processors;
 
@@ -16,19 +15,19 @@ internal class CssProcessor(
     int htmlLength)
     : ProcessorBase
 {
-    private readonly ImmutableArray<CssToken> expectedTags 
+    private readonly ImmutableArray<CssToken> expectedTags
         = CssTokenizer.TokenizeCss(css);
-    private readonly List<Range> ranges = new();
+    private readonly List<int> tagIndexes = new();
     private int tagsMetCounter = 0;
     protected override bool IsDone => Processed >= htmlLength;
 
-    public static ImmutableArray<Range> CalculateRanges(
+    public static ImmutableArray<int> CalculateTagIndexes(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
         var processor = new CssProcessor(css, html.Length);
         processor.Run(html);
-        return [.. processor.ranges];
+        return [.. processor.tagIndexes];
     }
 
     protected override int Prepare(ReadOnlySpan<char> html) => 0;
@@ -43,14 +42,12 @@ internal class CssProcessor(
         if (IsCssTagMet(tagName))
         {
             tagsMetCounter++;
-        }
 
-        var isCssCompleted = tagsMetCounter == expectedTags.Length;
-        if (isCssCompleted)
-        {
-            var tagLength = GetEntireTagLength(html);
-            var bodyRange = Processed..(Processed + tagLength);
-            ranges.Add(bodyRange);
+            var isCssCompleted = tagsMetCounter == expectedTags.Length;
+            if (isCssCompleted)
+            {
+                tagIndexes.Add(Processed);
+            }
         }
     }
 
@@ -66,9 +63,9 @@ internal class CssProcessor(
 
     private bool IsCssTagMet(ReadOnlySpan<char> tagName)
     {
-        var index = tagsMetCounter switch 
+        var index = tagsMetCounter switch
         {
-            <0 => throw new ArgumentOutOfRangeException(
+            < 0 => throw new ArgumentOutOfRangeException(
                 $"{nameof(tagsMetCounter)} = {tagsMetCounter}"),
             var i when i < expectedTags.Length
                => i,
