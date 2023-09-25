@@ -1,7 +1,7 @@
 using WebScrap.Processors.Common;
-using WebScrap.Tools.Css;
 using WebScrap.Tools.Html;
 using System.Collections.Immutable;
+using WebScrap.Processors.CssProcessorListeners;
 
 namespace WebScrap.Processors;
 
@@ -15,11 +15,11 @@ public class CssProcessor(
     int htmlLength)
     : ProcessorBase
 {
-    private readonly ImmutableArray<CssToken> expectedTags
-        = CssTokenizer.TokenizeCss(css);
     private readonly List<int> tagIndexes = [];
-    private readonly Stack<string> traversedTags = new();
-    private readonly Stack<string> processedTags = new();
+    private readonly ListenerBase[] listeners = [
+        new ProcessedTagsListener(css),
+        new TraversedTagsListener(),
+    ];
     protected override bool IsDone => Processed >= htmlLength;
 
     public static ImmutableArray<int> CalculateTagIndexes(
@@ -31,7 +31,7 @@ public class CssProcessor(
         return [.. processor.tagIndexes];
     }
 
-    protected override int Prepare(ReadOnlySpan<char> html) 
+    protected override int Prepare(ReadOnlySpan<char> html)
         => 0;
 
     protected override int Proceed(ReadOnlySpan<char> html)
@@ -46,37 +46,41 @@ public class CssProcessor(
             return;
         }
 
-        traversedTags.Push(tagName.ToString());
-        if (IsCssTagMet(tagName))
-        {
-            processedTags.Push(tagName.ToString());
-            TryProcessCompletedCss();
-        }
+        ListenerBase.ProcessOpeningTag(listeners, tagName);
+        TryProcessCompletedCss(tagName);
     }
 
     protected override void ProcessClosingTag(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
-        if (IsCssTagMet(tagName))
-        {
-            processedTags.Pop();
-        }
-        traversedTags.Pop();
+        ListenerBase.ProcessClosingTag(listeners, tagName);
     }
 
-    private void TryProcessCompletedCss()
+    private void TryProcessCompletedCss(ReadOnlySpan<char> tagName)
     {
-        if (processedTags.Count == expectedTags.Length)
+        var processedTagsListener = listeners.OfType<ProcessedTagsListener>().First();
+        var traversedTagsListener = listeners.OfType<TraversedTagsListener>().First();
+
+        if (processedTagsListener.IsCssTagMet(tagName) is false)
         {
-            if (EndsWith(traversedTags, processedTags))
-            {
-                tagIndexes.Add(Processed);
-            }
+            return;
+        }
+
+        if (processedTagsListener.IsCompletedCssMet() is false)
+        { 
+            return; 
+        }
+
+        if (EndsWith(
+            traversedTagsListener.TraversedTags,
+            processedTagsListener.ProcessedTags))
+        {
+            tagIndexes.Add(Processed);
         }
     }
 
-    private bool EndsWith(Stack<string> bigStack, Stack<string> subStack)
+    private static bool EndsWith(Stack<string> bigStack, Stack<string> subStack)
     {
         if (subStack.Count > bigStack.Count)
         {
@@ -95,23 +99,6 @@ public class CssProcessor(
         }
 
         return true;
-    }
-
-    private bool IsCssTagMet(ReadOnlySpan<char> tagName)
-    {
-        // TODO: extract concerns. Too many specific fields.
-        var lastProcessedTagIndex = processedTags.Count;
-        var index = lastProcessedTagIndex switch
-        {
-            < 0 => throw new ArgumentOutOfRangeException(
-                $"{nameof(lastProcessedTagIndex)} = {lastProcessedTagIndex}"),
-            var i when i < expectedTags.Length
-               => i,
-            _ => expectedTags.Length - 1,
-        };
-
-        var cssTag = expectedTags[index];
-        return tagName.StartsWith(cssTag.Css.Span);
     }
 
     private static bool IsSelfClosingTag(ReadOnlySpan<char> tagName)
