@@ -31,11 +31,11 @@ public class CssProcessorTests
         "<div>_<a></a>_<p>_",
         "              ^")]
     [TestCase(
-        "<div><div><p>_",
-        "          ^")]
-    [TestCase(
         "<div>_<div></div>_<p>_",
         "                  ^")]
+    [TestCase(
+        "<div><div><p>_",
+        "          ^")]
     public void CalculateTagIndexes_WithComplexCss_ShouldReturn_MultipleIndexes(
         string html,
         string pointers)
@@ -48,7 +48,8 @@ public class CssProcessorTests
 
     [TestCase("<div><aside><p>_")]
     [TestCase("<div></div>_<p>_")]
-    public void CalculateTagIndexes_UnrecognizedStructure_ShouldReturn_Empty(string html)
+    
+    public void CalculateTagIndexes_DirectChildMissing_ShouldReturn_Empty(string html)
     {
         var css = "div>p";
         var result = CalculateTagIndexes(html, css);

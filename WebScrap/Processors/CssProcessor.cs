@@ -18,7 +18,8 @@ public class CssProcessor(
     private readonly ImmutableArray<CssToken> expectedTags
         = CssTokenizer.TokenizeCss(css);
     private readonly List<int> tagIndexes = [];
-    private int tagsMetCounter = 0;
+    private readonly Stack<string> traversedTags = new();
+    private readonly Stack<string> processedTags = new();
     protected override bool IsDone => Processed >= htmlLength;
 
     public static ImmutableArray<int> CalculateTagIndexes(
@@ -40,13 +41,17 @@ public class CssProcessor(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
-        if (!IsCssTagMet(tagName))
+        if (IsSelfClosingTag(tagName))
         {
             return;
         }
-        tagsMetCounter++;
-        TryProcessCompletedCss();
-        
+
+        traversedTags.Push(tagName.ToString());
+        if (IsCssTagMet(tagName))
+        {
+            processedTags.Push(tagName.ToString());
+            TryProcessCompletedCss();
+        }
     }
 
     protected override void ProcessClosingTag(
@@ -55,24 +60,51 @@ public class CssProcessor(
     {
         if (IsCssTagMet(tagName))
         {
-            tagsMetCounter--;
+            processedTags.Pop();
         }
+        traversedTags.Pop();
     }
 
     private void TryProcessCompletedCss()
     {
-        if (tagsMetCounter == expectedTags.Length)
+        if (processedTags.Count == expectedTags.Length)
         {
-            tagIndexes.Add(Processed);
+            if (EndsWith(traversedTags, processedTags))
+            {
+                tagIndexes.Add(Processed);
+            }
         }
+    }
+
+    private bool EndsWith(Stack<string> bigStack, Stack<string> subStack)
+    {
+        if (subStack.Count > bigStack.Count)
+        {
+            return false;
+        }
+
+        // HACK: a ton.
+        var _bigStack = new Stack<string>(bigStack.Reverse());
+        var _subStack = new Stack<string>(subStack.Reverse());
+        while (_subStack.Count != 0)
+        {
+            if (!_subStack.Pop().SequenceEqual(_bigStack.Pop()))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private bool IsCssTagMet(ReadOnlySpan<char> tagName)
     {
-        var index = tagsMetCounter switch
+        // TODO: extract concerns. Too many specific fields.
+        var lastProcessedTagIndex = processedTags.Count;
+        var index = lastProcessedTagIndex switch
         {
             < 0 => throw new ArgumentOutOfRangeException(
-                $"{nameof(tagsMetCounter)} = {tagsMetCounter}"),
+                $"{nameof(lastProcessedTagIndex)} = {lastProcessedTagIndex}"),
             var i when i < expectedTags.Length
                => i,
             _ => expectedTags.Length - 1,
@@ -81,4 +113,7 @@ public class CssProcessor(
         var cssTag = expectedTags[index];
         return tagName.StartsWith(cssTag.Css.Span);
     }
+
+    private static bool IsSelfClosingTag(ReadOnlySpan<char> tagName)
+        => tagName.SequenceEqual("br"); // HACK: unable to calculate < /> right now.
 }
