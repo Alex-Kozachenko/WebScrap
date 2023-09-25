@@ -3,17 +3,20 @@ using System.Collections.Immutable;
 
 namespace WebScrap.Processors.CssProcessorListeners;
 
-internal class ProcessedTagsListener(ReadOnlySpan<char> css) : ListenerBase
+/// <summary>
+/// Tracs specific CSS-like query.
+/// </summary>
+internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 {
     private readonly ImmutableArray<CssToken> expectedTags
         = CssTokenizer.TokenizeCss(css);
-    private readonly Stack<string> processedTags = new();
+    private readonly Stack<string> cssTags = new();
 
-    public Stack<string> ProcessedTags => new (processedTags.Reverse());
+    public Stack<string> CssCompliantTags => new (cssTags.Reverse());
 
     internal bool IsCssTagMet(ReadOnlySpan<char> tagName)
     {
-        var processedTagsCount = processedTags.Count;
+        var processedTagsCount = cssTags.Count;
         var index = processedTagsCount switch
         {
             < 0 => throw new ArgumentOutOfRangeException(
@@ -27,21 +30,21 @@ internal class ProcessedTagsListener(ReadOnlySpan<char> css) : ListenerBase
         return tagName.StartsWith(cssTag.Css.Span);
     }
     internal bool IsCompletedCssMet()
-        => processedTags.Count == expectedTags.Length;
+        => cssTags.Count == expectedTags.Length;
 
-    protected override void ProcessOpeningTag(ReadOnlySpan<char> tagName)
+    internal override void ProcessOpeningTag(ReadOnlySpan<char> tagName)
     {
         if (IsCssTagMet(tagName))
         {
-            processedTags.Push(tagName.ToString());
+            cssTags.Push(tagName.ToString());
         }
     }
 
-    protected override void ProcessClosingTag(ReadOnlySpan<char> tagName)
+    internal override void ProcessClosingTag(ReadOnlySpan<char> tagName)
     {
         if (IsCssTagMet(tagName))
         {
-            processedTags.Pop();
+            cssTags.Pop();
         }
     }
 }

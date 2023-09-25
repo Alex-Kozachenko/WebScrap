@@ -17,8 +17,8 @@ public class CssProcessor(
 {
     private readonly List<int> tagIndexes = [];
     private readonly ListenerBase[] listeners = [
-        new ProcessedTagsListener(css),
-        new TraversedTagsListener(),
+        new CssTagsListener(css),
+        new HtmlTagsListener(),
     ];
     protected override bool IsDone => Processed >= htmlLength;
 
@@ -46,7 +46,7 @@ public class CssProcessor(
             return;
         }
 
-        ListenerBase.ProcessOpeningTag(listeners, tagName);
+        listeners.ProcessOpeningTag(tagName);
         TryProcessCompletedCss(tagName);
     }
 
@@ -54,45 +54,45 @@ public class CssProcessor(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
-        ListenerBase.ProcessClosingTag(listeners, tagName);
+        listeners.ProcessClosingTag(tagName);
     }
 
     private void TryProcessCompletedCss(ReadOnlySpan<char> tagName)
     {
-        var processedTagsListener = listeners.OfType<ProcessedTagsListener>().First();
-        var traversedTagsListener = listeners.OfType<TraversedTagsListener>().First();
+        var cssTagsListener = listeners.Get<CssTagsListener>();
+        var htmlTagsListener = listeners.Get<HtmlTagsListener>();
 
-        if (processedTagsListener.IsCssTagMet(tagName) is false)
+        if (cssTagsListener.IsCssTagMet(tagName) is false)
         {
             return;
         }
 
-        if (processedTagsListener.IsCompletedCssMet() is false)
+        if (cssTagsListener.IsCompletedCssMet() is false)
         { 
             return; 
         }
 
-        if (EndsWith(
-            traversedTagsListener.TraversedTags,
-            processedTagsListener.ProcessedTags))
+        if (IsCssComplied(htmlTagsListener, cssTagsListener))
         {
             tagIndexes.Add(Processed);
         }
     }
 
-    private static bool EndsWith(Stack<string> bigStack, Stack<string> subStack)
+    private static bool IsCssComplied(
+        HtmlTagsListener htmlTagsListener,
+        CssTagsListener cssTagsListener)
     {
-        if (subStack.Count > bigStack.Count)
+        var traversedTags = htmlTagsListener.TraversedTags;
+        var cssCompliantTags = cssTagsListener.CssCompliantTags;
+
+        if (cssCompliantTags.Count > traversedTags.Count)
         {
             return false;
         }
 
-        // HACK: a ton.
-        var _bigStack = new Stack<string>(bigStack.Reverse());
-        var _subStack = new Stack<string>(subStack.Reverse());
-        while (_subStack.Count != 0)
+        while (cssCompliantTags.Count != 0)
         {
-            if (!_subStack.Pop().SequenceEqual(_bigStack.Pop()))
+            if (!cssCompliantTags.Pop().SequenceEqual(traversedTags.Pop()))
             {
                 return false;
             }
