@@ -1,6 +1,6 @@
-HtmlStreamReader `v0.1`
+WebScrap `v0.1`
 =======
-A bunch of html-processors at [Core.Processors](/Core/Processors/).
+A bunch of html-processors at [WebScrap.Processors](/WebScrap/Processors/).
 
 Features
 =======
@@ -8,7 +8,7 @@ Features
 - `HtmlExtraction`: Extract html substrings for simple css-like queries.
     - supports only direct child selector, like `main>div`.
 
-For full list of features, please refer to [Features integration tests](/Core.Tests.IntegrationTests/Features/).
+For full list of features, please refer to [Features integration tests](/WebScrap.Tests.IntegrationTests/Features/).
 
 Usage
 =======

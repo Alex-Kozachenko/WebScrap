@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{DE89526E-2693-439F-9A72-004FD4C7FD8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrap.Tests", "WebScrap.Tests\WebScrap.Tests.csproj", "{DE89526E-2693-439F-9A72-004FD4C7FD8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{6EB5908C-166B-4D6E-AA11-A0617D90E4DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrap", "WebScrap\WebScrap.csproj", "{6EB5908C-166B-4D6E-AA11-A0617D90E4DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests.IntegrationTests", "Core.Tests.IntegrationTests\Core.Tests.IntegrationTests.csproj", "{D9878E84-D4CD-46EB-A9C5-93ED53EBC6B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Tests.IntegrationTests", "WebScrap.Tests.IntegrationTests\WebScrap.Tests.IntegrationTests.csproj", "{D9878E84-D4CD-46EB-A9C5-93ED53EBC6B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

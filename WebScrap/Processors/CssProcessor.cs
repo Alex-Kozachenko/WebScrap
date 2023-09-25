@@ -1,9 +1,9 @@
-using Core.Processors.Common;
-using Core.Tools.Css;
-using Core.Tools.Html;
+using WebScrap.Processors.Common;
+using WebScrap.Tools.Css;
+using WebScrap.Tools.Html;
 using System.Collections.Immutable;
 
-namespace Core.Processors;
+namespace WebScrap.Processors;
 
 /// <summary>
 /// Processes the html with provided css-like-selectors,

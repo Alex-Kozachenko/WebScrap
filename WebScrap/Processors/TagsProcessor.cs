@@ -1,7 +1,7 @@
-using Core.Processors.Common;
-using Core.Tools.Html;
+using WebScrap.Processors.Common;
+using WebScrap.Tools.Html;
 
-namespace Core.Processors;
+namespace WebScrap.Processors;
 
 /// <summary>
 /// Processes one html tag with its children.

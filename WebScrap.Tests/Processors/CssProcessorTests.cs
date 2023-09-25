@@ -1,6 +1,6 @@
-using static Core.Processors.CssProcessor;
+using static WebScrap.Processors.CssProcessor;
 
-namespace Core.Processors.Tests;
+namespace WebScrap.Processors.Tests;
 
 [TestFixture]
 public class CssProcessorTests
@@ -31,14 +31,8 @@ public class CssProcessorTests
         "<div>_<a></a>_<p>_",
         "              ^")]
     [TestCase(
-        "<div><aside><p>_",
-        "")]
-    [TestCase(
         "<div><div><p>_",
         "          ^")]
-    [TestCase(
-        "<div></div>_<p>_",
-        "")]
     [TestCase(
         "<div>_<div></div>_<p>_",
         "                  ^")]
@@ -52,7 +46,14 @@ public class CssProcessorTests
         Assert.That(result, Is.EquivalentTo(expected));
     }
 
-
+    [TestCase("<div><aside><p>_")]
+    [TestCase("<div></div>_<p>_")]
+    public void CalculateTagIndexes_UnrecognizedStructure_ShouldReturn_Empty(string html)
+    {
+        var css = "div>p";
+        var result = CalculateTagIndexes(html, css);
+        Assert.That(result, Is.Empty);
+    }
 
     [TestCase]
     public void CalculateTagIndexes_WithSingleTag_ShouldReturn_SingleIndex()

@@ -1,6 +1,6 @@
-using static Core.Tools.Css.CssTokenizer;
+using static WebScrap.Tools.Css.CssTokenizer;
 
-namespace Core.Tools.Css.Tests;
+namespace WebScrap.Tools.Css.Tests;
 
 [TestFixture]
 public class CssTokenizerTests

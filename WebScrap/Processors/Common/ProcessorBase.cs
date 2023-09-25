@@ -1,4 +1,4 @@
-namespace Core.Processors.Common;
+namespace WebScrap.Processors.Common;
 
 /// <summary>
 /// Represents a process of linear html-traversing,

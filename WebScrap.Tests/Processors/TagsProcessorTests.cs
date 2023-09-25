@@ -1,7 +1,7 @@
 using NUnit.Framework.Internal;
-using static Core.Processors.TagsProcessor;
+using static WebScrap.Processors.TagsProcessor;
 
-namespace Core.Processors.Tests;
+namespace WebScrap.Processors.Tests;
 
 [TestFixture]
 public class TagsProcessorTests

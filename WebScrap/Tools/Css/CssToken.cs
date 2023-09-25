@@ -1,4 +1,4 @@
-namespace Core.Tools.Css;
+namespace WebScrap.Tools.Css;
 
 internal record struct CssToken(char? ChildSelector, ReadOnlyMemory<char> Css)
 {

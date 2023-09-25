@@ -1,4 +1,4 @@
-namespace Core.Tools.Html;
+namespace WebScrap.Tools.Html;
 
 internal static class TagsNavigator
 {
