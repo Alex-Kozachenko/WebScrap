@@ -1,4 +1,4 @@
-namespace Core.Processors.Common;
+namespace WebScrap.Processors.Common;
 
 internal enum HtmlTagKind
 {

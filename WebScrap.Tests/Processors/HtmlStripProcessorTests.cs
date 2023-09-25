@@ -1,6 +1,6 @@
-using static Core.Processors.HtmlStripProcessor;
+using static WebScrap.Processors.HtmlStripProcessor;
 
-namespace Core.Processors.Tests;
+namespace WebScrap.Processors.Tests;
 
 [TestFixture]
 public class HtmlStripProcessorTests

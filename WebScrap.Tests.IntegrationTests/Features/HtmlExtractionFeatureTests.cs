@@ -1,7 +1,7 @@
-using Core.Processors;
-using static Core.IntegrationTests.TestHelpers.IsHelpers;
+using WebScrap.Processors;
+using static WebScrap.IntegrationTests.TestHelpers.IsHelpers;
 
-namespace Core.Features.IntegrationTests;
+namespace WebScrap.Features.IntegrationTests;
 
 [TestFixture]
 public class HtmlExtractionFeatureTests

@@ -1,8 +1,8 @@
-using Core.Processors.Common;
+using WebScrap.Processors.Common;
 using System.Text;
-using static Core.Tools.Html.TagsNavigator;
+using static WebScrap.Tools.Html.TagsNavigator;
 
-namespace Core.Processors;
+namespace WebScrap.Processors;
 
 /// <summary>
 /// Extracts plain text from html, 
