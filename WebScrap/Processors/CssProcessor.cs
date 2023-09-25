@@ -1,7 +1,7 @@
 using WebScrap.Processors.Common;
-using WebScrap.Tools.Css;
 using WebScrap.Tools.Html;
 using System.Collections.Immutable;
+using WebScrap.Processors.CssProcessorListeners;
 
 namespace WebScrap.Processors;
 
@@ -15,10 +15,11 @@ public class CssProcessor(
     int htmlLength)
     : ProcessorBase
 {
-    private readonly ImmutableArray<CssToken> expectedTags
-        = CssTokenizer.TokenizeCss(css);
     private readonly List<int> tagIndexes = [];
-    private int tagsMetCounter = 0;
+    private readonly ListenerBase[] listeners = [
+        new CssTagsListener(css),
+        new HtmlTagsListener(),
+    ];
     protected override bool IsDone => Processed >= htmlLength;
 
     public static ImmutableArray<int> CalculateTagIndexes(
@@ -30,7 +31,7 @@ public class CssProcessor(
         return [.. processor.tagIndexes];
     }
 
-    protected override int Prepare(ReadOnlySpan<char> html) 
+    protected override int Prepare(ReadOnlySpan<char> html)
         => 0;
 
     protected override int Proceed(ReadOnlySpan<char> html)
@@ -40,45 +41,66 @@ public class CssProcessor(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
-        if (!IsCssTagMet(tagName))
+        if (IsSelfClosingTag(tagName))
         {
             return;
         }
-        tagsMetCounter++;
-        TryProcessCompletedCss();
-        
+
+        listeners.ProcessOpeningTag(tagName);
+        TryProcessCompletedCss(tagName);
     }
 
     protected override void ProcessClosingTag(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> tagName)
     {
-        if (IsCssTagMet(tagName))
-        {
-            tagsMetCounter--;
-        }
+        listeners.ProcessClosingTag(tagName);
     }
 
-    private void TryProcessCompletedCss()
+    private void TryProcessCompletedCss(ReadOnlySpan<char> tagName)
     {
-        if (tagsMetCounter == expectedTags.Length)
+        var cssTagsListener = listeners.Get<CssTagsListener>();
+        var htmlTagsListener = listeners.Get<HtmlTagsListener>();
+
+        if (cssTagsListener.IsCssTagMet(tagName) is false)
+        {
+            return;
+        }
+
+        if (cssTagsListener.IsCompletedCssMet() is false)
+        { 
+            return; 
+        }
+
+        if (IsCssComplied(htmlTagsListener, cssTagsListener))
         {
             tagIndexes.Add(Processed);
         }
     }
 
-    private bool IsCssTagMet(ReadOnlySpan<char> tagName)
+    private static bool IsCssComplied(
+        HtmlTagsListener htmlTagsListener,
+        CssTagsListener cssTagsListener)
     {
-        var index = tagsMetCounter switch
-        {
-            < 0 => throw new ArgumentOutOfRangeException(
-                $"{nameof(tagsMetCounter)} = {tagsMetCounter}"),
-            var i when i < expectedTags.Length
-               => i,
-            _ => expectedTags.Length - 1,
-        };
+        var traversedTags = htmlTagsListener.TraversedTags;
+        var cssCompliantTags = cssTagsListener.CssCompliantTags;
 
-        var cssTag = expectedTags[index];
-        return tagName.StartsWith(cssTag.Css.Span);
+        if (cssCompliantTags.Count > traversedTags.Count)
+        {
+            return false;
+        }
+
+        while (cssCompliantTags.Count != 0)
+        {
+            if (!cssCompliantTags.Pop().SequenceEqual(traversedTags.Pop()))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
+
+    private static bool IsSelfClosingTag(ReadOnlySpan<char> tagName)
+        => tagName.SequenceEqual("br"); // HACK: unable to calculate < /> right now.
 }

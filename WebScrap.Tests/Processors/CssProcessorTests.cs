@@ -11,7 +11,7 @@ public class CssProcessorTests
     {
         var css = "p";
         var (html, pointers) = (
-            "<p>__</p>__<p>__", 
+            "<p>__</p>__<p>__",
             "^          ^");
         var expected = PointersToIndexes(pointers);
         var result = CalculateTagIndexes(html, css);
@@ -31,11 +31,11 @@ public class CssProcessorTests
         "<div>_<a></a>_<p>_",
         "              ^")]
     [TestCase(
-        "<div><div><p>_",
-        "          ^")]
-    [TestCase(
         "<div>_<div></div>_<p>_",
         "                  ^")]
+    [TestCase(
+        "<div><div><p>_",
+        "          ^")]
     public void CalculateTagIndexes_WithComplexCss_ShouldReturn_MultipleIndexes(
         string html,
         string pointers)
@@ -48,11 +48,18 @@ public class CssProcessorTests
 
     [TestCase("<div><aside><p>_")]
     [TestCase("<div></div>_<p>_")]
-    public void CalculateTagIndexes_UnrecognizedStructure_ShouldReturn_Empty(string html)
+
+    public void CalculateTagIndexes_DirectChildMissing_ShouldReturn_Empty(string html)
     {
         var css = "div>p";
-        var result = CalculateTagIndexes(html, css);
-        Assert.That(result, Is.Empty);
+        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
+        Assert.Multiple(() =>
+        {
+            foreach (var result in results)
+            {
+                Assert.That(result, Is.Empty);
+            }
+        });
     }
 
     [TestCase]
@@ -67,13 +74,13 @@ public class CssProcessorTests
 
     [TestCase("_____<p></p>")]
     [TestCase("p>__<p>")]
-    [TestCase("__</p>__" )]
+    [TestCase("__</p>__")]
     public void CalculateTagIndexes_IncorrectHtml_ShouldFail(
         string sample)
     {
         var css = "p";
         Assert.That(
-            () => CalculateTagIndexes(sample, css), 
+            () => CalculateTagIndexes(sample, css),
             Throws.ArgumentException);
     }
 
@@ -88,6 +95,6 @@ public class CssProcessorTests
                 result.Add(i);
             }
         }
-        return [..result];
+        return [.. result];
     }
 }
