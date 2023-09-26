@@ -14,7 +14,7 @@ internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 
     public Stack<string> CssCompliantTags => new (cssTags.Reverse());
 
-    internal bool IsCssTagMet(ReadOnlySpan<char> tagName)
+    internal bool IsCssTagMet(ReadOnlySpan<char> tag)
     {
         var processedTagsCount = cssTags.Count;
         var index = processedTagsCount switch
@@ -26,8 +26,8 @@ internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
             _ => expectedTags.Length - 1,
         };
 
-        var cssTag = expectedTags[index];
-        return tagName.StartsWith(cssTag.Css.Span);
+        var css = expectedTags[index];
+        return tag.StartsWith(css.Tag.Span);
     }
     internal bool IsCompletedCssMet()
         => cssTags.Count == expectedTags.Length;

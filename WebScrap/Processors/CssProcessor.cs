@@ -39,6 +39,9 @@ public class CssProcessor(
 
     protected override void ProcessOpeningTag(
         ReadOnlySpan<char> html,
+        // TODO: change parameter type to HtmlTag, like a CssAttribute.
+        // Need to know tagName AND entire tag as well AND its attributes enumerated as well.
+        // Please use a CssAttribute, looks cool but needs a separate factory. and renaming.
         ReadOnlySpan<char> tagName)
     {
         if (IsSelfClosingTag(tagName))

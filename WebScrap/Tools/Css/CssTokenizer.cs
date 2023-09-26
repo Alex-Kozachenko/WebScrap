@@ -4,12 +4,12 @@ namespace WebScrap.Tools.Css;
 
 internal static class CssTokenizer
 {
-    private static readonly char[] tokenDelimeters = [' ', '>'];
+    private static readonly char[] childSelectors = [' ', '>'];
 
     public static ImmutableArray<CssToken> TokenizeCss(ReadOnlySpan<char> css)
-        => css.Split().ToCssTokens();
+        => css.Tokenize().ToCssTokens();
 
-    private static ImmutableArray<ReadOnlyMemory<char>> Split(
+    private static ImmutableArray<ReadOnlyMemory<char>> Tokenize(
         this ReadOnlySpan<char> css)
     {
         css = css.Trim();
@@ -21,8 +21,8 @@ internal static class CssTokenizer
             tokens.Add(token);
             css = css[..lastDelimeterIndex];
         }
-        tokens.Reverse(); 
-        return [..tokens];
+        tokens.Reverse();
+        return [.. tokens];
     }
 
     private static ImmutableArray<CssToken> ToCssTokens(
@@ -31,24 +31,20 @@ internal static class CssTokenizer
         var result = new Queue<CssToken>();
         foreach (var token in tokens)
         {
-            var firstChar = token.Span[0];
-            CssToken item = tokenDelimeters.Contains(firstChar)
-                ? new(firstChar, token[1..])
-                : new(null, token);
-            result.Enqueue(item);
+            result.Enqueue(CssTokenBuilder.Build(token, childSelectors));
         }
-        return [..result];
+        return [.. result];
     }
-    
+
     private static int GetLastDelimeterIndex(ReadOnlySpan<char> cssLine)
     {
         var delimeterIndex = cssLine
-                .LastIndexOfAny(tokenDelimeters);
+                .LastIndexOfAny(childSelectors);
 
         return delimeterIndex switch
         {
             -1 => 0,
             _ => delimeterIndex
         };
-    } 
+    }
 }

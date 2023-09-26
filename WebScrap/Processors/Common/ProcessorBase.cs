@@ -40,23 +40,23 @@ public abstract class ProcessorBase
 
     private void Process(ReadOnlySpan<char> html)
     {
-        var tagName = ExtractTagName(html);
+        var tag = ExtractTag(html);
         var kind = GetHtmlTagKind(html);
         if (kind == HtmlTagKind.Opening)
         {
-            ProcessOpeningTag(html, tagName);
+            ProcessOpeningTag(html, tag);
         }
         else if (kind == HtmlTagKind.Closing)
         {
-            ProcessClosingTag(html, tagName);
+            ProcessClosingTag(html, tag);
         }
     }
 
-    private static ReadOnlySpan<char> ExtractTagName(ReadOnlySpan<char> html) 
+    private static ReadOnlySpan<char> ExtractTag(ReadOnlySpan<char> html) 
         => GetHtmlTagKind(html) switch
         {
-            HtmlTagKind.Opening => html[1..html.IndexOfAny(' ', '>')],
-            HtmlTagKind.Closing => html[2..html.IndexOf('>')],
+            HtmlTagKind.Opening => html[1..html.IndexOfAny('/', '>')].Trim(),
+            HtmlTagKind.Closing => html[2..html.IndexOf('>')].Trim(),
             _ => throw new NotImplementedException()
         };
 
