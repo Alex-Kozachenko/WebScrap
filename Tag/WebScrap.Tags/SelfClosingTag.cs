@@ -4,7 +4,7 @@ using AttributesList = System.Collections.Generic.List<
 namespace WebScrap.Tags;
 
 public sealed record class SelfClosingTag(
-    ReadOnlyMemory<char> Name,
+    string Name,
     AttributesList Attributes)
         : TagBase(Name)
 {
