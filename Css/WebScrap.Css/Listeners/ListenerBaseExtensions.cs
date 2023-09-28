@@ -1,3 +1,5 @@
+using WebScrap.Tags;
+
 namespace WebScrap.Css.Listeners;
 
 internal static class ListenerBaseExtensions
@@ -7,23 +9,23 @@ internal static class ListenerBaseExtensions
             where TListener : ListenerBase
         => listeners.OfType<TListener>().First();
 
-    internal static void ProcessOpeningTag(
+    internal static void Process(
         this IEnumerable<ListenerBase> listeners,
-        ReadOnlySpan<char> tagName)
+        OpeningTag tag)
     {
         foreach (var listener in listeners)
         {
-            listener.ProcessOpeningTag(tagName);
+            listener.Process(tag);
         }
     }
 
-    internal static void ProcessClosingTag(
+    internal static void Process(
         this IEnumerable<ListenerBase> listeners,
-        ReadOnlySpan<char> tagName)
+        ClosingTag tag)
     {
         foreach (var listener in listeners)
         {
-            listener.ProcessClosingTag(tagName);
+            listener.Process(tag);
         }
     }
 }

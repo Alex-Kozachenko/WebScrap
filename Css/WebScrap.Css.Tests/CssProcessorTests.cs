@@ -13,9 +13,9 @@ public class CssProcessorTests
         var (html, pointers) = (
             "<p>__</p>__<p>__",
             "^          ^");
-        var expected = PointersToIndexes(pointers);
-        var result = CalculateTagIndexes(html, css);
-        Assert.That(result, Is.EquivalentTo(expected));
+        var expected = PointersToIndexes(pointers).Select(x => html[x..]);
+        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
+        Assert.That(results, Is.EquivalentTo(expected));
     }
 
     [TestCase(
@@ -41,9 +41,9 @@ public class CssProcessorTests
         string pointers)
     {
         var css = "div>p";
-        var expected = PointersToIndexes(pointers);
-        var result = CalculateTagIndexes(html, css);
-        Assert.That(result, Is.EquivalentTo(expected));
+        var expected = PointersToIndexes(pointers).Select(x => html[x..]);
+        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
+        Assert.That(results, Is.EquivalentTo(expected));
     }
 
     [TestCase("<div><aside><p>_")]

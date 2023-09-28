@@ -1,4 +1,5 @@
 using WebScrap.Processors.Common;
+using WebScrap.Tags;
 using WebScrap.Tools.Html;
 
 namespace WebScrap.Processors;
@@ -37,25 +38,25 @@ public class TagsProcessor : ProcessorBase
         return TagsNavigator.GetInnerTextIndex(html);
     }
 
-    protected override void ProcessOpeningTag(
+    protected override void Process(
         ReadOnlySpan<char> html, 
-        ReadOnlySpan<char> tagName)
+        OpeningTag tag)
     {
-        tags.Push(tagName.ToArray());
+        tags.Push(tag.Name.ToArray());
     }
 
-    protected override void ProcessClosingTag(
+    protected override void Process(
         ReadOnlySpan<char> html, 
-        ReadOnlySpan<char> tagName)
+        ClosingTag tag)
     {
         var lastTagName = tags.Pop().Span;
-        if (lastTagName.SequenceEqual(tagName) is not true)
+        if (lastTagName.SequenceEqual(tag.Name) is not true)
         {
             throw new InvalidOperationException($"""
                     -----
                     Incorrect tag met. 
                     Expected: {tags.Peek()}, 
-                    Actual: {tagName}. 
+                    Actual: {tag.Name}. 
                     -----
                 """);
         }

@@ -1,6 +1,7 @@
 using WebScrap.Css.Tools;
 using System.Collections.Immutable;
 using WebScrap.Tools.Html;
+using WebScrap.Tags;
 
 namespace WebScrap.Css.Listeners;
 
@@ -11,62 +12,68 @@ internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 {
     private readonly ImmutableArray<CssToken> expectedTags
         = CssTokenizer.TokenizeCss(css);
-    private readonly Stack<string> cssTags = new();
+    private readonly Stack<OpeningTag> cssTags = new();
 
-    public Stack<string> CssCompliantTags => new (cssTags.Reverse());
+    public Stack<OpeningTag> CssCompliantTags => new (cssTags.Reverse());
 
-    internal bool IsCssTagMet(
-        ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tag)
+    internal override void Process(OpeningTag tag)
     {
-        var css = GetCurrentCssToken();
-        var entireTag = html[html.IndexOf('>')];
-        //
-        var attr = css.Attributes.FirstOrDefault();
-        var attrDetected = true;
-
-        _ = attr switch
+        if (IsCssTagMet(tag))
         {
-            IdCssAttribute => 1,
-            ClassCssAttribute => 1,
-            _ => 0
-        };
-        
-        return tag.StartsWith(css.Tag.Span)
-            && attrDetected;
+            cssTags.Push(tag);
+        }
     }
 
-    private string? GetAttributeText(
-        ReadOnlySpan<char> html, 
-        ReadOnlySpan<char> attributeName)
+    internal override void Process(ClosingTag tag)
     {
-        if (html.Contains(attributeName, StringComparison.InvariantCultureIgnoreCase))
+        if (IsCssTagMet(tag))
         {
-            var index = html.IndexOf(attributeName);
-            return html[(index + 1 + 1)..html.IndexOf("\"")].ToString();
+            if (cssTags.Any())
+            {
+                cssTags.Pop();
+            }
+        }
+    }
+
+    internal bool IsCssTagMet(OpeningTag tag)
+    {
+        var css = GetCurrentCssToken();
+        var attr = css.Attributes.FirstOrDefault();
+        string selectorKey = attr switch
+        {
+            IdCssAttribute => "id",
+            ClassCssAttribute => "class",
+            _ => ""
+        };
+
+        if (tag.Attributes.Count != css.Attributes.Length)
+        {
+            return false;
         }
 
-        return null;
+        if (tag.Attributes.Count != 0 && css.Attributes.Any())
+        {
+            var nameMet = tag.Name.AsSpan().SequenceEqual(css.Tag.Span);        
+            var firstValue = tag.Attributes[selectorKey].First().AsSpan();
+            var attrMet = attr?.SelectorText.Span.SequenceEqual(firstValue) ?? false;
+            return attrMet && nameMet;
+        }
+
+        return tag.Name.AsSpan().SequenceEqual(css.Tag.Span);
+        
+
+    }
+
+    internal bool IsCssTagMet(ClosingTag tag)
+    {
+        var css = GetCurrentCssToken();
+        var nameMet = tag.Name.AsSpan().StartsWith(css.Tag.Span);
+        return nameMet;
     }
 
     internal bool IsCompletedCssMet()
         => cssTags.Count == expectedTags.Length;
 
-    internal override void ProcessOpeningTag(ReadOnlySpan<char> tagName)
-    {
-        if (IsCssTagMet(tagName))
-        {
-            cssTags.Push(tagName.ToString());
-        }
-    }
-
-    internal override void ProcessClosingTag(ReadOnlySpan<char> tagName)
-    {
-        if (IsCssTagMet(tagName))
-        {
-            cssTags.Pop();
-        }
-    }
 
     private CssToken GetCurrentCssToken()
     {

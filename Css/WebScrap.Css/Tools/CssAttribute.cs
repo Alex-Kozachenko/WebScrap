@@ -15,11 +15,11 @@ internal abstract record class CssAttributeBase(
     public override string ToString()
         => SelectorKind.ToString() + SelectorText;
 
-    public static CssAttributeBase Create(ReadOnlyMemory<char> cssToken)
+    public static CssAttributeBase? Create(ReadOnlyMemory<char> cssToken)
     {
         if (cssToken.Length == 0)
         {
-            return new UnknownCssAttribute(string.Empty.AsMemory());
+            return null;
         }
         return cssToken.Span[0] switch
         {

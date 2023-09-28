@@ -10,8 +10,6 @@ public abstract record class TagBase(string Name)
         return tag.IndexOf('/') switch
         {
             0 => ClosingTag.Create(tag[1..]),
-            var i when i == tag.Length - 1
-              => SelfClosingTag.Create(tag[..^1]),
             _ => OpeningTag.Create(tag)
         };
     }

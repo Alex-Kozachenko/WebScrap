@@ -1,3 +1,5 @@
+using WebScrap.Tags;
+
 namespace WebScrap.Css.Listeners;
 
 /// <summary>
@@ -5,16 +7,16 @@ namespace WebScrap.Css.Listeners;
 /// </summary>
 internal class HtmlTagsListener : ListenerBase
 {
-    private readonly Stack<string> traversedTags = new();
+    private readonly Stack<OpeningTag> traversedTags = new();
 
-    public Stack<string> TraversedTags => new(traversedTags.Reverse());
+    public Stack<OpeningTag> TraversedTags => new(traversedTags.Reverse());
 
-    internal override void ProcessOpeningTag(ReadOnlySpan<char> tagName)
+    internal override void Process(OpeningTag tag)
     {
-        traversedTags.Push(tagName.ToString());
+        traversedTags.Push(tag);
     }
 
-    internal override void ProcessClosingTag(ReadOnlySpan<char> tagName)
+    internal override void Process(ClosingTag tag)
     {
         traversedTags.Pop();
     }

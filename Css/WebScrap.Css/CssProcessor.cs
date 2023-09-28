@@ -2,6 +2,7 @@ using WebScrap.Processors.Common;
 using WebScrap.Tools.Html;
 using System.Collections.Immutable;
 using WebScrap.Css.Listeners;
+using WebScrap.Tags;
  
 namespace WebScrap.Css;
 
@@ -37,34 +38,34 @@ public class CssProcessor(
     protected override int Proceed(ReadOnlySpan<char> html)
         => TagsNavigator.GetNextTagIndex(html[1..]) + 1;
 
-    protected override void ProcessOpeningTag(
+    protected override void Process(
         ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tagName)
+        OpeningTag tag)
     {
-        if (IsSelfClosingTag(tagName))
+        if (tag.IsSelfClosing)
         {
             return;
         }
 
-        listeners.ProcessOpeningTag(tagName);
-        TryProcessCompletedCss(tagName);
+        listeners.Process(tag);
+        TryProcessCompletedCss(html,tag);
     }
 
-    protected override void ProcessClosingTag(
+    protected override void Process(
         ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tagName)
+        ClosingTag tag)
     {
-        listeners.ProcessClosingTag(tagName);
+        listeners.Process(tag);
     }
 
     private void TryProcessCompletedCss(
         ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tagName)
+        OpeningTag tag)
     {
         var cssTagsListener = listeners.Get<CssTagsListener>();
         var htmlTagsListener = listeners.Get<HtmlTagsListener>();
 
-        if (cssTagsListener.IsCssTagMet(tagName) is false)
+        if (cssTagsListener.IsCssTagMet(tag) is false)
         {
             return;
         }
@@ -94,15 +95,28 @@ public class CssProcessor(
 
         while (cssCompliantTags.Count != 0)
         {
-            if (!cssCompliantTags.Pop().SequenceEqual(traversedTags.Pop()))
+            var traversedTag = traversedTags.Pop();
+            var compliantTag = cssCompliantTags.Pop();
+            if (!compliantTag.Name.SequenceEqual(traversedTag.Name))
             {
                 return false;
+            }
+
+            if (traversedTag.Attributes.Count == compliantTag.Attributes.Count)
+            {
+                for (int i = 0; i < traversedTag.Attributes.Count; i++)
+                {
+                    var tAttr = traversedTag.Attributes;
+                    var cAttr = compliantTag.Attributes;
+
+                    if (!cAttr.SequenceEqual(tAttr))
+                    {
+                        return false;
+                    }
+                }
             }
         }
 
         return true;
     }
-
-    private static bool IsSelfClosingTag(ReadOnlySpan<char> tagName)
-        => tagName.SequenceEqual("br"); // HACK: unable to calculate < /> right now.
 }

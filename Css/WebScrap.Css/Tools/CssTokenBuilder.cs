@@ -37,27 +37,8 @@ internal static class CssTokenBuilder
         ReadOnlyMemory<char> tagName)
     {
         var attributes = CssAttributeBase.Create(css[tagName.Length..]);
-        return new(tagName, childSelector, [attributes]);
+        ImmutableArray<CssAttributeBase> attr = 
+            attributes == null ? [] : [attributes];
+        return new(tagName, childSelector, attr);
     }
-
-    // private static ImmutableArray<CssAttributeBase> ExtractAttributes
-    //     (ReadOnlyMemory<char> attributes)
-    // {
-    //     const int maxTokens = 32;
-    //     Span<Range> ranges = new Range[maxTokens];
-    //     var rangesCount = attributes.Span.SplitAny(
-    //         ranges,
-    //         attributeSelectors,
-    //         StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-    //     var result = new List<CssAttributeBase>();
-    //     for (int i = 0; i < rangesCount; i++)
-    //     {
-    //         var range = ranges[i];
-    //         var start = range.Start.Value - 1; // HACK: split works unexpected.
-    //         var slice = attributes[start..range.End];
-    //         result.Add(new(slice[1..], slice.Span[0]));
-    //     }
-    //     return [.. result];
-    // }
 }

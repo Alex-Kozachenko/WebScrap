@@ -1,3 +1,5 @@
+using WebScrap.Tags;
+
 namespace WebScrap.Processors.Common;
 
 /// <summary>
@@ -30,44 +32,30 @@ public abstract class ProcessorBase
 
     protected abstract int Proceed(ReadOnlySpan<char> html);
 
-    protected abstract void ProcessOpeningTag(
+    protected abstract void Process(
         ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tagName);
+        OpeningTag tag);
 
-    protected abstract void ProcessClosingTag(
+    protected abstract void Process(
         ReadOnlySpan<char> html,
-        ReadOnlySpan<char> tagName);
+        ClosingTag tag);
 
     private void Process(ReadOnlySpan<char> html)
     {
-        var tag = ExtractTag(html);
-        var kind = GetHtmlTagKind(html);
-        if (kind == HtmlTagKind.Opening)
+        if (!html.StartsWith("<"))
         {
-            ProcessOpeningTag(html, tag);
+            throw new ArgumentException($"Html should start with tag. {html}");
         }
-        else if (kind == HtmlTagKind.Closing)
+        var tag = TagBase.Create(html);
+
+        if (tag is OpeningTag oTag)
         {
-            ProcessClosingTag(html, tag);
+            Process(html, oTag);
         }
-    }
-
-    private static ReadOnlySpan<char> ExtractTag(ReadOnlySpan<char> html) 
-        => GetHtmlTagKind(html) switch
+        
+        if (tag is ClosingTag cTag)
         {
-            HtmlTagKind.Opening => html[1..html.IndexOfAny('/', '>')].Trim(),
-            HtmlTagKind.Closing => html[2..html.IndexOf('>')].Trim(),
-            _ => throw new NotImplementedException()
-        };
-
-    private static HtmlTagKind GetHtmlTagKind(
-        ReadOnlySpan<char> html)
-    {
-        return (html[0], html[1]) switch
-        {
-            ('<', '/') => HtmlTagKind.Closing,
-            ('<', _) => HtmlTagKind.Opening,
-            _ => throw new ArgumentException($"Html doesnt start with tag. {html}")
-        };
+            Process(html, cTag);
+        }
     }
 }

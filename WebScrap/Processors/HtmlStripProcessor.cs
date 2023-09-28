@@ -1,6 +1,7 @@
 using WebScrap.Processors.Common;
 using System.Text;
 using static WebScrap.Tools.Html.TagsNavigator;
+using WebScrap.Tags;
 
 namespace WebScrap.Processors;
 
@@ -29,18 +30,18 @@ public class HtmlStripProcessor(int htmlLength) : ProcessorBase
         return GetNextTagIndexSkipCurrent(html);
     }
 
-    protected override void ProcessOpeningTag(
+    protected override void Process(
         ReadOnlySpan<char> html, 
-        ReadOnlySpan<char> tagName)
+        OpeningTag tag)
     {
-        ProcessTag(html);        
+        ProcessTag(tag.InnerText);
     }
 
-    protected override void ProcessClosingTag(
+    protected override void Process(
         ReadOnlySpan<char> html, 
-        ReadOnlySpan<char> tagName)
+        ClosingTag tag)
     {
-        ProcessTag(html);
+        
     }
 
     private void ProcessTag(ReadOnlySpan<char> html)
