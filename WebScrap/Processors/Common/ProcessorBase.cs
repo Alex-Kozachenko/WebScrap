@@ -1,4 +1,5 @@
 using WebScrap.Tags;
+using WebScrap.Tags.Creators;
 
 namespace WebScrap.Processors.Common;
 
@@ -46,7 +47,13 @@ public abstract class ProcessorBase
         {
             throw new ArgumentException($"Html should start with tag. {html}");
         }
-        var tag = TagBase.Create(html);
+        var tag = TagCreatorBase.Create(html);
+
+        // TODO: replace by polymorhism.
+        if (tag is SelfClosingTag)
+        {
+            return;
+        }
 
         if (tag is OpeningTag oTag)
         {

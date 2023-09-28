@@ -34,7 +34,7 @@ public class HtmlStripProcessor(int htmlLength) : ProcessorBase
         ReadOnlySpan<char> html, 
         OpeningTag tag)
     {
-        ProcessTag(tag.InnerText);
+        ProcessTag(html);
     }
 
     protected override void Process(

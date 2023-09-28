@@ -42,11 +42,6 @@ public class CssProcessor(
         ReadOnlySpan<char> html,
         OpeningTag tag)
     {
-        if (tag.IsSelfClosing)
-        {
-            return;
-        }
-
         listeners.Process(tag);
         TryProcessCompletedCss(html,tag);
     }

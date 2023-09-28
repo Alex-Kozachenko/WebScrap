@@ -1,8 +1,8 @@
-using static WebScrap.Tags.TagBase;
+using static WebScrap.Tags.Creators.TagCreatorBase;
 
 namespace WebScrap.Tags.Tests;
 
-public class TagBaseTests
+public class TagCreatorBaseTests
 {
     [Test]
     public void Create_ShouldWork()
@@ -45,13 +45,12 @@ public class TagBaseTests
         var html = """
             <br />
         """;
-        var expected = new { Name = "br", IsSelfClosing = true };
-        var result = Create(html) as OpeningTag;
-        Assert.That(result, Is.TypeOf<OpeningTag>());
+        var expected = new { Name = "br" };
+        var result = Create(html) as SelfClosingTag;
+        Assert.That(result, Is.TypeOf<SelfClosingTag>());
         Assert.Multiple(() =>
         {
             Assert.That(result.Name.ToString(), Is.EquivalentTo(expected.Name));
-            Assert.That(result.IsSelfClosing, Is.EqualTo(expected.IsSelfClosing));
             Assert.That(result.Attributes, Has.Count.EqualTo(0));
         });
     }
