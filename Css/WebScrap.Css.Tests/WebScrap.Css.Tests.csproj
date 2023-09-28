@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebScrap\WebScrap.csproj" />
-    <ProjectReference Include="..\Css\WebScrap.Css\WebScrap.Css.csproj" />
+    <ProjectReference Include="..\WebScrap.Css\WebScrap.Css.csproj" />
   </ItemGroup>
+
 </Project>

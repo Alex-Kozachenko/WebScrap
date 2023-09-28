@@ -1,3 +1,4 @@
+using WebScrap.Css;
 using WebScrap.Processors;
 using static WebScrap.IntegrationTests.TestHelpers.IsHelpers;
 

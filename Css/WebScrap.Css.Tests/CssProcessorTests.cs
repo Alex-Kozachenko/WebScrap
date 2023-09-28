@@ -1,6 +1,6 @@
-using static WebScrap.Processors.CssProcessor;
+using static WebScrap.Css.CssProcessor;
 
-namespace WebScrap.Processors.Tests;
+namespace WebScrap.Css.Tests;
 
 [TestFixture]
 public class CssProcessorTests

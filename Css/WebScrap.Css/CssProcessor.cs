@@ -1,9 +1,9 @@
 using WebScrap.Processors.Common;
 using WebScrap.Tools.Html;
 using System.Collections.Immutable;
-using WebScrap.Processors.CssProcessorListeners;
-
-namespace WebScrap.Processors;
+using WebScrap.Css.Listeners;
+ 
+namespace WebScrap.Css;
 
 /// <summary>
 /// Processes the html with provided css-like-selectors,
@@ -39,9 +39,6 @@ public class CssProcessor(
 
     protected override void ProcessOpeningTag(
         ReadOnlySpan<char> html,
-        // TODO: change parameter type to HtmlTag, like a CssAttribute.
-        // Need to know tagName AND entire tag as well AND its attributes enumerated as well.
-        // Please use a CssAttribute, looks cool but needs a separate factory. and renaming.
         ReadOnlySpan<char> tagName)
     {
         if (IsSelfClosingTag(tagName))
@@ -60,7 +57,9 @@ public class CssProcessor(
         listeners.ProcessClosingTag(tagName);
     }
 
-    private void TryProcessCompletedCss(ReadOnlySpan<char> tagName)
+    private void TryProcessCompletedCss(
+        ReadOnlySpan<char> html,
+        ReadOnlySpan<char> tagName)
     {
         var cssTagsListener = listeners.Get<CssTagsListener>();
         var htmlTagsListener = listeners.Get<HtmlTagsListener>();

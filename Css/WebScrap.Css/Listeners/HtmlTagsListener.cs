@@ -1,4 +1,4 @@
-namespace WebScrap.Processors.CssProcessorListeners;
+namespace WebScrap.Css.Listeners;
 
 /// <summary>
 /// Tracks all tags met.

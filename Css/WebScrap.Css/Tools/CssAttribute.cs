@@ -1,4 +1,4 @@
-namespace WebScrap.Tools.Css;
+namespace WebScrap.Css.Tools;
 
 /// <summary>
 /// Contains a single entry of a css selector.

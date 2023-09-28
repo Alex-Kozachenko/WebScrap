@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 
-namespace WebScrap.Tools.Css;
+namespace WebScrap.Css.Tools;
 
 internal static class CssTokenBuilder
 {
