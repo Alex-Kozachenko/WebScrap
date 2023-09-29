@@ -7,7 +7,7 @@ internal class InlineTagCreator : OpeningTagCreator
         return Cast((OpeningTag) base.CreateTag(tagContent));
     }
 
-    private TagBase Cast(OpeningTag tag)
+    private static TagBase Cast(OpeningTag tag)
     {
         return new InlineTag(tag.Name, tag.Attributes);
     }

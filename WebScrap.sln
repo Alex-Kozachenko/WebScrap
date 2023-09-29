@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tag", "Tag", "{FE2014CA-AF1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Tags", "Tag\WebScrap.Tags\WebScrap.Tags.csproj", "{D3584EF0-0349-49CB-92A5-A5438B1A212B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Tag.Tests", "Tag\WebScrap.Tags.Tests\WebScrap.Tag.Tests.csproj", "{A3A16504-7638-4A5B-ADE8-D6BF37CC4D8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Tags.Tests", "Tag\WebScrap.Tags.Tests\WebScrap.Tags.Tests.csproj", "{A3A16504-7638-4A5B-ADE8-D6BF37CC4D8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
