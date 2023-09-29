@@ -1,4 +1,4 @@
-using static WebScrap.Tags.Tools.AttributeExtractor;
+using static WebScrap.Tags.Attributes.AttributeExtractor;
 
 namespace WebScrap.Tags.Creators;
 

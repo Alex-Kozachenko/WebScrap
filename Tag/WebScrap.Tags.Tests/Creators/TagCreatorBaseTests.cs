@@ -2,6 +2,7 @@ using static WebScrap.Tags.Creators.TagCreatorBase;
 
 namespace WebScrap.Tags.Tests;
 
+[TestFixture]
 public class TagCreatorBaseTests
 {
     [Test]
@@ -51,6 +52,32 @@ public class TagCreatorBaseTests
             Assert.That(result.Attributes["final"], 
                 Is.EquivalentTo(expected.Final));
         });
+    }
+
+    [Test]
+    public void Create_ShouldWork_FOO()
+    {
+        var html = """
+            <p begin data-centric="bar buzz" end>Bar</p>
+        """;
+        var expected = new {
+            DataCentric = new string[] { "bar", "buzz" },
+            Keys = new string[] { 
+                "begin", 
+                "data-centric", 
+                "end"
+            }
+        };
+        var result = Create(html) as OpeningTag;
+        Assert.That(result, Is.TypeOf<OpeningTag>());
+
+        Assert.Multiple(() => 
+        {
+            AssertAttributeExistance(result, expected.Keys);
+        });
+
+        Assert.That(result.Attributes["data-centric"], 
+            Is.EquivalentTo(expected.DataCentric));
     }
 
     private static void AssertAttributeExistance(OpeningTag result, string[] keys)
