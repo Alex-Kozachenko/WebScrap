@@ -2,17 +2,31 @@ namespace WebScrap.Tags.Tools;
 
 internal static class AttributeExtractor
 {
-    internal static ReadOnlySpan<char> GetKey(ReadOnlySpan<char> tagContent) 
+    internal static ILookup<string, string> EmptyAttributes 
+        => Array.Empty<int>().ToLookup(x => "", x => "");
+
+    internal static ILookup<string, string> GetAttributes(
+        ReadOnlySpan<char> tagContent)
+    {
+        tagContent = tagContent.TrimEnd('/');
+        var key = GetKey(tagContent).ToString();
+        var values =  GetValues(tagContent); 
+
+        return values?.ToLookup(x => key, x => x)
+            ?? EmptyAttributes;   
+    }
+
+    private static ReadOnlySpan<char> GetKey(ReadOnlySpan<char> tagContent) 
         => tagContent.IndexOf('=') switch
         {
             -1 => tagContent,
             var index => tagContent[..index]
         };
 
-    internal static string[] GetValues(ReadOnlySpan<char> tagContent)
+    private static string[]? GetValues(ReadOnlySpan<char> tagContent)
         => tagContent.IndexOf('=') switch
         {
-            -1 => [string.Empty],
+            -1 => null,
             var index => GetValues(tagContent, index)
         };
 

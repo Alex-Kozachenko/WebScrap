@@ -12,7 +12,6 @@ public class TagCreatorBaseTests
         """;
         var expected = new {
             Id = new string[] { "foo" },
-            Text = " Bar ",
             Name = "p"
         };
         var result = Create(html) as OpeningTag;
@@ -36,18 +35,19 @@ public class TagCreatorBaseTests
         Assert.Multiple(() =>
         {
             Assert.That(result.Name.ToString(), Is.EquivalentTo(expected));
+            Assert.That(result.Attributes, Has.Count.EqualTo(0));
         });
     }
 
     [Test]
-    public void Create_WithSelfClosingTag_ShouldWork()
+    public void Create_InlineTag_ShouldWork()
     {
         var html = """
             <br />
         """;
         var expected = new { Name = "br" };
-        var result = Create(html) as SelfClosingTag;
-        Assert.That(result, Is.TypeOf<SelfClosingTag>());
+        var result = Create(html) as InlineTag;
+        Assert.That(result, Is.TypeOf<InlineTag>());
         Assert.Multiple(() =>
         {
             Assert.That(result.Name.ToString(), Is.EquivalentTo(expected.Name));

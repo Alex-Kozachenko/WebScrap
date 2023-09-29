@@ -50,7 +50,7 @@ public abstract class ProcessorBase
         var tag = TagCreatorBase.Create(html);
 
         // TODO: replace by polymorhism.
-        if (tag is SelfClosingTag)
+        if (tag is InlineTag)
         {
             return;
         }

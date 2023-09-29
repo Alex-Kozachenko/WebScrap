@@ -1,4 +1,3 @@
-
 namespace WebScrap.Tags;
 
 public record class OpeningTag(

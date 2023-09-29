@@ -12,7 +12,7 @@ public abstract class TagCreatorBase
             0 => new ClosingTagCreator().CreateTag(tag[1..]),
             var i 
                 when i == (tag.Length - 1)
-              => new SelfClosingTagCreator().CreateTag(tag),
+              => new InlineTagCreator().CreateTag(tag),
             _ => new OpeningTagCreator().CreateTag(tag)
         };
     }

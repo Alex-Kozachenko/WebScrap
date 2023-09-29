@@ -9,33 +9,13 @@ internal class OpeningTagCreator : TagCreatorBase
         var index = tagContent.IndexOf(' ');
         if (index == -1)
         {
-            return CreateInnerText(tagContent, tagContent, null);
+            return new OpeningTag(tagContent.ToString(), EmptyAttributes);
         }
         var name = tagContent[..index];
         tagContent = tagContent[tagContent.IndexOf(' ')..][1..];
-        return CreateAttributes(tagContent, name);
+        
+        return new OpeningTag(
+            name.ToString(), 
+            GetAttributes(tagContent));
     }
-
-    private static OpeningTag CreateAttributes(
-        ReadOnlySpan<char> tagContent,
-        ReadOnlySpan<char> tagName)
-    {
-        var isSelfClosing = tagContent.EndsWith("/");
-        tagContent = tagContent.TrimEnd('/');
-        var key = GetKey(tagContent).ToString();
-        var values = isSelfClosing ? [] : GetValues(tagContent);
-        return CreateInnerText(
-            tagContent, 
-            tagName, 
-            values.ToLookup(x => key, x => x));
-    }
-
-    // Should be lazy
-    private static OpeningTag CreateInnerText(
-        ReadOnlySpan<char> tagContent,
-        ReadOnlySpan<char> tagName,
-        ILookup<string, string>? tagAttributes)
-        => new(
-            Name: tagName.ToString(),
-            Attributes: tagAttributes ?? Array.Empty<int>().ToLookup(x => "", x => ""));
 }
