@@ -3,7 +3,7 @@ using static WebScrap.Css.CssProcessor;
 namespace WebScrap.Css.Tests;
 
 [TestFixture]
-public class CssProcessorTests
+public class CssProcessor_Tags_Tests
 {
 
     [TestCase]
@@ -82,32 +82,6 @@ public class CssProcessorTests
         Assert.That(
             () => CalculateTagIndexes(sample, css),
             Throws.ArgumentException);
-    }
-
-    [TestCase(
-        "<p> </p> <p id='foo'> </p>", 
-        "         ^")]
-    [TestCase(
-        "<p> </p> <br /> <p id='foo'> </p>", 
-        "                ^")]
-    [TestCase(
-        "<p> </p> <div> <p id='foo'> </p> </div>", 
-        "               ^")]
-    [TestCase(
-        "<p> </p> <div> <br /> <p id='foo'> </p> </div>", 
-        "                      ^")]
-    [TestCase(
-        "<p> </p> <div> <div> </div> <p id='foo'> </p> </div>", 
-        "                            ^")]
-    [TestCase(
-        "<div> <div> <p> </p>  </div> <p> </p> <p id='foo'> </p> </div>", 
-        "                                      ^")]
-    public void CalculateTagIndexes_IdAttr_ShouldDetect(string html, string pointer)
-    {
-        var css = "p#foo";
-        var expected = PointersToIndexes(pointer).Select(x => html[x..]);
-        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
-        Assert.That(results, Is.EquivalentTo(expected));
     }
 
     private static int[] PointersToIndexes(ReadOnlySpan<char> pointers)
