@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WebScrap.Common\WebScrap.Common.csproj" />
-    <ProjectReference Include="..\..\Tags\WebScrap.Tags\WebScrap.Tags.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

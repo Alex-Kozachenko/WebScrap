@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebScrap.Css\WebScrap.Css.csproj" />
+    <!-- TagsFactory -->
+    <ProjectReference Include="..\..\Tags\WebScrap.Tags\WebScrap.Tags.csproj" />
   </ItemGroup>
 
 </Project>

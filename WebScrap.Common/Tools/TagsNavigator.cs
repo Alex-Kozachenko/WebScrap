@@ -1,4 +1,4 @@
-namespace WebScrap.Tags.Tools;
+namespace WebScrap.Common.Tools;
 
 public static class TagsNavigator
 {

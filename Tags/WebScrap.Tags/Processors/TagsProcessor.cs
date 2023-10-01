@@ -2,7 +2,7 @@ using WebScrap.Common.Processors;
 using WebScrap.Common.Tags;
 using WebScrap.Common.Tags.Creators;
 using WebScrap.Tags.Creators;
-using WebScrap.Tags.Tools;
+using WebScrap.Common.Tools;
 
 namespace WebScrap.Tags.Processors;
 
