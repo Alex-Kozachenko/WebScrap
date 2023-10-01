@@ -1,10 +1,12 @@
+using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
 using static WebScrap.Tags.Attributes.AttributeExtractor;
 
 namespace WebScrap.Tags.Creators;
 
-internal class OpeningTagCreator : TagCreatorBase
+internal class OpeningTagCreator : ITagCreator
 {
-    protected override TagBase CreateTag(ReadOnlySpan<char> tagContent)
+    public TagBase Create(ReadOnlySpan<char> tagContent)
     {
         var index = tagContent.IndexOf(' ');
         if (index == -1)

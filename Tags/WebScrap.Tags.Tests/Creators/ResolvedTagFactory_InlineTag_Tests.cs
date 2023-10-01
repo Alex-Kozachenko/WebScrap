@@ -1,10 +1,14 @@
-using static WebScrap.Tags.Creators.TagCreatorBase;
+using WebScrap.Tags.Creators;
+using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
 
 namespace WebScrap.Tags.Tests;
 
 [TestFixture]
-public class TagCreatorBase_InlineTag_Tests
+public class ResolvedTagFactory_InlineTag_Tests
 {
+    private readonly TagFactory factory = new ResolvedTagFactory();
+
     [Test]
     public void Create_ShouldReturn_Name()
     {
@@ -12,7 +16,7 @@ public class TagCreatorBase_InlineTag_Tests
             <br />
         """;
         var expected = new { Name = "br" };
-        var result = Create(html) as InlineTag;
+        var result = factory.Create(html) as InlineTag;
         Assert.That(result, Is.TypeOf<InlineTag>());
         Assert.Multiple(() =>
         {
@@ -34,7 +38,7 @@ public class TagCreatorBase_InlineTag_Tests
             Id = new string [] { "foo" },
             Cls = new string[] { "bar", "buzz" }
         };
-        var result = Create(html) as InlineTag;
+        var result = factory.Create(html) as InlineTag;
         Assert.That(result, Is.TypeOf<InlineTag>());
         Assert.Multiple(() =>
         {

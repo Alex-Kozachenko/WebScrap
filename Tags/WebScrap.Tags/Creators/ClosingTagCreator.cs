@@ -1,7 +1,10 @@
+using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
+
 namespace WebScrap.Tags.Creators;
 
-internal class ClosingTagCreator : TagCreatorBase
+internal class ClosingTagCreator : ITagCreator
 {
-    protected override TagBase CreateTag(ReadOnlySpan<char> tag)
+    public TagBase Create(ReadOnlySpan<char> tag)
         => new ClosingTag(tag.ToString());
 }

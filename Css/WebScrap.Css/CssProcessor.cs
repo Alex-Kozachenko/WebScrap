@@ -1,8 +1,11 @@
 using System.Collections.Immutable;
+using WebScrap.Common.Tags;
+using WebScrap.Common.Processors;
 using WebScrap.Css.Listeners;
-using WebScrap.Tags;
-using WebScrap.Tags.Processors;
 using WebScrap.Tags.Tools;
+using WebScrap.Tags.Creators;
+using WebScrap.Tags;
+
 
 namespace WebScrap.Css;
 
@@ -21,8 +24,10 @@ public class CssProcessor : ProcessorBase
     public CssProcessor(
         ReadOnlySpan<char> css,
         int htmlLength)
+        : base(new ResolvedTagFactory())
     {
-        var tagsListeners = new {
+        var tagsListeners = new
+        {
             css = new CssTagsListener(css),
             tags = new HtmlTagsListener()
         };
@@ -76,11 +81,11 @@ public class CssProcessor : ProcessorBase
         var cssTagsListener = listeners.Get<CssTagsListener>();
 
         var checker = new CssCompliantChecker(
-            htmlTagsListener.TraversedTags, 
+            htmlTagsListener.TraversedTags,
             cssTagsListener.CssCompliantTags);
-        
-        return checker.CheckLength() 
-            && checker.CheckNames() 
+
+        return checker.CheckLength()
+            && checker.CheckNames()
             && checker.CheckAttributes();
     }
 }

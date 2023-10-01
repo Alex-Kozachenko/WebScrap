@@ -1,4 +1,4 @@
-using WebScrap.Tags.Tools;
+using WebScrap.Common.Tools;
 
 namespace WebScrap.Tags.Attributes;
 

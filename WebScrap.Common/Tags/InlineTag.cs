@@ -1,4 +1,4 @@
-namespace WebScrap.Tags;
+namespace WebScrap.Common.Tags;
 
 public sealed record class InlineTag(
     string Name, 

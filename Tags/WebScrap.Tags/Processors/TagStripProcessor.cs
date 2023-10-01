@@ -1,7 +1,8 @@
-using WebScrap.Tags.Processors;
 using System.Text;
+using WebScrap.Common.Processors;
+using WebScrap.Common.Tags;
+using WebScrap.Tags.Creators;
 using static WebScrap.Tags.Tools.TagsNavigator;
-using WebScrap.Tags;
 
 namespace WebScrap.Tags.Processors;
 
@@ -10,7 +11,8 @@ namespace WebScrap.Tags.Processors;
 /// removing any technical chars inside.
 /// Basically, stripping the html.
 /// </summary>
-public class TagStripProcessor(int htmlLength) : ProcessorBase
+public class TagStripProcessor(int htmlLength) 
+    : ProcessorBase(new ResolvedTagFactory())
 {
     private readonly Queue<Range> ranges = [];
     protected override bool IsDone => Processed >= htmlLength;

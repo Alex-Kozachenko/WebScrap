@@ -1,10 +1,13 @@
+using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
+
 namespace WebScrap.Tags.Creators;
 
-internal class InlineTagCreator : OpeningTagCreator
+internal class InlineTagCreator : ITagCreator
 {
-    protected override TagBase CreateTag(ReadOnlySpan<char> tagContent)
+    public TagBase Create(ReadOnlySpan<char> tagContent)
     {
-        return Cast((OpeningTag) base.CreateTag(tagContent));
+        return Cast((OpeningTag) new OpeningTagCreator().Create(tagContent));
     }
 
     private static TagBase Cast(OpeningTag tag)

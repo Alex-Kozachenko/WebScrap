@@ -1,8 +1,8 @@
-namespace WebScrap.Tags.Tools;
+namespace WebScrap.Common.Tools;
 
-internal static class StringExtensions
+public static class StringExtensions
 {
-    internal static ReadOnlySpan<char> Clip(
+    public static ReadOnlySpan<char> Clip(
         this ReadOnlySpan<char> html,
         ReadOnlySpan<char> beginAny,
         ReadOnlySpan<char> endAny)

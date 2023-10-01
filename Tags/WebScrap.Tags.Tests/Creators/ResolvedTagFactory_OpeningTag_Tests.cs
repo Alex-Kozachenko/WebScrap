@@ -1,10 +1,13 @@
-using static WebScrap.Tags.Creators.TagCreatorBase;
+using WebScrap.Tags.Creators;
+using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
 
 namespace WebScrap.Tags.Tests;
 
 [TestFixture]
-public class TagCreatorBase_OpeningTag_Tests
+public class ResolvedTagFactory_OpeningTag_Tests
 {
+    private readonly TagFactory factory = new ResolvedTagFactory();
 
     [Test]
     public void Create_ShouldReturn_Name()
@@ -14,7 +17,7 @@ public class TagCreatorBase_OpeningTag_Tests
         """;
 
         var expected = "aside";
-        var result = Create(html) as OpeningTag;
+        var result = factory.Create(html) as OpeningTag;
         Assert.That(result, Is.TypeOf<OpeningTag>());
         
         Assert.That(result.Name,
@@ -29,7 +32,7 @@ public class TagCreatorBase_OpeningTag_Tests
             <p id='foo'></p>
         """;
         var expected = new string [] { "foo" };
-        var result = Create(html) as OpeningTag;
+        var result = factory.Create(html) as OpeningTag;
         Assert.That(result, Is.TypeOf<OpeningTag>());
 
         Assert.That(result.Attributes["id"],
@@ -44,7 +47,7 @@ public class TagCreatorBase_OpeningTag_Tests
         """;
         
         string[] expected = ["quick", "brown", "fox"];
-        var result = Create(html) as OpeningTag;
+        var result = factory.Create(html) as OpeningTag;
         Assert.That(result, Is.TypeOf<OpeningTag>());
 
         Assert.That(result.Attributes["class"], 
@@ -59,7 +62,7 @@ public class TagCreatorBase_OpeningTag_Tests
         """;
         string[] expected = ["some", "empty", "attributes"];
 
-        var result = Create(html) as OpeningTag;
+        var result = factory.Create(html) as OpeningTag;
         Assert.That(result, Is.TypeOf<OpeningTag>());
 
         Assert.Multiple(() => 
@@ -82,7 +85,7 @@ public class TagCreatorBase_OpeningTag_Tests
                 "end"
             }
         };
-        var result = Create(html) as OpeningTag;
+        var result = factory.Create(html) as OpeningTag;
         Assert.That(result, Is.TypeOf<OpeningTag>());
 
         Assert.Multiple(() => 
@@ -101,7 +104,7 @@ public class TagCreatorBase_OpeningTag_Tests
             <p></p>
         """;
         var expected = "p";
-        var result = Create(html) as OpeningTag;
+        var result = factory.Create(html) as OpeningTag;
         Assert.That(result, Is.TypeOf<OpeningTag>());
         Assert.Multiple(() =>
         {

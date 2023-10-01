@@ -1,4 +1,4 @@
-namespace WebScrap.Tags;
+namespace WebScrap.Common.Tags;
 
 public record class OpeningTag(
     string Name,

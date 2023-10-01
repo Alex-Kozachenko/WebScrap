@@ -1,4 +1,4 @@
-using WebScrap.Tags;
+using WebScrap.Common.Tags;
 using WebScrap.Css.Listeners.Helpers;
 
 namespace WebScrap.Css.Listeners;

@@ -1,7 +1,7 @@
-using WebScrap.Tags;
-using WebScrap.Tags.Creators;
+using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
 
-namespace WebScrap.Tags.Processors;
+namespace WebScrap.Common.Processors;
 
 /// <summary>
 /// Represents a process of linear html-traversing,
@@ -13,7 +13,7 @@ namespace WebScrap.Tags.Processors;
 /// - Highly depends on <see cref="Processed"/> property value, 
 /// which is controlled by derived classes.
 /// </remarks>
-public abstract class ProcessorBase
+public abstract class ProcessorBase(TagFactory tagFactory)
 {
     public int Processed { get; private set; }
     protected abstract bool IsDone { get; }
@@ -47,7 +47,7 @@ public abstract class ProcessorBase
         {
             throw new ArgumentException($"Html should start with tag. {html}");
         }
-        var tag = TagCreatorBase.Create(html);
+        var tag = tagFactory.Create(html);
 
         if (tag is InlineTag)
         {
