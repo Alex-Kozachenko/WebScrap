@@ -62,6 +62,23 @@ public class CssProcessor_Attributes_Tests
         Assert.That(results, Is.EquivalentTo(expected));
     }
 
+    [TestCase(
+        "<p class='bar'> </p> <p id='foo' class='bar buzz'> </p>", 
+        "                     ^")]
+    [TestCase(
+        "<p class='bar'> </p> <p id='foo' class='bar buzz fizz'> </p>", 
+        "                     ^")]
+    [TestCase(
+        "<div id='foo' class='bar buzz'> </div> <p id='foo' class='bar buzz fizz'> </p>", 
+        "                                       ^")]
+    public void CalculateTagIndexes_MultiAttr_ShouldDetect(string html, string pointer)
+    {
+        var css = "p#foo.bar.buzz";
+        var expected = PointersToIndexes(pointer).Select(x => html[x..]);
+        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
+        Assert.That(results, Is.EquivalentTo(expected));
+    }
+
     private static int[] PointersToIndexes(ReadOnlySpan<char> pointers)
     {
         var result = new List<int>();

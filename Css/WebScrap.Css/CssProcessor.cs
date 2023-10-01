@@ -1,9 +1,9 @@
-using WebScrap.Processors.Common;
-using WebScrap.Tools.Html;
 using System.Collections.Immutable;
 using WebScrap.Css.Listeners;
 using WebScrap.Tags;
- 
+using WebScrap.Tags.Processors;
+using WebScrap.Tags.Tools;
+
 namespace WebScrap.Css;
 
 /// <summary>
@@ -11,17 +11,27 @@ namespace WebScrap.Css;
 /// and returns detected html which conforms 
 /// the css from the parameter.
 /// </summary>
-public class CssProcessor(
-    ReadOnlySpan<char> css,
-    int htmlLength)
-    : ProcessorBase
+public class CssProcessor : ProcessorBase
 {
     private readonly List<int> tagIndexes = [];
-    private readonly ListenerBase[] listeners = [
-        new CssTagsListener(css),
-        new HtmlTagsListener(),
-    ];
+    private readonly ListenerBase[] listeners;
+    private readonly int htmlLength;
     protected override bool IsDone => Processed >= htmlLength;
+
+    public CssProcessor(
+        ReadOnlySpan<char> css,
+        int htmlLength)
+    {
+        var tagsListeners = new {
+            css = new CssTagsListener(css),
+            tags = new HtmlTagsListener()
+        };
+        tagsListeners.css.Completed += OnCompletedCssMet;
+        // HACK: the order matters, since css has the event.
+        listeners = [tagsListeners.tags, tagsListeners.css];
+
+        this.htmlLength = htmlLength;
+    }
 
     public static ImmutableArray<int> CalculateTagIndexes(
         ReadOnlySpan<char> html,
@@ -43,7 +53,6 @@ public class CssProcessor(
         OpeningTag tag)
     {
         listeners.Process(tag);
-        TryProcessCompletedCss(html,tag);
     }
 
     protected override void Process(
@@ -53,65 +62,25 @@ public class CssProcessor(
         listeners.Process(tag);
     }
 
-    private void TryProcessCompletedCss(
-        ReadOnlySpan<char> html,
-        OpeningTag tag)
+    private void OnCompletedCssMet(object? sender, EventArgs args)
     {
-        var cssTagsListener = listeners.Get<CssTagsListener>();
-        var htmlTagsListener = listeners.Get<HtmlTagsListener>();
-
-        if (cssTagsListener.IsCssTagMet(tag) is false)
-        {
-            return;
-        }
-
-        if (cssTagsListener.IsCompletedCssMet() is false)
-        { 
-            return; 
-        }
-
-        if (IsCssComplied(htmlTagsListener, cssTagsListener))
+        if (IsCssComplied())
         {
             tagIndexes.Add(Processed);
         }
     }
 
-    private static bool IsCssComplied(
-        HtmlTagsListener htmlTagsListener,
-        CssTagsListener cssTagsListener)
+    private bool IsCssComplied()
     {
-        var traversedTags = htmlTagsListener.TraversedTags;
-        var cssCompliantTags = cssTagsListener.CssCompliantTags;
+        var htmlTagsListener = listeners.Get<HtmlTagsListener>();
+        var cssTagsListener = listeners.Get<CssTagsListener>();
 
-        if (cssCompliantTags.Count > traversedTags.Count)
-        {
-            return false;
-        }
-
-        while (cssCompliantTags.Count != 0)
-        {
-            var traversedTag = traversedTags.Pop();
-            var compliantTag = cssCompliantTags.Pop();
-            if (!compliantTag.Name.SequenceEqual(traversedTag.Name))
-            {
-                return false;
-            }
-
-            if (traversedTag.Attributes.Count == compliantTag.Attributes.Count)
-            {
-                for (int i = 0; i < traversedTag.Attributes.Count; i++)
-                {
-                    var tAttr = traversedTag.Attributes;
-                    var cAttr = compliantTag.Attributes;
-
-                    if (!cAttr.SequenceEqual(tAttr))
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
+        var checker = new CssCompliantChecker(
+            htmlTagsListener.TraversedTags, 
+            cssTagsListener.CssCompliantTags);
+        
+        return checker.CheckLength() 
+            && checker.CheckNames() 
+            && checker.CheckAttributes();
     }
 }
