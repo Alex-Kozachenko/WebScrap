@@ -1,12 +1,13 @@
-using WebScrap.Common.Tools;
 using WebScrap.Common.Tags;
 using WebScrap.Common.Tags.Creators;
+using WebScrap.Common.Tools;
+using WebScrap.Tags.Creators;
 
-namespace WebScrap.Tags.Creators;
+namespace WebScrap.Tags;
 
-public class TagCreatorResolver : ITagCreatorResolver
+public class TagFactory : TagFactoryBase
 {
-    public ITagCreator Resolve(ReadOnlySpan<char> tag)
+    protected override ITagCreator GetTagCreator(ReadOnlySpan<char> tag)
     {
         tag = tag.Clip("<", ">");
         return tag.IndexOf('/') switch

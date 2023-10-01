@@ -1,4 +1,4 @@
-using static WebScrap.Tags.Processors.TagStripProcessor;
+using WebScrap.Tags.Processors;
 
 namespace WebScrap.Tags.Processors.Tests;
 
@@ -18,4 +18,8 @@ public class TagStripProcessorTests
     {
         Assert.That(() => ExtractText(html), Throws.Exception);
     }
+
+     public static ReadOnlySpan<char> ExtractText(
+        ReadOnlySpan<char> html)
+        => TagStripProcessor.ExtractText(new TagFactory(), html);
 }

@@ -1,5 +1,5 @@
 using NUnit.Framework.Internal;
-using static WebScrap.Tags.Processors.TagsProcessor;
+using WebScrap.Tags.Processors;
 
 namespace WebScrap.Tags.Processors.Tests;
 
@@ -37,10 +37,14 @@ public class TagsProcessorTests
 
         var html = expected + """
             Lorem ipsum...
-            <div> <p> Lorem ipsum </p> </div>            
+            <div> <p> Lorem ipsum </p> </div>
         """;
 
         var actual = ExtractEntireTag(html).ToString();
         Assert.That(actual, Is.EquivalentTo(expected));
     }
+
+     public static ReadOnlySpan<char> ExtractEntireTag(
+        ReadOnlySpan<char> html)
+        => TagsProcessor.ExtractEntireTag(new TagFactory(), html);
 }

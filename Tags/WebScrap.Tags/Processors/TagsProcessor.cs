@@ -1,5 +1,6 @@
 using WebScrap.Common.Processors;
 using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
 using WebScrap.Tags.Creators;
 using WebScrap.Tags.Tools;
 
@@ -12,22 +13,26 @@ namespace WebScrap.Tags.Processors;
 /// - Knows when to stop, 
 /// so it will ignore anything beyond targeted tag.
 /// </remarks>
-public class TagsProcessor() 
-    : ProcessorBase(new ResolvedTagFactory())
+public class TagsProcessor(TagFactoryBase tagFactory) 
+    : ProcessorBase(tagFactory)
 {
     private readonly Stack<ReadOnlyMemory<char>> tags = new();
     protected override bool IsDone => tags.Count is 0;
 
-    public static int GetEntireTagLength(ReadOnlySpan<char> html)
+    public static int GetEntireTagLength(
+        TagFactoryBase tagFactory, 
+        ReadOnlySpan<char> html)
     {
-        var processor = new TagsProcessor();
+        var processor = new TagsProcessor(tagFactory);
         processor.Run(html);
         return processor.Processed;
     }
 
-    public static ReadOnlySpan<char> ExtractEntireTag(ReadOnlySpan<char> html)
+    public static ReadOnlySpan<char> ExtractEntireTag(
+        TagFactoryBase tagFactory,
+        ReadOnlySpan<char> html)
     {
-        var processor = new TagsProcessor();
+        var processor = new TagsProcessor(tagFactory);
         processor.Run(html);
         return html[..processor.Processed];
     }

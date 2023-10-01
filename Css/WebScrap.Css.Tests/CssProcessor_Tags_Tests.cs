@@ -1,4 +1,6 @@
-using static WebScrap.Css.CssProcessor;
+using static WebScrap.Css.Tests.CssProcessor;
+using WebScrap.Tags;
+using System.Collections.Immutable;
 
 namespace WebScrap.Css.Tests;
 

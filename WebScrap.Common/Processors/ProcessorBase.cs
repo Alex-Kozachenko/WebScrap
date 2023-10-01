@@ -13,7 +13,7 @@ namespace WebScrap.Common.Processors;
 /// - Highly depends on <see cref="Processed"/> property value, 
 /// which is controlled by derived classes.
 /// </remarks>
-public abstract class ProcessorBase(TagFactory tagFactory)
+public abstract class ProcessorBase(TagFactoryBase tagFactory)
 {
     public int Processed { get; private set; }
     protected abstract bool IsDone { get; }
@@ -47,7 +47,7 @@ public abstract class ProcessorBase(TagFactory tagFactory)
         {
             throw new ArgumentException($"Html should start with tag. {html}");
         }
-        var tag = tagFactory.Create(html);
+        var tag = tagFactory.CreateTagBase(html);
 
         if (tag is InlineTag)
         {

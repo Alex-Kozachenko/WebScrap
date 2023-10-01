@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using WebScrap.Common.Tags;
+using WebScrap.Common.Tags.Creators;
 using WebScrap.Common.Processors;
 using WebScrap.Css.Listeners;
 using WebScrap.Tags.Tools;
@@ -22,9 +23,10 @@ public class CssProcessor : ProcessorBase
     protected override bool IsDone => Processed >= htmlLength;
 
     public CssProcessor(
+        TagFactoryBase tagFactory,
         ReadOnlySpan<char> css,
         int htmlLength)
-        : base(new ResolvedTagFactory())
+        : base(tagFactory)
     {
         var tagsListeners = new
         {
@@ -39,10 +41,11 @@ public class CssProcessor : ProcessorBase
     }
 
     public static ImmutableArray<int> CalculateTagIndexes(
+        TagFactoryBase tagFactory, 
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
-        var processor = new CssProcessor(css, html.Length);
+        var processor = new CssProcessor(tagFactory, css, html.Length);
         processor.Run(html);
         return [.. processor.tagIndexes];
     }

@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using WebScrap.Tags;
 using WebScrap.Tags.Processors;
 using WebScrap.Css;
 
@@ -15,13 +16,16 @@ public static class API
     public static ImmutableArray<string> ExtractHtml(
         string html, 
         string css)
-        => CssProcessor.CalculateTagIndexes(html, css)
+    {
+        var tagFactory = new TagFactory();
+        return CssProcessor.CalculateTagIndexes(tagFactory, html, css)
             // Extract the ranges of detected tags.
             .Select(tagIndex => new Range(
                 tagIndex,
-                tagIndex + TagsProcessor.GetEntireTagLength(html.Substring(tagIndex))))
+                tagIndex + TagsProcessor.GetEntireTagLength(tagFactory, html.Substring(tagIndex))))
             // Return the actual strings from html.
             .Select(range => html[range])
             .Select(x => x.ToString())
             .ToImmutableArray();
+    }
 }
