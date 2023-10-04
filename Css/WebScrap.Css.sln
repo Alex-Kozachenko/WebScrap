@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Tests", "WebSc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css", "WebScrap.Css\WebScrap.Css.csproj", "{E6526D6C-1563-4A8F-96A1-BC6289EBC35D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Preprocessing", "WebScrap.Css.Preprocessing\WebScrap.Css.Preprocessing.csproj", "{FFFB14E6-D901-43FA-93A4-F9889AF16CFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Preprocessing.Tests", "WebScrap.Css.Preprocessing.Tests\WebScrap.Css.Preprocessing.Tests.csproj", "{13AC70D6-8B45-4757-919B-0C517C2B0240}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{E6526D6C-1563-4A8F-96A1-BC6289EBC35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6526D6C-1563-4A8F-96A1-BC6289EBC35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6526D6C-1563-4A8F-96A1-BC6289EBC35D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFFB14E6-D901-43FA-93A4-F9889AF16CFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFB14E6-D901-43FA-93A4-F9889AF16CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFB14E6-D901-43FA-93A4-F9889AF16CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFB14E6-D901-43FA-93A4-F9889AF16CFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13AC70D6-8B45-4757-919B-0C517C2B0240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13AC70D6-8B45-4757-919B-0C517C2B0240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13AC70D6-8B45-4757-919B-0C517C2B0240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13AC70D6-8B45-4757-919B-0C517C2B0240}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

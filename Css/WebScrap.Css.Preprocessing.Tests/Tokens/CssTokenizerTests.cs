@@ -1,6 +1,6 @@
-using static WebScrap.Css.Tokens.CssTokenizer;
+using static WebScrap.Css.Preprocessing.Tokens.CssTokenizer;
 
-namespace WebScrap.Css.Tokens.Tests;
+namespace WebScrap.Css.Preprocessing.Tokens.Tests;
 
 [TestFixture]
 public class CssTokenizerTests

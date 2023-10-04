@@ -1,6 +1,6 @@
-namespace WebScrap.Css.Tokens;
+namespace WebScrap.Css.Preprocessing.Tokens;
 
-internal record struct CssToken(
+public record struct CssToken(
     ReadOnlyMemory<char> Tag,
     char? ChildSelector, 
     ILookup<string, string> Attributes)

@@ -18,14 +18,27 @@ public static class Extract
         string css)
     {
         var tagFactory = new TagFactory();
-        return CssProcessor.CalculateTagIndexes(tagFactory, html, css)
-            // Extract the ranges of detected tags.
-            .Select(tagIndex => new Range(
-                tagIndex,
-                tagIndex + TagsProcessor.GetEntireTagLength(tagFactory, html.Substring(tagIndex))))
-            // Return the actual strings from html.
-            .Select(range => html[range])
+        var tagIndexes = CssProcessor.CalculateTagIndexes(tagFactory, html, css);
+        var tagRanges = ExtractTagRanges(tagFactory, html, tagIndexes);
+        var tagStrings = ExtractStrings(html, tagRanges);
+        return tagStrings;
+    }
+
+    private static ImmutableArray<Range> ExtractTagRanges(
+        TagFactory tagFactory,
+        string html,
+        IEnumerable<int> tagIndexes) 
+        => tagIndexes.Select(tagIndex => 
+        {
+            var substring = html.Substring(tagIndex);
+            var offset = TagsProcessor.GetEntireTagLength(tagFactory, substring);
+            return tagIndex..(tagIndex + offset);
+        }).ToImmutableArray();
+
+    private static ImmutableArray<string> ExtractStrings(
+        string html, 
+        IEnumerable<Range> tagRanges) 
+        => tagRanges.Select(range => html[range])
             .Select(x => x.ToString())
             .ToImmutableArray();
-    }
 }

@@ -36,7 +36,28 @@ public class Navigation_KnownIssues_Tests
             <p class="some"> One </p>
         """];
 
-        var wrontResult = Extract.Html(html, css);
+        var wrongResult = Extract.Html(html, css);
+        Assert.Pass();
+    }
+
+    [Test]
+    public void ExtractHtml_OnTaglessCss_ReturnsNothing()
+    {
+        var css = ".some";
+        var html = """
+        <div>
+            <p class="some"> One </p>
+        </div>
+        """;
+
+        string[] expected = """
+            <p class="some"> One </p>
+        """.Split(Environment.NewLine);
+
+        string[] actual = [];
+
+        // NOTE: Check CssTokenBuilder.Build.
+        var wrongResult = Extract.Html(html, css);
         Assert.Pass();
     }
 }
