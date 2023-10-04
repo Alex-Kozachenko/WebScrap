@@ -4,7 +4,7 @@ using WebScrap.Css.Listeners.Helpers;
 namespace WebScrap.Css.Listeners;
 
 /// <summary>
-/// Tracs specific CSS-like query.
+/// Tracks specific CSS-like query.
 /// </summary>
 internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 {
