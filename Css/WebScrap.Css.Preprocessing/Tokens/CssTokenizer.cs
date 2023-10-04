@@ -1,8 +1,8 @@
 using System.Collections.Immutable;
 
-namespace WebScrap.Css.Tokens;
+namespace WebScrap.Css.Preprocessing.Tokens;
 
-internal static class CssTokenizer
+public static class CssTokenizer
 {
     private static readonly char[] childSelectors = [' ', '>'];
 

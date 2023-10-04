@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using WebScrap.Css.Attributes;
 
-namespace WebScrap.Css.Tokens;
+namespace WebScrap.Css.Preprocessing.Tokens;
 
 internal static class CssTokenBuilder
 {

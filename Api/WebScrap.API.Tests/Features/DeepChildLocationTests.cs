@@ -6,20 +6,20 @@ public class DeepChildLocationTests
     [TestCase(Category=Categories.Features)]
     public void Test1()
     {
-        var css = ".container b";
+        var css = "div.container b";
         var html = """
         <main>
             <div class='container'>
-                <b> Important </b>
                 <p> LoremIpsum </p>
                 <p> Lorem <b> Ipsum </b> </p>
+                <b> Important </b>
             </div>
         </main>
         """;
 
         string[] expected = [
-            "<b> Important </b>",
-            "<b> Ipsum </b>"];
+            "<b> Ipsum </b>",
+            "<b> Important </b>"];
         
         var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
@@ -28,7 +28,7 @@ public class DeepChildLocationTests
     [TestCase(Category=Categories.Features)]
     public void Test2()
     {
-        var css =".container b";
+        var css ="div.container b";
         var html = """
         <main class="container">
             <div class="container">
@@ -51,7 +51,7 @@ public class DeepChildLocationTests
     [TestCase(Category=Categories.Features)]
     public void Test3()
     {
-        var css =".container b";
+        var css ="div.container b";
         var html = """
         <main class="container">
             <p> Lorem <b> Ipsum </b> </p>
