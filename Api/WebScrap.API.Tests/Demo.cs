@@ -20,7 +20,7 @@ public class Demo
         """;
         html = html.TrimStart(' ');
 
-        var htmlEntries = API.ExtractHtml(html, css);
+        var htmlEntries = Extract.Html(html, css);
 
         string[] expected = [
             """<p class="foo bar">One</p>""",

@@ -32,7 +32,7 @@ HtmlExtraction
     </main>
     """;
 
-    var htmlEntries = API.ExtractHtml(html, css);
+    var htmlEntries = Extract.Html(html, css);
 
     string[] expected = [
         """<p class="foo bar">One</p>""",
@@ -45,4 +45,4 @@ Please refer to a [API test set](./Api/WebScrap.API.Tests/) for more usecases.
 
 Known Issues
 ======
-Please refer to a [KnownIssues test set](./Api/WebScrap.API.KnownIssues.Tests/) for actual list of current well-known issues.
+Please refer to a [KnownIssues test set](./Api/WebScrap.API.KnownIssues.Tests/Features) for actual list of current well-known issues.

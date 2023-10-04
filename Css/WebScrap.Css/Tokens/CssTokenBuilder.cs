@@ -9,6 +9,7 @@ internal static class CssTokenBuilder
         ReadOnlyMemory<char> css,
         ReadOnlySpan<char> childSelectors)
     {
+        ThrowIfUnsupported(css);
         var childSelector = css.Span[0];
         return childSelectors.Contains(childSelector)
             ? Build(css[1..], childSelector)
@@ -39,5 +40,14 @@ internal static class CssTokenBuilder
     {
         var attributes = new Reader(css[tagName.Length..]).Read();
         return new(tagName, childSelector, attributes);
+    }
+
+    private static void ThrowIfUnsupported(ReadOnlyMemory<char> css)
+    {
+        _ = css.Span.IndexOfAny("*[],") switch 
+        {
+            -1 => 0,
+            var i => throw new ArgumentException($"Unable to process css. Css contains unsupported chars: {css[i..]}.")
+        };        
     }
 }
