@@ -6,12 +6,11 @@ namespace WebScrap.Css.Listeners.Helpers;
 
 internal class CssTracker(ReadOnlySpan<char> css)
 {
-    private readonly ImmutableArray<CssToken> expectedTags
+    private readonly ImmutableArray<CssOpeningTag> expectedTags
         = CssTokenizer.TokenizeCss(css);
 
-    internal CssToken GetCurrentExpectedTag(Stack<OpeningTag> cssTags)
+    internal CssOpeningTag GetCurrentExpectedTag(int processedTagsCount)
     {
-        var processedTagsCount = cssTags.Count;
         var index = processedTagsCount switch
         {
             < 0 => throw new ArgumentOutOfRangeException(
@@ -24,6 +23,6 @@ internal class CssTracker(ReadOnlySpan<char> css)
         return expectedTags[index];
     }
 
-    internal bool IsCompletedCssMet(Stack<OpeningTag> cssTags)
-        => cssTags.Count == expectedTags.Length;
+    internal bool IsCompletedCssMet(int cssTagsLength)
+        => cssTagsLength == expectedTags.Length;
 }

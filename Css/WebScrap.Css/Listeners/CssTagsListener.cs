@@ -1,5 +1,6 @@
 using WebScrap.Common.Tags;
 using WebScrap.Css.Listeners.Helpers;
+using WebScrap.Css.Preprocessing.Tokens;
 
 namespace WebScrap.Css.Listeners;
 
@@ -9,19 +10,20 @@ namespace WebScrap.Css.Listeners;
 internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 {
     private readonly CssTracker cssTracker = new(css);
-    private readonly Stack<OpeningTag> cssTags = new();
+    private readonly Stack<CssOpeningTag> cssTags = new();
     public event EventHandler? Completed;
 
-    public Stack<OpeningTag> CssCompliantTags => new (cssTags.Reverse());
+    public Stack<CssOpeningTag> CssCompliantTags => new (cssTags.Reverse());
 
     internal override void Process(OpeningTag tag)
     {
         if (IsNameMet(tag) && IsAttrMet(tag))
         {
-            cssTags.Push(tag);
+            var css = cssTracker.GetCurrentExpectedTag(cssTags.Count);
+            cssTags.Push(css);
         }
 
-        if (cssTracker.IsCompletedCssMet(cssTags))
+        if (cssTracker.IsCompletedCssMet(cssTags.Count))
         {
             Completed?.Invoke(this, EventArgs.Empty);
         }
@@ -38,16 +40,15 @@ internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 
     private bool IsNameMet(TagBase tag)
     {
-        var css = cssTracker.GetCurrentExpectedTag(cssTags);
-        return tag.Name.AsSpan()
-            .SequenceEqual(css.Tag.Span);
+        var css = cssTracker.GetCurrentExpectedTag(cssTags.Count);
+        return tag.Name.Equals(css.Name);
     }
 
     private bool IsAttrMet(OpeningTag tag)
     {
-        var css = cssTracker.GetCurrentExpectedTag(cssTags);
+        var css = cssTracker.GetCurrentExpectedTag(cssTags.Count);
         var isAttrRequired = css.Attributes.Any(x => x.Key != "");
         return !isAttrRequired
-            || AttributesComparer.IsSubset(tag.Attributes, css.Attributes);
+            || AttributesComparer.IsSubsetOf(css.Attributes, tag.Attributes);
     }
 }

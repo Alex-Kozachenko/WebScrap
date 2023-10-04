@@ -17,7 +17,7 @@ public class CssTokenizerTests
         ];
 
         (char?, string)[] result = TokenizeCss(sample)
-            .Select(x => (x.ChildSelector, x.Tag.ToString()))
+            .Select(x => (x.ChildSelector, x.Name.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
     }

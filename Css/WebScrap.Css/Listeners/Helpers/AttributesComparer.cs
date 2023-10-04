@@ -1,53 +1,37 @@
 namespace WebScrap.Css.Listeners.Helpers;
 
 internal class AttributesComparer(
-    ILookup<string, string> source,
-    ILookup<string, string> dest)
+    ILookup<string, string> SubSet,
+    ILookup<string, string> SuperSet)
 {
-
     /// <summary>
-    /// Checks if <see cref="dest"/> lookup contains all keys and values, 
-    /// which are required by <see cref="source"/>.
+    /// Checks if <see cref="SuperSet"/> lookup contains all keys and values, 
+    /// which are required by <see cref="SubSet"/>.
     /// </summary>
-    internal static bool IsSubset(
-        ILookup<string, string> source,
-        ILookup<string, string> dest)
-        => new AttributesComparer(source, dest)
+    internal static bool IsSubsetOf(
+        ILookup<string, string> subset,
+        ILookup<string, string> superset)
+        => new AttributesComparer(subset, superset)
             .IsSubset();
 
     private bool IsSubset()
-        => IsDestBigger() 
-        && AreKeysSubset() 
-        && AreValuesSubset();
-
-    private bool IsDestBigger()
-        => dest.Count >= source.Count;
-
-    private bool AreKeysSubset()
     {
-        foreach (var attr in dest)
+        foreach (var subAttr in SubSet)
         {
-            if (!source.Contains(attr.Key))
+            if (!SuperSet.Contains(subAttr.Key))
             {
                 return false;
             }
-        }
-        return true;
-    }
 
-    private bool AreValuesSubset()
-    {
-        foreach (var attr in dest)
-        {
-            foreach (var value in attr)
+            var superValues = SuperSet[subAttr.Key].ToArray();
+            foreach (var value in subAttr)
             {
-                if (!source[attr.Key].ToArray().Contains(value))
+                if (!superValues.Contains(value))
                 {
                     return false;
                 }
             }
         }
-
         return true;
     }
 }

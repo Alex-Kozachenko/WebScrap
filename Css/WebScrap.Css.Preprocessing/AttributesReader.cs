@@ -1,9 +1,7 @@
-namespace WebScrap.Css.Attributes;
-
 /// <summary>
 /// Reads a lookup of css tokens from css-like query.
 /// </summary>
-internal class Reader(ReadOnlyMemory<char> cssToken)
+internal class AttributesReader(ReadOnlyMemory<char> cssToken)
 {
     private int CurrentTokenIndex
         => cssToken.Span.LastIndexOfAny(".#");

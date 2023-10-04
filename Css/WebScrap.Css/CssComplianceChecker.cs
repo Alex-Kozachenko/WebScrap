@@ -1,18 +1,19 @@
 using WebScrap.Common.Tags;
 using WebScrap.Css.Listeners.Helpers;
+using WebScrap.Css.Preprocessing.Tokens;
 
 namespace WebScrap.Css;
 
 internal class CssCompliantChecker(
     Stack<OpeningTag> traversedTags, 
-    Stack<OpeningTag> cssCompliantTags)
+    Stack<CssOpeningTag> cssCompliantTags)
 {
     internal bool CheckLength()
         => cssCompliantTags.Count <= traversedTags.Count;
 
     internal bool CheckNames()
     {
-        var cssTags = new Stack<OpeningTag>(cssCompliantTags.Reverse());
+        var cssTags = new Stack<CssOpeningTag>(cssCompliantTags.Reverse());
         var travTags = new Stack<OpeningTag>(traversedTags.Reverse());
         while (cssTags.Count != 0)
         {
@@ -35,7 +36,7 @@ internal class CssCompliantChecker(
             var travTag = travTags.Pop();
             var cssTag = cssTags.Pop();
 
-            if (!AttributesComparer.IsSubset(cssTag.Attributes, travTag.Attributes))
+            if (!AttributesComparer.IsSubsetOf(cssTag.Attributes, travTag.Attributes))
             {
                 return false;
             }

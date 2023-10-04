@@ -6,7 +6,7 @@ public static class CssTokenizer
 {
     private static readonly char[] childSelectors = [' ', '>'];
 
-    public static ImmutableArray<CssToken> TokenizeCss(ReadOnlySpan<char> css)
+    public static ImmutableArray<CssOpeningTag> TokenizeCss(ReadOnlySpan<char> css)
         => css.Tokenize().ToCssTokens();
 
     private static ImmutableArray<ReadOnlyMemory<char>> Tokenize(
@@ -25,10 +25,10 @@ public static class CssTokenizer
         return [.. tokens];
     }
 
-    private static ImmutableArray<CssToken> ToCssTokens(
+    private static ImmutableArray<CssOpeningTag> ToCssTokens(
         this ImmutableArray<ReadOnlyMemory<char>> tokens)
     {
-        var result = new Queue<CssToken>();
+        var result = new Queue<CssOpeningTag>();
         foreach (var token in tokens)
         {
             result.Enqueue(CssTokenBuilder.Build(token, childSelectors));

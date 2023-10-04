@@ -1,11 +1,11 @@
 using System.Collections.Immutable;
-using WebScrap.Css.Attributes;
+using WebScrap.Css.Preprocessing;
 
 namespace WebScrap.Css.Preprocessing.Tokens;
 
 internal static class CssTokenBuilder
 {
-    internal static CssToken Build(
+    internal static CssOpeningTag Build(
         ReadOnlyMemory<char> css,
         ReadOnlySpan<char> childSelectors)
     {
@@ -16,7 +16,7 @@ internal static class CssTokenBuilder
             : Build(css, (char?)null);
     }
 
-    private static CssToken Build(ReadOnlyMemory<char> css, char? childSelector)
+    private static CssOpeningTag Build(ReadOnlyMemory<char> css, char? childSelector)
     {
         var tagName = GetTagName(css);
         return Build(css, childSelector, tagName);
@@ -33,13 +33,13 @@ internal static class CssTokenBuilder
         return css[..counter];
     }
 
-    private static CssToken Build(
+    private static CssOpeningTag Build(
         ReadOnlyMemory<char> css, 
         char? childSelector, 
         ReadOnlyMemory<char> tagName)
     {
-        var attributes = new Reader(css[tagName.Length..]).Read();
-        return new(tagName, childSelector, attributes);
+        var attributes = new AttributesReader(css[tagName.Length..]).Read();
+        return new(tagName.ToString(), attributes, childSelector);
     }
 
     private static void ThrowIfUnsupported(ReadOnlyMemory<char> css)

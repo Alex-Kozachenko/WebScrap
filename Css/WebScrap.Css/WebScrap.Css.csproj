@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WebScrap.Common\WebScrap.Common.csproj" />
     <ProjectReference Include="..\WebScrap.Css.Preprocessing\WebScrap.Css.Preprocessing.csproj" />
   </ItemGroup>
 
