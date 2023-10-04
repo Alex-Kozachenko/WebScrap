@@ -3,9 +3,9 @@ using WebScrap.Tags;
 using WebScrap.Tags.Processors;
 using WebScrap.Css;
 
-namespace WebScrap;
+namespace WebScrap.API;
 
-public static class API
+public static class Extract
 {
     /// <summary>
     /// Detect tags suitable for css parameter.
@@ -13,7 +13,7 @@ public static class API
     /// <param name="html"></param>
     /// <param name="css"></param>
     /// <returns></returns>
-    public static ImmutableArray<string> ExtractHtml(
+    public static ImmutableArray<string> Html(
         string html, 
         string css)
     {

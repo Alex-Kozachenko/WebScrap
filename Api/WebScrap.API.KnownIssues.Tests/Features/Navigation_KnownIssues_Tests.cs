@@ -1,20 +1,20 @@
-namespace WebScrap.Tests.IntegrationTests.KnownIssues;
+namespace WebScrap.API.KnownIssues.Tests;
 
-public class ExtractHtml_KnownIssues_Tests
+public class Navigation_KnownIssues_Tests
 {
-    [Test]
-    public void UnableToAccept_Html_With_WhitespacesOnStart()
+    [TestCase(Category=Categories.KnownIssues)]
+    public void ExtractHtml_UnableToAccept_Html_With_WhitespacesOnStart()
     {
         var css = "div";
         var html ="    <div></div>";
 
         Assert.That(() => 
-            API.ExtractHtml(html, css),
+            Extract.Html(html, css),
             Throws.Exception);
     }
 
     [Test]
-    public void AttributedTags_ShouldExtract()
+    public void ExtractHtml_DropsProcessing_DueTo_TagName()
     {
         var css = "p.some";
         var html = """
@@ -25,13 +25,18 @@ public class ExtractHtml_KnownIssues_Tests
         </div>
         """;
 
+        // Because there is <p> Ignore </p>.
         string[] expected = """
             <p class="some"> One </p>
             <p> Ignore </p>
             <p class="some"> Two </p>
         """.Split(Environment.NewLine);
 
-        var actual = API.ExtractHtml(html, css);
+        string[] actual = ["""
+            <p class="some"> One </p>
+        """];
+
+        var wrontResult = Extract.Html(html, css);
         Assert.Pass();
     }
 }

@@ -17,7 +17,7 @@ public class HtmlExtractionFeatureTests
         </main>
         """;
 
-        var actual = API.ExtractHtml(html, css);
+        var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -37,7 +37,7 @@ public class HtmlExtractionFeatureTests
         </main>
         """;
 
-        var actual = API.ExtractHtml(html, css);
+        var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -59,7 +59,7 @@ public class HtmlExtractionFeatureTests
         """;
         string[] expected = ["<p>One</p>","<p>Two</p>"];
 
-        var actual = API.ExtractHtml(html, css);
+        var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -76,7 +76,7 @@ public class HtmlExtractionFeatureTests
         """;
         string[] expected = ["<p>One cup of <strong>a caffeine</strong> for a <i>good</i> start! </p>"];
 
-        var actual = API.ExtractHtml(html, css);
+        var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -112,7 +112,7 @@ public class HtmlExtractionFeatureTests
             "<p id='main' class='some bigger classes'> Two </p>"
         ];
 
-        var actual = API.ExtractHtml(html, css);
+        var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }
