@@ -53,10 +53,10 @@ public class DeepChildLocationTests
     {
         var css ="div.container b";
         var html = """
-        <main class="container">
+        <div class="container">
             <p> Lorem <b> Ipsum </b> </p>
             <b> Clatu <b> Barata <b> Nictu </b> </b> </b>
-        </main>
+        </div>
         """;
 
         string[] expected = [
