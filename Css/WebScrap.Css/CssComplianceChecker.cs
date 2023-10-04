@@ -4,43 +4,107 @@ using WebScrap.Css.Preprocessing.Tokens;
 
 namespace WebScrap.Css;
 
-internal class CssCompliantChecker(
-    Stack<OpeningTag> traversedTags, 
-    Stack<CssOpeningTag> cssCompliantTags)
+// TODO: its unclear how its working.
+// And its a legit drunk code.
+internal class CssComplianceChecker
 {
-    internal bool CheckLength()
-        => cssCompliantTags.Count <= traversedTags.Count;
+    private readonly Stack<CssTokenBase> cssCompliantTags;
+    private readonly Stack<OpeningTag> traversedTags;
 
-    internal bool CheckNames()
+    public CssComplianceChecker(
+        Stack<CssTokenBase> cssCompliantTags,
+        Stack<OpeningTag> traversedTags)
     {
-        var cssTags = new Stack<CssOpeningTag>(cssCompliantTags.Reverse());
-        var travTags = new Stack<OpeningTag>(traversedTags.Reverse());
-        while (cssTags.Count != 0)
-        {
-            var travTag = travTags.Pop();
-            var cssTag = cssTags.Pop();
-            if (!cssTag.Name.SequenceEqual(travTag.Name))
-            {
-                return false;
-            }
-        }
-        return true;
+        this.cssCompliantTags = cssCompliantTags;
+        this.traversedTags = traversedTags;
     }
 
-    internal bool CheckAttributes()
+    internal static bool CheckLength(CssComplianceChecker checker)
     {
-        var cssTags = new Stack<OpeningTag>(cssCompliantTags.Reverse());
-        var travTags = new Stack<OpeningTag>(traversedTags.Reverse());
-        while (cssTags.Count != 0)
-        {
-            var travTag = travTags.Pop();
-            var cssTag = cssTags.Pop();
-
-            if (!AttributesComparer.IsSubsetOf(cssTag.Attributes, travTag.Attributes))
-            {
-                return false;
-            }
-        }
-        return true;
+        var clone = Clone(checker);
+        return clone.cssCompliantTags.Count <= clone.traversedTags.Count;
     }
+
+    internal static bool CheckNames(CssComplianceChecker checker) 
+    {
+        var clone = Clone(checker);
+        return clone.Traverse((cssTag, travTag)
+            => cssTag.Name.SequenceEqual(travTag.Name));
+    }
+
+    internal static bool CheckAttributes(CssComplianceChecker checker)
+    {
+        var clone = Clone(checker);
+        return clone.Traverse((cssTag, travTag)
+            => AttributesComparer.IsSubsetOf(
+                cssTag.Attributes, 
+                travTag.Attributes));
+    }
+
+    private static CssComplianceChecker Clone(CssComplianceChecker original)
+    {
+        return new CssComplianceChecker(
+            new Stack<CssTokenBase>(original.cssCompliantTags.Reverse()),
+            new Stack<OpeningTag>(original.traversedTags.Reverse())
+        );
+    }
+
+    private bool Traverse(Func<CssTokenBase, OpeningTag, bool> isValid)
+    {
+        var cssTag = cssCompliantTags.Pop();
+        var travTag = traversedTags.Pop();
+
+        if (isValid(cssTag, travTag))
+        {
+            return DecideNextTraverse(cssTag, isValid);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    private bool Traverse_AnyChildCssToken(
+        Func<CssTokenBase, OpeningTag, bool> isValid)
+    {
+        var cssTag = cssCompliantTags.Peek();
+        var travTag = traversedTags.Pop();
+
+        if (isValid(cssTag, travTag))
+        {
+            return DecideNextTraverse(cssTag, isValid);
+        }
+        else
+        {
+            return Traverse_AnyChildCssToken(isValid);
+        }
+    }
+
+    private bool Traverse_DirectChildCssToken(
+        Func<CssTokenBase, OpeningTag, bool> isValid)
+    {
+        var cssTag = cssCompliantTags.Peek();
+        var travTag = traversedTags.Pop();
+
+        if (isValid(cssTag, travTag))
+        {
+            cssCompliantTags.Pop();
+            return DecideNextTraverse(cssTag, isValid);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool DecideNextTraverse(
+        CssTokenBase cssTag,
+        Func<CssTokenBase, OpeningTag, bool> isValid) 
+        => cssTag switch
+        {
+            AnyChildCssToken => Traverse_AnyChildCssToken(isValid),
+            DirectChildCssToken => Traverse_DirectChildCssToken(isValid),
+            RootCssToken => true,
+        };
 }

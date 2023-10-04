@@ -10,10 +10,10 @@ namespace WebScrap.Css.Listeners;
 internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 {
     private readonly CssTracker cssTracker = new(css);
-    private readonly Stack<CssOpeningTag> cssTags = new();
+    private readonly Stack<CssTokenBase> cssTags = new();
     public event EventHandler? Completed;
 
-    public Stack<CssOpeningTag> CssCompliantTags => new (cssTags.Reverse());
+    public Stack<CssTokenBase> CssCompliantTags => new (cssTags.Reverse());
 
     internal override void Process(OpeningTag tag)
     {

@@ -80,12 +80,12 @@ public class CssProcessor : ProcessorBase
         var htmlTagsListener = listeners.Get<HtmlTagsListener>();
         var cssTagsListener = listeners.Get<CssTagsListener>();
 
-        var checker = new CssCompliantChecker(
-            htmlTagsListener.TraversedTags,
-            cssTagsListener.CssCompliantTags);
+        var checker = new CssComplianceChecker(
+            cssTagsListener.CssCompliantTags,
+            htmlTagsListener.TraversedTags);
 
-        return checker.CheckLength()
-            && checker.CheckNames()
-            && checker.CheckAttributes();
+        return CssComplianceChecker.CheckLength(checker)
+            && CssComplianceChecker.CheckNames(checker)
+            && CssComplianceChecker.CheckAttributes(checker);
     }
 }

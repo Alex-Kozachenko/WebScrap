@@ -1,11 +1,11 @@
+using WebScrap.Css.Preprocessing.Tokens;
 using System.Collections.Immutable;
-using WebScrap.Css.Preprocessing;
 
-namespace WebScrap.Css.Preprocessing.Tokens;
+namespace WebScrap.Css.Preprocessing;
 
 internal static class CssTokenBuilder
 {
-    internal static CssOpeningTag Build(
+    internal static CssTokenBase Build(
         ReadOnlyMemory<char> css,
         ReadOnlySpan<char> childSelectors)
     {
@@ -16,7 +16,7 @@ internal static class CssTokenBuilder
             : Build(css, (char?)null);
     }
 
-    private static CssOpeningTag Build(ReadOnlyMemory<char> css, char? childSelector)
+    private static CssTokenBase Build(ReadOnlyMemory<char> css, char? childSelector)
     {
         var tagName = GetTagName(css);
         return Build(css, childSelector, tagName);
@@ -33,13 +33,19 @@ internal static class CssTokenBuilder
         return css[..counter];
     }
 
-    private static CssOpeningTag Build(
+    private static CssTokenBase Build(
         ReadOnlyMemory<char> css, 
         char? childSelector, 
         ReadOnlyMemory<char> tagName)
     {
         var attributes = new AttributesReader(css[tagName.Length..]).Read();
-        return new(tagName.ToString(), attributes, childSelector);
+        return childSelector switch 
+        {
+            null => new RootCssToken(tagName.ToString(), attributes),
+            ' ' => new AnyChildCssToken(tagName.ToString(), attributes),
+            '>' => new DirectChildCssToken(tagName.ToString(), attributes),
+            _ => throw new ArgumentException($"Unknown child selector: {childSelector}")
+        };
     }
 
     private static void ThrowIfUnsupported(ReadOnlyMemory<char> css)

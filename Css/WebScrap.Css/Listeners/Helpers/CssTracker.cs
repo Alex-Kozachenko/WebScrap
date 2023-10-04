@@ -1,4 +1,5 @@
 using WebScrap.Common.Tags;
+using WebScrap.Css.Preprocessing;
 using WebScrap.Css.Preprocessing.Tokens;
 using System.Collections.Immutable;
 
@@ -6,10 +7,10 @@ namespace WebScrap.Css.Listeners.Helpers;
 
 internal class CssTracker(ReadOnlySpan<char> css)
 {
-    private readonly ImmutableArray<CssOpeningTag> expectedTags
+    private readonly ImmutableArray<CssTokenBase> expectedTags
         = CssTokenizer.TokenizeCss(css);
 
-    internal CssOpeningTag GetCurrentExpectedTag(int processedTagsCount)
+    internal CssTokenBase GetCurrentExpectedTag(int processedTagsCount)
     {
         var index = processedTagsCount switch
         {

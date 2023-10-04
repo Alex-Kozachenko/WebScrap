@@ -14,16 +14,22 @@ public class CssCompliantCheckerTests
             .Select(x => new OpeningTag(x, EmptyAttributes))
             .ToArray();
 
-        CssOpeningTag[] cssTags = [
-            new("div", EmptyAttributes, null),
-            new("b", EmptyAttributes, childSelector)
-            ];
+        var cssTags = new List<CssTokenBase>
+        {
+            new RootCssToken("div", EmptyAttributes),
+            childSelector switch
+            {
+                ' ' => new AnyChildCssToken("b", EmptyAttributes),
+                '>' => new DirectChildCssToken("b", EmptyAttributes),
+                _ => throw new ArgumentException()
+            }
+        };
 
-        var actual = new CssCompliantChecker(
-            new Stack<OpeningTag>(tagsMet.Reverse()), 
-            new Stack<CssOpeningTag>(cssTags.Reverse()))
-            .CheckNames();
-
+        // TODO: this API is frigging drunk.
+        var checker = new CssComplianceChecker(
+            new Stack<CssTokenBase>(cssTags),
+            new Stack<OpeningTag>(tagsMet));
+        var actual = CssComplianceChecker.CheckNames(checker);
         return actual;
     }
 
