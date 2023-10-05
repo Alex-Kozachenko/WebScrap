@@ -1,6 +1,7 @@
 using WebScrap.Common.Tags;
-using WebScrap.Css.Listeners.Helpers;
 using WebScrap.Css.Common.Tokens;
+using WebScrap.Css.Traversing.Strategies;
+using WebScrap.Css.Traversing.Validators;
 
 namespace WebScrap.Css;
 
@@ -18,27 +19,29 @@ internal class CssComplianceChecker
         this.cssCompliantTags = cssCompliantTags;
         this.traversedTags = traversedTags;
     }
-
     internal static bool CheckLength(CssComplianceChecker checker)
     {
-        var clone = Clone(checker);
-        return clone.cssCompliantTags.Count <= clone.traversedTags.Count;
+        return checker.cssCompliantTags.Count <= checker.traversedTags.Count;
     }
 
     internal static bool CheckNames(CssComplianceChecker checker) 
     {
         var clone = Clone(checker);
-        return clone.Traverse((cssTag, travTag)
-            => cssTag.Name.SequenceEqual(travTag.Name));
+        return new RootTraversingStrategy(
+            new NamesCssValidator(), 
+            clone.cssCompliantTags,
+            clone.traversedTags)
+            .Traverse();
     }
 
     internal static bool CheckAttributes(CssComplianceChecker checker)
     {
         var clone = Clone(checker);
-        return clone.Traverse((cssTag, travTag)
-            => AttributesComparer.IsSubsetOf(
-                cssTag.Attributes, 
-                travTag.Attributes));
+        return new RootTraversingStrategy(
+            new AttributesCssValidator(), 
+            clone.cssCompliantTags,
+            clone.traversedTags)
+            .Traverse();
     }
 
     private static CssComplianceChecker Clone(CssComplianceChecker original)
@@ -48,63 +51,4 @@ internal class CssComplianceChecker
             new Stack<OpeningTag>(original.traversedTags.Reverse())
         );
     }
-
-    private bool Traverse(Func<CssTokenBase, OpeningTag, bool> isValid)
-    {
-        var cssTag = cssCompliantTags.Pop();
-        var travTag = traversedTags.Pop();
-
-        if (isValid(cssTag, travTag))
-        {
-            return DecideNextTraverse(cssTag, isValid);
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-
-    private bool Traverse_AnyChildCssToken(
-        Func<CssTokenBase, OpeningTag, bool> isValid)
-    {
-        var cssTag = cssCompliantTags.Peek();
-        var travTag = traversedTags.Pop();
-
-        if (isValid(cssTag, travTag))
-        {
-            return DecideNextTraverse(cssTag, isValid);
-        }
-        else
-        {
-            return Traverse_AnyChildCssToken(isValid);
-        }
-    }
-
-    private bool Traverse_DirectChildCssToken(
-        Func<CssTokenBase, OpeningTag, bool> isValid)
-    {
-        var cssTag = cssCompliantTags.Peek();
-        var travTag = traversedTags.Pop();
-
-        if (isValid(cssTag, travTag))
-        {
-            cssCompliantTags.Pop();
-            return DecideNextTraverse(cssTag, isValid);
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private bool DecideNextTraverse(
-        CssTokenBase cssTag,
-        Func<CssTokenBase, OpeningTag, bool> isValid) 
-        => cssTag switch
-        {
-            AnyChildCssToken => Traverse_AnyChildCssToken(isValid),
-            DirectChildCssToken => Traverse_DirectChildCssToken(isValid),
-            RootCssToken => true,
-        };
 }
