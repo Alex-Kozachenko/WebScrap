@@ -51,12 +51,14 @@ public class DeepChildLocationTests
     [TestCase(Category=Categories.Features)]
     public void Test3()
     {
-        var css ="div.container b";
+        var css ="main.container b";
         var html = """
-        <div class="container">
-            <p> Lorem <b> Ipsum </b> </p>
-            <b> Clatu <b> Barata <b> Nictu </b> </b> </b>
-        </div>
+        <main class="container">
+            <div class="container">
+                <p> Lorem <b> Ipsum </b> </p>
+                <b> Clatu <b> Barata <b> Nictu </b> </b> </b>
+            </div>
+        </main>
         """;
 
         string[] expected = [
