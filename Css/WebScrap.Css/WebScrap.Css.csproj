@@ -12,6 +12,9 @@
     <ProjectReference Include="..\WebScrap.Css.Common\WebScrap.Css.Common.csproj" />
     <!-- CssTracker.cs -->
     <ProjectReference Include="..\WebScrap.Css.Preprocessing\WebScrap.Css.Preprocessing.csproj" />
+    <!-- RootTraversingStrategy.cs -->
+    <!-- Validators -->
+    <ProjectReference Include="..\WebScrap.Css.Traversing\WebScrap.Css.Traversing.csproj" />
   </ItemGroup>
 
 </Project>

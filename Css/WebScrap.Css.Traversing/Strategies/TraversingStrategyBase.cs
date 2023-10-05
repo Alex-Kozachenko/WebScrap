@@ -9,27 +9,34 @@ internal abstract class TraversingStrategyBase
     protected readonly CssValidatorBase validator;
     protected readonly Stack<CssTokenBase> cssCompliantTags;
     protected readonly Stack<OpeningTag> traversedTags;
+    protected CssTokenBase? lastCompliantTag; // HACK: this field is hucked.
 
-    public TraversingStrategyBase(
+    internal TraversingStrategyBase(
         CssValidatorBase validator,
         Stack<CssTokenBase> cssCompliantTags,
-        Stack<OpeningTag> traversedTags)
+        Stack<OpeningTag> traversedTags,
+        CssTokenBase? lastCompliantTag = null)
     {
         AssertCss(cssCompliantTags);
         this.validator = validator;
         this.cssCompliantTags = cssCompliantTags;
         this.traversedTags = traversedTags;
+        this.lastCompliantTag = lastCompliantTag;
     }
 
-    public abstract bool Traverse();
+    internal abstract bool Traverse();
 
-    protected bool TraverseNext(CssTokenBase currentCssTag)
-        => CreateNextTraverseStrategy(currentCssTag)
-            .Traverse();
+    protected bool TraverseNext() 
+        => (cssCompliantTags.Count(), traversedTags.Count()) switch
+        {
+            (0, _) => true,
+            (_, 0) => true,
+            (_, _) => CreateNextTraverseStrategy()
+                        .Traverse()
+        };
 
-    internal TraversingStrategyBase CreateNextTraverseStrategy(
-        CssTokenBase currentCssTag)
-        => currentCssTag switch
+    protected TraversingStrategyBase CreateNextTraverseStrategy()
+        => lastCompliantTag switch
         {
             AnyChildCssToken => new AnyChildTraversingStrategy(
                 validator, 
@@ -39,11 +46,10 @@ internal abstract class TraversingStrategyBase
                 validator, 
                 cssCompliantTags, 
                 traversedTags),
-            RootCssToken => new DirectChildTraversingStrategy(
+            _ => new RootTraversingStrategy(
                 validator, 
                 cssCompliantTags, 
                 traversedTags),
-            _ => throw new InvalidOperationException(),
         };
 
     private static void AssertCss(Stack<CssTokenBase> css)

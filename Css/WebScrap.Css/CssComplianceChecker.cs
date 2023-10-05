@@ -1,7 +1,6 @@
 using WebScrap.Common.Tags;
 using WebScrap.Css.Common.Tokens;
-using WebScrap.Css.Traversing.Strategies;
-using WebScrap.Css.Traversing.Validators;
+using WebScrap.Css.Traversing;
 
 namespace WebScrap.Css;
 
@@ -27,21 +26,17 @@ internal class CssComplianceChecker
     internal static bool CheckNames(CssComplianceChecker checker) 
     {
         var clone = Clone(checker);
-        return new RootTraversingStrategy(
-            new NamesCssValidator(), 
+        return TraversingAPI.TraverseNames(
             clone.cssCompliantTags,
-            clone.traversedTags)
-            .Traverse();
+            clone.traversedTags);
     }
 
     internal static bool CheckAttributes(CssComplianceChecker checker)
     {
         var clone = Clone(checker);
-        return new RootTraversingStrategy(
-            new AttributesCssValidator(), 
+        return TraversingAPI.TraverseNames(
             clone.cssCompliantTags,
-            clone.traversedTags)
-            .Traverse();
+            clone.traversedTags);
     }
 
     private static CssComplianceChecker Clone(CssComplianceChecker original)

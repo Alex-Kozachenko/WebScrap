@@ -1,6 +1,6 @@
 using WebScrap.Common.Tags;
 using WebScrap.Css.Common.Tokens;
-using WebScrap.Css.Listeners.Helpers;
+using WebScrap.Css.Common.Helpers;
 
 namespace WebScrap.Css.Traversing.Validators;
 

@@ -8,30 +8,40 @@
             "type": "shell",
             "command": "dotnet",
             "args": [
-            	"build",
-            ],
-            "group": "build",
-            "presentation": {
-                // Reveal the output only if unrecognized errors occur.
-                "reveal": "silent"
-            },
-            // Use the standard MS compiler pattern to detect errors, warnings and infos
-            "problemMatcher": "$msCompile"
+                "build",
+                "Api"
+            ]
+        },
+        {
+            "label": "test api",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [ "test", "Api" ],
+            "problemMatcher": [],
+        },
+        {
+            "label": "test css",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [ "test", "Css" ],
+            "problemMatcher": [],
+        },
+        {
+            "label": "test tags",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [ "test", "Tags" ],
+            "problemMatcher": [],
         },
         {
             "label": "test",
             "type": "shell",
-            "command": "dotnet",
-            "args": [
-            	"test"
-            ],
-            "group": "test",
-            "presentation": {
-                // Reveal the output only if unrecognized errors occur.
-                "reveal": "silent"
+            "group": {
+                "kind": "test",
             },
-            // Use the standard MS compiler pattern to detect errors, warnings and infos
-            "problemMatcher": "$msCompile"
+            "dependsOrder": "sequence",
+            "dependsOn":["test css", "test tags", "test api"]
         }
     ]
 }
+

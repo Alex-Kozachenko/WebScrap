@@ -4,21 +4,23 @@ using WebScrap.Css.Traversing.Validators;
 
 namespace WebScrap.Css.Traversing.Strategies;
 
-internal sealed class AnyChildTraversingStrategy(
+internal sealed class RootTraversingStrategy(
     CssValidatorBase validator,
     Stack<CssTokenBase> cssCompliantTags,
-    Stack<OpeningTag> traversedTags)
+    Stack<OpeningTag> traversedTags) 
         : TraversingStrategyBase(validator, cssCompliantTags, traversedTags)
 {
-    public override bool Traverse()
+    internal override bool Traverse()
     {
         var currentCss = cssCompliantTags.Peek();
         var travTag = traversedTags.Pop();
 
         if (!validator.IsValid(currentCss, travTag))
         {
-            return Traverse();
+            return false;
         }
-        return TraverseNext(currentCss);
+        lastCompliantTag = currentCss;
+        cssCompliantTags.Pop();
+        return TraverseNext();
     }
 }

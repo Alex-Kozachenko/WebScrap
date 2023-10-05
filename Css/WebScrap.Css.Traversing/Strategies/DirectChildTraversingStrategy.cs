@@ -10,7 +10,7 @@ internal sealed class DirectChildTraversingStrategy(
     Stack<OpeningTag> traversedTags) 
         : TraversingStrategyBase(validator, cssCompliantTags, traversedTags)
 {
-    public override bool Traverse()
+    internal override bool Traverse()
     {
         var currentCss = cssCompliantTags.Peek();
         var travTag = traversedTags.Pop();
@@ -19,7 +19,8 @@ internal sealed class DirectChildTraversingStrategy(
         {
             return false;
         }
+        lastCompliantTag = currentCss;
         cssCompliantTags.Pop();
-        return TraverseNext(currentCss);
+        return TraverseNext();
     }
 }

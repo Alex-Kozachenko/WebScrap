@@ -1,6 +1,6 @@
-namespace WebScrap.Css.Listeners.Helpers;
+namespace WebScrap.Css.Common.Helpers;
 
-internal class AttributesComparer(
+public class AttributesComparer(
     ILookup<string, string> SubSet,
     ILookup<string, string> SuperSet)
 {
@@ -8,7 +8,7 @@ internal class AttributesComparer(
     /// Checks if <see cref="SuperSet"/> lookup contains all keys and values, 
     /// which are required by <see cref="SubSet"/>.
     /// </summary>
-    internal static bool IsSubsetOf(
+    public static bool IsSubsetOf(
         ILookup<string, string> subset,
         ILookup<string, string> superset)
         => new AttributesComparer(subset, superset)
