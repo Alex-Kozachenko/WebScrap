@@ -9,13 +9,33 @@ public class TraversingAPI_Names_Tests
     [TestCase("main div b", ExpectedResult = true)]
     [TestCase("main div p div b", ExpectedResult = true)]
     [TestCase("main b div b", ExpectedResult = true)]
-    [TestCase("main b div p", ExpectedResult = false)]
-    public bool TraverseNames_With_AnyChildCssToken_Works(string input)
+    public bool TraverseNames_With_AnyChildCssToken_Finds(string input)
     {
-        // div b
+        // main div b
         var cssTags = new List<CssTokenBase>
         {
-            new RootCssToken("div", EmptyAttributes),
+            new RootCssToken("main", EmptyAttributes),
+            new AnyChildCssToken("div", EmptyAttributes),
+            new AnyChildCssToken("b", EmptyAttributes),
+        };
+
+        var tagsMet = input.Split(' ')
+            .Select(x => new OpeningTag(x, EmptyAttributes))
+            .ToArray();
+
+        return TraverseNames(cssTags, tagsMet);
+    }
+
+    [TestCase("main b div p", ExpectedResult = false)]
+    [TestCase("foo bar buzz b", ExpectedResult = false)]
+    [TestCase("foo bar div b", ExpectedResult = false)]
+    public bool TraverseNames_With_AnyChildCssToken_NotFinds(string input)
+    {
+        // main div b
+        var cssTags = new List<CssTokenBase>
+        {
+            new RootCssToken("main", EmptyAttributes),
+            new AnyChildCssToken("div", EmptyAttributes),
             new AnyChildCssToken("b", EmptyAttributes),
         };
 
@@ -28,7 +48,7 @@ public class TraversingAPI_Names_Tests
 
     [TestCase("main div p b", ExpectedResult = false)]
     [TestCase("main div b", ExpectedResult = true)]
-    public bool TraverseNames_With_DirectChildCssToken_Works(string input)
+    public bool TraverseNames_With_DirectChildCssToken_Finds(string input)
     {
         // div>b
         var cssTags = new List<CssTokenBase>
