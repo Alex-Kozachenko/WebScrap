@@ -1,6 +1,6 @@
-namespace WebScrap.Css.Preprocessing.Tokens;
+namespace WebScrap.Css.Common.Tokens;
 
-public sealed record class DirectChildCssToken(
+public sealed record class AnyChildCssToken(
     string Name, 
     ILookup<string, string> Attributes) 
     : CssTokenBase(Name, Attributes);

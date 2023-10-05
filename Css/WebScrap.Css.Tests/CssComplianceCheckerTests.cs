@@ -1,5 +1,5 @@
 using WebScrap.Common.Tags;
-using WebScrap.Css.Preprocessing.Tokens;
+using WebScrap.Css.Common.Tokens;
 
 namespace WebScrap.Css.Tests;
 

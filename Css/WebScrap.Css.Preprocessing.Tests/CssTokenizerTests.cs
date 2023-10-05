@@ -1,5 +1,5 @@
 using static WebScrap.Css.Preprocessing.CssTokenizer;
-using WebScrap.Css.Preprocessing.Tokens;
+using WebScrap.Css.Common.Tokens;
 
 namespace WebScrap.Css.Preprocessing.Tests;
 

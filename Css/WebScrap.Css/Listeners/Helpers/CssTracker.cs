@@ -1,6 +1,6 @@
 using WebScrap.Common.Tags;
 using WebScrap.Css.Preprocessing;
-using WebScrap.Css.Preprocessing.Tokens;
+using WebScrap.Css.Common.Tokens;
 using System.Collections.Immutable;
 
 namespace WebScrap.Css.Listeners.Helpers;
