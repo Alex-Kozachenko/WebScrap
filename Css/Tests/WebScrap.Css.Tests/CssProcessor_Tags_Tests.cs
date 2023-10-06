@@ -13,7 +13,7 @@ public class CssProcessor_Tags_Tests
         var css = "p";
         var (html, pointers) = (
             "<p>__</p>__<p>__",
-            "^          ^");
+            "^");
         var expected = PointersToIndexes(pointers).Select(x => html[x..]);
         var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
         Assert.That(results, Is.EquivalentTo(expected));
