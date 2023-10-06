@@ -80,13 +80,14 @@ public class CssProcessor : ProcessorBase
     {
         var htmlTagsListener = listeners.Get<HtmlTagsListener>();
         var cssTagsListener = listeners.Get<CssTagsListener>();
-
-        var checker = new CssComplianceChecker(
-            cssTagsListener.CssCompliantTags,
+        var (css, tags) = (
+            cssTagsListener.CssCompliantTags, 
             htmlTagsListener.TraversedTags);
 
-        return CssComplianceChecker.CheckLength(checker)
-            && CssComplianceChecker.CheckNames(checker)
-            && CssComplianceChecker.CheckAttributes(checker);
+        // Why Traverse? Why bool?
+        // TODO: Rename to CheckingAPI.
+        // TODO: And CssProcessor goes to GatheringAPI, I think.
+        return Traversing.TraversingAPI.TraverseNames(css, tags)
+            && Traversing.TraversingAPI.TraverseAttributes(css, tags);
     }
 }
