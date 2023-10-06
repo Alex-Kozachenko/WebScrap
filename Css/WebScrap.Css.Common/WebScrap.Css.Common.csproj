@@ -7,4 +7,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\WebScrap.Common\WebScrap.Common.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,16 +1,16 @@
+using System.Collections.Immutable;
 using WebScrap.Common.Tags;
-using WebScrap.Css.Common.Helpers;
+using WebScrap.Css.Common.Comparers;
 using WebScrap.Css.Common.Tokens;
-using WebScrap.Css.Listeners.Helpers;
 
 namespace WebScrap.Css.Listeners;
 
 /// <summary>
 /// Tracks specific CSS-like query.
 /// </summary>
-internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
+internal class CssTagsListener(ImmutableArray<CssTokenBase> expectedTags) 
+    : ListenerBase
 {
-    private readonly CssTracker cssTracker = new(css);
     private readonly Stack<CssTokenBase> cssTags = new();
     public event EventHandler? Completed;
 
@@ -20,11 +20,11 @@ internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
     {
         if (IsNameMet(tag) && IsAttrMet(tag))
         {
-            var css = cssTracker.GetCurrentExpectedTag(cssTags.Count);
+            var css = GetCurrentExpectedTag(cssTags.Count);
             cssTags.Push(css);
         }
 
-        if (cssTracker.IsCompletedCssMet(cssTags.Count))
+        if (IsCompletedCssMet(cssTags.Count))
         {
             Completed?.Invoke(this, EventArgs.Empty);
         }
@@ -41,15 +41,32 @@ internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
 
     private bool IsNameMet(TagBase tag)
     {
-        var css = cssTracker.GetCurrentExpectedTag(cssTags.Count);
-        return tag.Name.Equals(css.Name);
+        var css = GetCurrentExpectedTag(cssTags.Count);
+        return new NameComparer().AreSame(css, tag.Name);
     }
 
     private bool IsAttrMet(OpeningTag tag)
     {
-        var css = cssTracker.GetCurrentExpectedTag(cssTags.Count);
+        var css = GetCurrentExpectedTag(cssTags.Count);
         var isAttrRequired = css.Attributes.Any(x => x.Key != "");
         return !isAttrRequired
-            || AttributesComparer.IsSubsetOf(css.Attributes, tag.Attributes);
+             || new AttributesComparer().AreSame(css, tag);
     }
+
+    private CssTokenBase GetCurrentExpectedTag(int processedTagsCount)
+    {
+        var index = processedTagsCount switch
+        {
+            < 0 => throw new ArgumentOutOfRangeException(
+                $"{nameof(processedTagsCount)} = {processedTagsCount}"),
+            var i when i < expectedTags.Length
+               => i,
+            _ => expectedTags.Length - 1,
+        };
+
+        return expectedTags[index];
+    }
+
+    private bool IsCompletedCssMet(int cssTagsLength)
+        => cssTagsLength == expectedTags.Length;
 }

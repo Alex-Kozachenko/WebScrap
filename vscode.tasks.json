@@ -10,34 +10,37 @@
             "args": [
                 "build",
                 "Api"
-            ]
+            ],
+            "presentation":{
+                "reveal": "silent"
+            }
         },
         {
             "label": "test api",
             "type": "shell",
             "command": "dotnet",
             "args": [ "test", "Api" ],
-            "problemMatcher": [],
+            "problemMatcher": []
         },
         {
             "label": "test css",
             "type": "shell",
             "command": "dotnet",
             "args": [ "test", "Css" ],
-            "problemMatcher": [],
+            "problemMatcher": []
         },
         {
             "label": "test tags",
             "type": "shell",
             "command": "dotnet",
             "args": [ "test", "Tags" ],
-            "problemMatcher": [],
+            "problemMatcher": []
         },
         {
             "label": "test",
             "type": "shell",
             "group": {
-                "kind": "test",
+                "kind": "test"
             },
             "dependsOrder": "sequence",
             "dependsOn":["test css", "test tags", "test api"]

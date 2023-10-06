@@ -4,6 +4,7 @@ using WebScrap.Common.Tags.Creators;
 using WebScrap.Common.Processors;
 using WebScrap.Common.Tools;
 using WebScrap.Css.Listeners;
+using WebScrap.Css.Preprocessing;
 
 namespace WebScrap.Css;
 
@@ -27,7 +28,7 @@ public class CssProcessor : ProcessorBase
     {
         var tagsListeners = new
         {
-            css = new CssTagsListener(css),
+            css = new CssTagsListener(CssTokenizer.TokenizeCss(css)),
             tags = new HtmlTagsListener()
         };
         tagsListeners.css.Completed += OnCompletedCssMet;

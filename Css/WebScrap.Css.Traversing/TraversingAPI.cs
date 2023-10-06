@@ -1,6 +1,6 @@
 using WebScrap.Common.Tags;
 using WebScrap.Css.Common.Tokens;
-using WebScrap.Css.Traversing.Validators;
+using WebScrap.Css.Common.Comparers;
 
 namespace WebScrap.Css.Traversing;
 
@@ -10,7 +10,7 @@ public static class TraversingAPI
         Stack<CssTokenBase> cssCompliantTags,
         Stack<OpeningTag> traversedTags) 
         => Traverse(
-            new NamesCssValidator(),
+            new NameComparer(),
             cssCompliantTags,
             traversedTags);
 
@@ -18,19 +18,18 @@ public static class TraversingAPI
         Stack<CssTokenBase> cssCompliantTags,
         Stack<OpeningTag> traversedTags) 
         => Traverse(
-            new AttributesCssValidator(),
+            new AttributesComparer(),
             cssCompliantTags,
             traversedTags);
 
     private static bool Traverse(
-        CssValidatorBase validator, 
+        IComparer comparer, 
         Stack<CssTokenBase> cssCompliantTags,
         Stack<OpeningTag> traversedTags)
     {
         var css = new Stack<CssTokenBase>(cssCompliantTags.Reverse());
         var tags = new Stack<OpeningTag>(traversedTags.Reverse());
         var cssTracker = new CssTracker(css, tags);
-        return new CssTraverser(validator, cssTracker)
-                .Traverse();
+        return CssTraverser.Traverse(comparer, cssTracker);
     }
 }

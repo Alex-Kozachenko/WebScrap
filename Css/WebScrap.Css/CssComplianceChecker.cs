@@ -18,6 +18,7 @@ internal class CssComplianceChecker
         this.cssCompliantTags = cssCompliantTags;
         this.traversedTags = traversedTags;
     }
+
     internal static bool CheckLength(CssComplianceChecker checker)
     {
         return checker.cssCompliantTags.Count <= checker.traversedTags.Count;
