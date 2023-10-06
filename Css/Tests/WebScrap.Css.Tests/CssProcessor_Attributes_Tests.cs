@@ -7,20 +7,20 @@ public class CssProcessor_Attributes_Tests
 {
 
     [TestCase(
-        "<p> </p> <p id='foo'> </p>", 
-        "         ^")]
+        "<div><p> </p> <p id='foo'> </p></div>", 
+        "              ^")]
     [TestCase(
-        "<p> </p> <br /> <p id='foo'> </p>", 
-        "                ^")]
+        "<div><p> </p> <br /> <p id='foo'> </p></div>", 
+        "                     ^")]
     [TestCase(
-        "<p> </p> <div> <p id='foo'> </p> </div>", 
-        "               ^")]
+        "<div><p> </p> <div> <p id='foo'> </p> </div></div>", 
+        "                    ^")]
     [TestCase(
-        "<p> </p> <div> <br /> <p id='foo'> </p> </div>", 
-        "                      ^")]
+        "<div><p> </p> <div> <br /> <p id='foo'> </p> </div></div>", 
+        "                           ^")]
     [TestCase(
-        "<p> </p> <div> <div> </div> <p id='foo'> </p> </div>", 
-        "                            ^")]
+        "<div><p> </p> <div> <div> </div> <p id='foo'> </p> </div></div>", 
+        "                                 ^")]
     [TestCase(
         "<div> <div> <p> </p>  </div> <p> </p> <p id='foo'> </p> </div>", 
         "                                      ^")]
@@ -33,16 +33,16 @@ public class CssProcessor_Attributes_Tests
     }
 
     [TestCase(
-        "<p> </p> <p class='bar'> </p>", 
-        "         ^")]
+        "<div><p> </p> <p class='bar'> </p></div>", 
+        "              ^")]
 
     [TestCase(
-        "<p> </p> <p class='bar buzz'> </p>", 
-        "         ^")]
+        "<div><p> </p> <p class='bar buzz'> </p></div>", 
+        "              ^")]
 
     [TestCase(
-        "<p class='bar'> </p> <p class='bar buzz'> </p>", 
-        "^                    ^")]
+        "<div><p class='bar'> </p> <p class='bar buzz'> </p></div>", 
+        "     ^                    ^")]
     public void CalculateTagIndexes_Class_ShouldDetect(string html, string pointer)
     {
         var css = "p.bar";
@@ -52,8 +52,8 @@ public class CssProcessor_Attributes_Tests
     }
 
     [TestCase(
-        "<p class='bar'> </p> <p class='bar buzz'> </p>", 
-        "                     ^")]
+        "<div><p class='bar'> </p> <p class='bar buzz'> </p></div>", 
+        "                          ^")]
     public void CalculateTagIndexes_MultiClass_ShouldDetect(string html, string pointer)
     {
         var css = "p.bar.buzz";
@@ -63,14 +63,14 @@ public class CssProcessor_Attributes_Tests
     }
 
     [TestCase(
-        "<p class='bar'> </p> <p id='foo' class='bar buzz'> </p>", 
-        "                     ^")]
+        "<div><p class='bar'> </p> <p id='foo' class='bar buzz'> </p></div>", 
+        "                          ^")]
     [TestCase(
-        "<p class='bar'> </p> <p id='foo' class='bar buzz fizz'> </p>", 
-        "                     ^")]
+        "<div><p class='bar'> </p> <p id='foo' class='bar buzz fizz'> </p></div>", 
+        "                          ^")]
     [TestCase(
-        "<div id='foo' class='bar buzz'> </div> <p id='foo' class='bar buzz fizz'> </p>", 
-        "                                       ^")]
+        "<div><div id='foo' class='bar buzz'> </div> <p id='foo' class='bar buzz fizz'> </p></div>", 
+        "                                            ^")]
     public void CalculateTagIndexes_MultiAttr_ShouldDetect(string html, string pointer)
     {
         var css = "p#foo.bar.buzz";

@@ -1,6 +1,7 @@
-using static WebScrap.Css.Preprocessing.Tokens.CssTokenizer;
+using static WebScrap.Css.Preprocessing.CssTokenizer;
+using WebScrap.Css.Common.Tokens;
 
-namespace WebScrap.Css.Preprocessing.Tokens.Tests;
+namespace WebScrap.Css.Preprocessing.Tests;
 
 [TestFixture]
 public class CssTokenizerTests
@@ -9,15 +10,15 @@ public class CssTokenizerTests
     public void TokenizeCss_ShouldProcess_Descendants()
     {
         var sample = "main div>p";
-        (char?, string)[] expected =
+        (Type, string)[] expected =
         [
-            new(null, "main"),
-            new(' ', "div"),
-            new('>', "p"),
+            new(typeof(RootCssToken), "main"),
+            new(typeof(AnyChildCssToken), "div"),
+            new(typeof(DirectChildCssToken), "p"),
         ];
 
-        (char?, string)[] result = TokenizeCss(sample)
-            .Select(x => (x.ChildSelector, x.Tag.ToString()))
+        (Type, string)[] result = TokenizeCss(sample)
+            .Select(x => (x.GetType(), x.Name.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
     }

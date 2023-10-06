@@ -1,53 +1,32 @@
+using System.Collections.Immutable;
 using WebScrap.Common.Tags;
-using WebScrap.Css.Listeners.Helpers;
+using WebScrap.Common.Processors;
+using WebScrap.Css.Common.Comparers;
+using WebScrap.Css.Common.Tokens;
+using WebScrap.Css.Traversing;
 
 namespace WebScrap.Css.Listeners;
 
 /// <summary>
-/// Tracks specific CSS-like query.
 /// </summary>
-internal class CssTagsListener(ReadOnlySpan<char> css) : ListenerBase
+internal class CssTagsListener(ImmutableArray<CssTokenBase> expectedTags)
+    : IProcessorListener
 {
-    private readonly CssTracker cssTracker = new(css);
-    private readonly Stack<OpeningTag> cssTags = new();
     public event EventHandler? Completed;
+    public ImmutableArray<CssTokenBase> CssCompliantTags => expectedTags;
 
-    public Stack<OpeningTag> CssCompliantTags => new (cssTags.Reverse());
-
-    internal override void Process(OpeningTag tag)
+    public void Process(IReadOnlyCollection<OpeningTag> tagsHistory, OpeningTag tag)
     {
-        if (IsNameMet(tag) && IsAttrMet(tag))
-        {
-            cssTags.Push(tag);
-        }
+        var isCompleted = TraversingAPI.TraverseNames(expectedTags, tagsHistory) 
+            && TraversingAPI.TraverseAttributes(expectedTags, tagsHistory);
 
-        if (cssTracker.IsCompletedCssMet(cssTags))
+        if (isCompleted)
         {
             Completed?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    internal override void Process(ClosingTag tag)
+    public void Process(IReadOnlyCollection<OpeningTag> tagsHistory, ClosingTag tag)
     {
-        if (IsNameMet(tag))
-        {
-            //HACK: it could mask an error.
-            cssTags.TryPop(out var result);
-        }
-    }
-
-    private bool IsNameMet(TagBase tag)
-    {
-        var css = cssTracker.GetCurrentExpectedTag(cssTags);
-        return tag.Name.AsSpan()
-            .SequenceEqual(css.Tag.Span);
-    }
-
-    private bool IsAttrMet(OpeningTag tag)
-    {
-        var css = cssTracker.GetCurrentExpectedTag(cssTags);
-        var isAttrRequired = css.Attributes.Any(x => x.Key != "");
-        return !isAttrRequired
-            || AttributesComparer.IsSubset(tag.Attributes, css.Attributes);
     }
 }

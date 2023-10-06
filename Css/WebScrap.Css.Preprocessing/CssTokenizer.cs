@@ -1,12 +1,16 @@
+using WebScrap.Css.Common.Tokens;
 using System.Collections.Immutable;
 
-namespace WebScrap.Css.Preprocessing.Tokens;
+namespace WebScrap.Css.Preprocessing;
 
+/// <summary>
+/// Reads a lookup of css tokens from css query.
+/// </summary>
 public static class CssTokenizer
 {
     private static readonly char[] childSelectors = [' ', '>'];
 
-    public static ImmutableArray<CssToken> TokenizeCss(ReadOnlySpan<char> css)
+    public static ImmutableArray<CssTokenBase> TokenizeCss(ReadOnlySpan<char> css)
         => css.Tokenize().ToCssTokens();
 
     private static ImmutableArray<ReadOnlyMemory<char>> Tokenize(
@@ -25,10 +29,10 @@ public static class CssTokenizer
         return [.. tokens];
     }
 
-    private static ImmutableArray<CssToken> ToCssTokens(
+    private static ImmutableArray<CssTokenBase> ToCssTokens(
         this ImmutableArray<ReadOnlyMemory<char>> tokens)
     {
-        var result = new Queue<CssToken>();
+        var result = new Queue<CssTokenBase>();
         foreach (var token in tokens)
         {
             result.Enqueue(CssTokenBuilder.Build(token, childSelectors));

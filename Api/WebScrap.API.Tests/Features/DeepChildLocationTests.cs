@@ -1,9 +1,9 @@
 namespace WebScrap.API.Tests.Features;
 
+[TestFixture(Category=Categories.Features)]
 public class DeepChildLocationTests
 {
-    
-    [TestCase(Category=Categories.Features)]
+    [Test]
     public void Test1()
     {
         var css = "div.container b";
@@ -25,7 +25,7 @@ public class DeepChildLocationTests
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
-    [TestCase(Category=Categories.Features)]
+    [Test]
     public void Test2()
     {
         var css ="div.container b";
@@ -48,20 +48,24 @@ public class DeepChildLocationTests
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
-    [TestCase(Category=Categories.Features)]
+    [Test]
     public void Test3()
     {
-        var css ="div.container b";
+        var css ="main.container b";
         var html = """
         <main class="container">
-            <p> Lorem <b> Ipsum </b> </p>
-            <b> Clatu <b> Barata <b> Nictu </b> </b> </b>
+            <div class="container">
+                <p> Lorem <b> Ipsum </b> </p>
+                <b> Clatu <b> Barata <b> Nictu </b> </b> </b>
+            </div>
         </main>
         """;
 
         string[] expected = [
             "<b> Ipsum </b>",
-            "<b> Clatu <b> Barata <b> Nictu </b> </b> </b>"];
+            "<b> Clatu <b> Barata <b> Nictu </b> </b> </b>",
+            "<b> Barata <b> Nictu </b> </b>",
+            "<b> Nictu </b>"];
 
         var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
