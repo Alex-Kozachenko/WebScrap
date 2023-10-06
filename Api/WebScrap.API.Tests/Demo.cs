@@ -5,26 +5,28 @@ public class Demo
     [Test]
     public void Demo1()
     {
-        var css = "main>div>p.foo";
+        var css = "main>div>p#foo span.bar";
         var html = """
             <main>
                 <br />
                 <div>
-                    <p class="foo bar">One</p>
-                </div>
-                <br />
-                <div>
-                    <p class="foo buzz">Two</p>
+                    <p> LoremIpsum </p>
+                    <p id="foo"> 
+                        <div>
+                            <span class="bar"> Two </span>
+                            <span class="bar buzz"> Three </span>
+                            <span id="four" class="bar buzz"> Four </span>
+                        </div>
+                    </p>
                 </div>
             </main>
         """;
-        html = html.TrimStart(' ');
-
         var htmlEntries = Extract.Html(html, css);
 
         string[] expected = [
-            """<p class="foo bar">One</p>""",
-            """<p class="foo buzz">Two</p>"""
+            """<span class="bar"> Two </span>""",
+            """<span class="bar buzz"> Three </span>""",
+            """<span id="four" class="bar buzz"> Four </span>"""
         ];
         Assert.That(htmlEntries, Is.EquivalentTo(expected));
     }

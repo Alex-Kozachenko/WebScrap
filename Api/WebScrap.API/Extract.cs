@@ -17,6 +17,7 @@ public static class Extract
         string html,
         string css)
     {
+        html = html.TrimStart(' ');
         var tagFactory = new TagFactory();
         var tagIndexes = CssProcessor.CalculateTagIndexes(tagFactory, html, css);
         var tagRanges = ExtractTagRanges(tagFactory, html, tagIndexes);
