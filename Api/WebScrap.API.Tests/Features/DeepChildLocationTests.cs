@@ -63,7 +63,9 @@ public class DeepChildLocationTests
 
         string[] expected = [
             "<b> Ipsum </b>",
-            "<b> Clatu <b> Barata <b> Nictu </b> </b> </b>"];
+            "<b> Clatu <b> Barata <b> Nictu </b> </b> </b>",
+            "<b> Barata <b> Nictu </b> </b>",
+            "<b> Nictu </b>"];
 
         var actual = Extract.Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
