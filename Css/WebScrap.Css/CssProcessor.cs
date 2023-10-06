@@ -13,29 +13,23 @@ namespace WebScrap.Css;
 /// and returns detected html which conforms 
 /// the css from the parameter.
 /// </summary>
-public class CssProcessor : ProcessorBase
+public class CssProcessor
 {
     private readonly List<int> tagIndexes = [];
-    private readonly ListenerBase[] listeners;
-    private readonly int htmlLength;
-    protected override bool IsDone => Processed >= htmlLength;
+    private readonly HtmlProcessor processor;
 
     public CssProcessor(
         TagFactoryBase tagFactory,
-        ReadOnlySpan<char> css,
-        int htmlLength)
-        : base(tagFactory)
+        ReadOnlySpan<char> css)
     {
-        var tagsListeners = new
-        {
-            css = new CssTagsListener(CssTokenizer.TokenizeCss(css)),
-            tags = new HtmlTagsListener()
-        };
-        tagsListeners.css.Completed += OnCompletedCssMet;
-        // HACK: the order matters, since css has the event.
-        listeners = [tagsListeners.tags, tagsListeners.css];
+        var cssListener = new CssTagsListener(CssTokenizer.TokenizeCss(css));
+        cssListener.Completed += OnCompletedCssMet;
+        processor = new HtmlProcessor(tagFactory, [cssListener]);
+    }
 
-        this.htmlLength = htmlLength;
+    public void Run(ReadOnlySpan<char> html)
+    {
+        processor.Run(html);
     }
 
     public static ImmutableArray<int> CalculateTagIndexes(
@@ -43,51 +37,13 @@ public class CssProcessor : ProcessorBase
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
     {
-        var processor = new CssProcessor(tagFactory, css, html.Length);
+        var processor = new CssProcessor(tagFactory, css);
         processor.Run(html);
         return [.. processor.tagIndexes];
     }
 
-    protected override int Prepare(ReadOnlySpan<char> html)
-        => 0;
-
-    protected override int Proceed(ReadOnlySpan<char> html)
-        => TagsNavigator.GetNextTagIndex(html[1..]) + 1;
-
-    protected override void Process(
-        ReadOnlySpan<char> html,
-        OpeningTag tag)
-    {
-        listeners.Process(tag);
-    }
-
-    protected override void Process(
-        ReadOnlySpan<char> html,
-        ClosingTag tag)
-    {
-        listeners.Process(tag);
-    }
-
     private void OnCompletedCssMet(object? sender, EventArgs args)
     {
-        if (IsCssComplied())
-        {
-            tagIndexes.Add(Processed);
-        }
-    }
-
-    private bool IsCssComplied()
-    {
-        var htmlTagsListener = listeners.Get<HtmlTagsListener>();
-        var cssTagsListener = listeners.Get<CssTagsListener>();
-        var (css, tags) = (
-            cssTagsListener.CssCompliantTags, 
-            htmlTagsListener.TraversedTags);
-
-        // Why Traverse? Why bool?
-        // TODO: Rename to CheckingAPI.
-        // TODO: And CssProcessor goes to GatheringAPI, I think.
-        return Traversing.TraversingAPI.TraverseNames(css, tags)
-            && Traversing.TraversingAPI.TraverseAttributes(css, tags);
+        tagIndexes.Add(processor.CharsProcessed);
     }
 }

@@ -9,12 +9,12 @@ internal class CssTracker
     public readonly Stack<OpeningTag> traversedTags;
 
     public CssTracker(
-        Stack<CssTokenBase> cssCompliantTags, 
-        Stack<OpeningTag> traversedTags)
+        IReadOnlyCollection<CssTokenBase> cssCompliantTags, 
+        IReadOnlyCollection<OpeningTag> traversedTags)
     {
         AssertCss(cssCompliantTags);
-        this.cssCompliantTags = cssCompliantTags;
-        this.traversedTags = traversedTags;
+        this.cssCompliantTags = new(cssCompliantTags);
+        this.traversedTags = new(traversedTags);
     }
 
     public bool IsEmpty
@@ -30,13 +30,13 @@ internal class CssTracker
     public void PopCss() => cssCompliantTags.Pop();
     public void PopTag() => traversedTags.Pop();
 
-    private static void AssertCss(Stack<CssTokenBase> css)
+    private static void AssertCss(IReadOnlyCollection<CssTokenBase> css)
     {
         _ = css.ToArray() switch 
         {
-            var a when a.Last() is not RootCssToken
+            var a when a.First() is not RootCssToken
                 => throw new ArgumentException("Incorrect css structure. First element should be root."),
-            var a when a[..^1].Any(x => x is RootCssToken)
+            var a when a.Skip(1).Any(x => x is RootCssToken)
                 => throw new ArgumentException("Incorrect css structure. Only first element could be root."),
             _ => 0,
         };

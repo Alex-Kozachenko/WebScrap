@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using WebScrap.Tags;
-using WebScrap.Tags.Processors;
 using WebScrap.Css;
 
 namespace WebScrap.API;
@@ -31,7 +30,8 @@ public static class Extract
         => tagIndexes.Select(tagIndex => 
         {
             var substring = html.Substring(tagIndex);
-            var offset = TagsProcessor.GetEntireTagLength(tagFactory, substring);
+            // var offset = TagsProcessor.GetEntireTagLength(tagFactory, substring);
+            var offset = 0;
             return tagIndex..(tagIndex + offset);
         }).ToImmutableArray();
 

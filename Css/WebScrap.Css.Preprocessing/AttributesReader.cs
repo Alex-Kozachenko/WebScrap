@@ -1,8 +1,5 @@
 namespace WebScrap.Css.Preprocessing;
 
-/// <summary>
-/// Reads a lookup of css tokens from css-like query.
-/// </summary>
 internal class AttributesReader(ReadOnlyMemory<char> cssToken)
 {
     private int CurrentTokenIndex

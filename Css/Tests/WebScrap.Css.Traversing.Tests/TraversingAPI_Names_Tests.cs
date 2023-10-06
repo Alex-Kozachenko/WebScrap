@@ -1,5 +1,3 @@
-
-
 namespace WebScrap.Css.Traversing.Tests;
 
 [TestFixture]
@@ -97,11 +95,9 @@ public class TraversingAPI_Names_Tests
     }
 
     private static bool TraverseNames(
-        IEnumerable<CssTokenBase> cssTags,
-        IEnumerable<OpeningTag> tagsMet) 
-        => TraversingAPI.TraverseNames(
-            new Stack<CssTokenBase>(cssTags),
-            new Stack<OpeningTag>(tagsMet));
+        IReadOnlyCollection<CssTokenBase> cssTags,
+        IReadOnlyCollection<OpeningTag> tagsMet) 
+        => TraversingAPI.TraverseNames(cssTags, tagsMet);
 
     internal static ILookup<string, string> EmptyAttributes
         => Array.Empty<byte>()

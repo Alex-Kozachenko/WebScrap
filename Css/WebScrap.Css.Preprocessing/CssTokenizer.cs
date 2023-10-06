@@ -3,6 +3,9 @@ using System.Collections.Immutable;
 
 namespace WebScrap.Css.Preprocessing;
 
+/// <summary>
+/// Reads a lookup of css tokens from css query.
+/// </summary>
 public static class CssTokenizer
 {
     private static readonly char[] childSelectors = [' ', '>'];

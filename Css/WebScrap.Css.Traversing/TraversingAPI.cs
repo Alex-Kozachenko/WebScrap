@@ -7,16 +7,16 @@ namespace WebScrap.Css.Traversing;
 public static class TraversingAPI
 {
     public static bool TraverseNames(
-        Stack<CssTokenBase> cssCompliantTags,
-        Stack<OpeningTag> traversedTags) 
+        IReadOnlyCollection<CssTokenBase> cssCompliantTags,
+        IReadOnlyCollection<OpeningTag> traversedTags) 
         => Traverse(
             new NameComparer(),
             cssCompliantTags,
             traversedTags);
 
     public static bool TraverseAttributes(
-        Stack<CssTokenBase> cssCompliantTags,
-        Stack<OpeningTag> traversedTags) 
+        IReadOnlyCollection<CssTokenBase> cssCompliantTags,
+        IReadOnlyCollection<OpeningTag> traversedTags) 
         => Traverse(
             new AttributesComparer(),
             cssCompliantTags,
@@ -24,12 +24,10 @@ public static class TraversingAPI
 
     private static bool Traverse(
         IComparer comparer, 
-        Stack<CssTokenBase> cssCompliantTags,
-        Stack<OpeningTag> traversedTags)
+        IReadOnlyCollection<CssTokenBase> cssCompliantTags,
+        IReadOnlyCollection<OpeningTag> traversedTags)
     {
-        var css = new Stack<CssTokenBase>(cssCompliantTags.Reverse());
-        var tags = new Stack<OpeningTag>(traversedTags.Reverse());
-        var cssTracker = new CssTracker(css, tags);
+        var cssTracker = new CssTracker(cssCompliantTags, traversedTags);
         return CssTraverser.Traverse(comparer, cssTracker);
     }
 }
