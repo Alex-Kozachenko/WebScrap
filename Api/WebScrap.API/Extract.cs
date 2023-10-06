@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using WebScrap.Tags;
-using WebScrap.Tags.Processors;
 using WebScrap.Css;
+using WebScrap.Common.Processors;
 
 namespace WebScrap.API;
 
@@ -14,18 +14,35 @@ public static class Extract
     /// <param name="css"></param>
     /// <returns></returns>
     public static ImmutableArray<string> Html(
-        string html, 
+        string html,
         string css)
     {
+        html = html.TrimStart(' ');
         var tagFactory = new TagFactory();
-        return CssProcessor.CalculateTagIndexes(tagFactory, html, css)
-            // Extract the ranges of detected tags.
-            .Select(tagIndex => new Range(
-                tagIndex,
-                tagIndex + TagsProcessor.GetEntireTagLength(tagFactory, html.Substring(tagIndex))))
-            // Return the actual strings from html.
-            .Select(range => html[range])
-            .Select(x => x.ToString())
-            .ToImmutableArray();
+        var tagIndexes = CssProcessor.CalculateTagIndexes(tagFactory, html, css);
+        var tagRanges = ExtractTagRanges(tagFactory, html, tagIndexes);
+        var tagStrings = ExtractStrings(html, tagRanges);
+        return tagStrings;
     }
+
+    private static ImmutableArray<Range> ExtractTagRanges(
+        TagFactory tagFactory,
+        string html,
+        IEnumerable<int> tagIndexes)
+        => tagIndexes.Select(tagIndex =>
+        {
+            var substring = html[tagIndex..];
+            var processor = new HtmlProcessor(tagFactory, []);
+            processor.Run(substring);
+            var offset = processor.CharsProcessed;
+            return tagIndex..(tagIndex + offset);
+        }).ToImmutableArray();
+
+    private static ImmutableArray<string> ExtractStrings(
+        string html,
+        IEnumerable<Range> tagRanges)
+        => tagRanges.Select(range => html[range])
+            .Select(x => x.ToString())
+            .Select(x => x.Trim())
+            .ToImmutableArray();
 }
