@@ -1,11 +1,12 @@
-WebScrap `v0.2`
+WebScrap `v0.3`
 =======
-A bunch of html-processors at [WebScrap.Processors](/WebScrap/Processors/).
 
 Features
 =======
 
-- `HtmlExtraction`: Extract html substrings for simple css-like queries.
+## Extract html with simple css-like queries
+- Id and Class selectors.
+- Deep descendance.
 
 
 For full list of features, please refer to [Features integration tests](/WebScrap.Tests.IntegrationTests/Features/).
@@ -18,27 +19,27 @@ HtmlExtraction
 ### Example
 
 ```csharp
-    var css = "main>div>p.foo";
-    var html = """
+var html = """
     <main>
         <br />
         <div>
-            <p class="foo bar">One</p>
-        </div>
-        <br />
-        <div>
-            <p class="foo buzz">Two</p>
+            <p> LoremIpsum </p>
+            <p id="foo"> 
+                <div>
+                    <span class="bar"> Two </span>
+                    <span class="bar buzz"> Three </span>
+                    <span id="four" class="bar buzz"> Four </span>
+                </div>
+            </p>
         </div>
     </main>
-    """;
-
-    var htmlEntries = Extract.Html(html, css);
-
-    string[] expected = [
-        """<p class="foo bar">One</p>""",
-        """<p class="foo buzz">Two</p>"""
-    ];
-    Assert.That(htmlEntries, Is.EquivalentTo(expected));
+""";
+var css = "main>div>p#foo span.bar";
+var htmlEntries = Extract.Html(html, css);
+// OUTPUT:
+<span class="bar"> Two </span>
+<span class="bar buzz"> Three </span>
+<span id="four" class="bar buzz"> Four </span>
 ```
 
 Please refer to a [API test set](./Api/WebScrap.API.Tests/) for more usecases.
