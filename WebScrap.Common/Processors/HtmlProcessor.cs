@@ -28,7 +28,7 @@ public sealed class HtmlProcessor(
         {
             Process(html[CharsProcessed..]);
             CharsProcessed += Proceed(html[CharsProcessed..]);
-        } while (CharsProcessed < html.Length);
+        } while (CharsProcessed < html.Length && tagsHistory.Count != 0);
     }
 
     public TListener GetListener<TListener>()
