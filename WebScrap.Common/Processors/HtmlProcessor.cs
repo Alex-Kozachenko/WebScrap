@@ -35,7 +35,7 @@ public sealed class HtmlProcessor(
             where TListener : IProcessorListener
         => listeners.OfType<TListener>().First();
 
-    protected int Proceed(ReadOnlySpan<char> html)
+    private int Proceed(ReadOnlySpan<char> html)
         => TagsNavigator.GetNextTagIndex(html[1..]) + 1;
 
     private void Process(ReadOnlySpan<char> html)

@@ -5,30 +5,35 @@ namespace WebScrap.Css.Traversing;
 
 internal class CssTracker
 {
-    public readonly Stack<CssTokenBase> cssCompliantTags;
-    public readonly Stack<OpeningTag> traversedTags;
+    internal readonly Stack<CssTokenBase> expectedTags;
+    internal readonly Stack<OpeningTag> traversedTags;
 
-    public CssTracker(
-        IReadOnlyCollection<CssTokenBase> cssCompliantTags, 
+    internal CssTracker(
+        IReadOnlyCollection<CssTokenBase> expectedTags, 
         IReadOnlyCollection<OpeningTag> traversedTags)
     {
-        AssertCss(cssCompliantTags);
-        this.cssCompliantTags = new(cssCompliantTags);
+        AssertCss(expectedTags);
+        this.expectedTags = new(expectedTags);
         this.traversedTags = new(traversedTags);
     }
 
-    public bool IsEmpty
+    internal bool IsEmpty
         => traversedTags.Count == 0 
-        || cssCompliantTags.Count == 0;
+        || expectedTags.Count == 0;
 
-    public bool IsCompleted
-        => cssCompliantTags.Count == 0;
+    internal bool IsCompleted
+        => expectedTags.Count == 0;
 
-    public (CssTokenBase, OpeningTag) Peek()
-        => (cssCompliantTags.Peek(), traversedTags.Peek());
+    internal (CssTokenBase, OpeningTag) Peek()
+        => (expectedTags.Peek(), traversedTags.Peek());
 
-    public void PopCss() => cssCompliantTags.Pop();
-    public void PopTag() => traversedTags.Pop();
+    internal void PopCss() => expectedTags.Pop();
+    internal void PopTag() => traversedTags.Pop();
+
+    internal void Clear()
+    {
+        traversedTags.Clear();
+    }
 
     private static void AssertCss(IReadOnlyCollection<CssTokenBase> css)
     {

@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using WebScrap.Common.Tags;
 using WebScrap.Common.Processors;
-using WebScrap.Css.Common.Comparers;
 using WebScrap.Css.Common.Tokens;
 using WebScrap.Css.Traversing;
 
@@ -12,17 +11,16 @@ namespace WebScrap.Css.Listeners;
 internal class CssTagsListener(ImmutableArray<CssTokenBase> expectedTags)
     : IProcessorListener
 {
-    public event EventHandler? Completed;
-    public ImmutableArray<CssTokenBase> CssCompliantTags => expectedTags;
+    public event EventHandler? CssComplianceMet;
 
     public void Process(IReadOnlyCollection<OpeningTag> tagsHistory, OpeningTag tag)
     {
-        var isCompleted = TraversingAPI.TraverseNames(expectedTags, tagsHistory) 
+        var isEntireCssMet = TraversingAPI.TraverseNames(expectedTags, tagsHistory) 
             && TraversingAPI.TraverseAttributes(expectedTags, tagsHistory);
 
-        if (isCompleted)
+        if (isEntireCssMet)
         {
-            Completed?.Invoke(this, EventArgs.Empty);
+            CssComplianceMet?.Invoke(this, EventArgs.Empty);
         }
     }
 
