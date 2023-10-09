@@ -2,34 +2,70 @@ using WebScrap.Css.Common.Attributes;
 
 namespace WebScrap.Css.Preprocessing.Readers;
 
-internal class AttributesReader(ReadOnlyMemory<char> cssToken)
+internal ref struct CssAttributesReader
 {
-    private int CurrentTokenIndex
-        => cssToken.Span.LastIndexOfAny(".#");
+    private static readonly char[] delimeters = [' ', '>'];
+    private ReadOnlySpan<char> css;
 
-    public CssAttributesLookup Read()
+    internal CssAttributesReader(ReadOnlySpan<char> css)
     {
-        var result = new List<KeyValuePair<string, string>>();
-        while (cssToken.Length != 0)
-        {
-            result.Add(new(ReadKey(), ReadValue()));
-            cssToken = Proceed();
-        }
-        result.Reverse();
-        return new(result);
+        ThrowIfUnsupported(css);
+        this.css = css;
     }
 
-    private string ReadKey()
-        => cssToken.Span[CurrentTokenIndex] switch
+    private readonly int CurrentTokenIndex
+        => css.LastIndexOfAny(".#");
+
+    public static int Read(ReadOnlySpan<char> css, out CssAttributesLookup attributes)
+    {
+        var tokenDelimeterIndex = css.LastIndexOfAny("> ");
+        if (tokenDelimeterIndex != -1)
+        {
+            return Read(css[tokenDelimeterIndex..][1..], out attributes);
+        }
+
+        var attributeDelimeterIndex = css.IndexOfAny(".#");
+        if (attributeDelimeterIndex == -1)
+        {
+             attributes = [];
+             return 0;
+        }
+
+        return new CssAttributesReader(css[attributeDelimeterIndex..])
+            .Read(out attributes);
+    }
+
+    private int Read(out CssAttributesLookup attributes)
+    {
+        var processed = css.Length;
+        var result = new List<KeyValuePair<string, string>>();
+        while (css.Length != 0)
+        {
+            result.Add(new(ReadSelector(), ReadTarget()));
+            css = css[..CurrentTokenIndex];
+        }
+        result.Reverse();
+        attributes = new(result);
+        return processed;
+    }
+
+    private readonly string ReadSelector()
+        => css[CurrentTokenIndex] switch
         {
             '#' => "id",
             '.' => "class",
-            _ => throw new ArgumentException($"Unknown attribute met: {cssToken}")
+            _ => throw new ArgumentException($"Unknown attribute met: {css}")
         };
 
-    private string ReadValue()
-        => cssToken[1..][CurrentTokenIndex..].ToString();
+    private readonly string ReadTarget()
+        => css[CurrentTokenIndex..][1..].ToString();
 
-    private ReadOnlyMemory<char> Proceed()
-        => cssToken[..CurrentTokenIndex];
+    private static void ThrowIfUnsupported(ReadOnlySpan<char> css)
+    {
+        _ = css.IndexOfAny("[],") switch 
+        {
+            -1 => 0,
+            var i => throw new ArgumentException($"Unable to process css. Css contains unsupported chars: {css[i..]}.")
+        };
+    }
 }

@@ -1,10 +1,9 @@
 using WebScrap.Css.Common.Selectors;
-using WebScrap.Css.Preprocessing.Readers;
 
 namespace WebScrap.Css.Preprocessing.Readers.Tests;
 
 [TestFixture]
-public class CssTokensReaderTests
+public class CssTokensBuilderTests
 {
     [Test]
     public void TokenizeCss_ShouldProcess_Descendants()
@@ -17,7 +16,7 @@ public class CssTokensReaderTests
             new(typeof(ChildCssSelector), "p"),
         ];
 
-        (Type, string)[] result = CssTokensReader.Read(sample)
+        (Type, string)[] result = CssTokensBuilder.Build(sample)
             .Select(x => (x.Selector.GetType(), x.Tag.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
@@ -34,7 +33,7 @@ public class CssTokensReaderTests
             new("class", "buzz"),
         }.ToLookup(x => x.Key, x => x.Value);
 
-        var result = CssTokensReader.Read(sample)
+        var result = CssTokensBuilder.Build(sample)
             .First()
             .Attributes;
 
