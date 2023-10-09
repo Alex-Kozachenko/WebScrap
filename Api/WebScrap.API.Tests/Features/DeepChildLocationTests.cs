@@ -79,7 +79,7 @@ public class DeepChildLocationTests
             <main>
                 <br />
                 <div>
-                    <p> LoremIpsum </p>
+                    <p> <div> <span class="bar"> Ignored </span> </div> </p>
                     <p id="foo"> 
                         Important!
                         <ul>
