@@ -7,31 +7,33 @@ internal static class CssTraverser
 {
     public static bool Traverse(IComparer comparer, CssTracker cssTracker)
     {
-        var isLazy = true;
+        var isGreedy = false;
+        CssTokenBase? lastAcceptedTag = null;
         while (cssTracker.IsEmpty is false)
         {
             var (css, tag) = cssTracker.Peek();
             var areEqual = comparer.AreSame(css, tag);
             if (areEqual)
             {
+                lastAcceptedTag = css;
                 cssTracker.PopCss();
             }
-            else if (isLazy)
+            else if (!isGreedy)
             {
                 return false;
             }
 
-            isLazy = IsNextModeLazy(css);
+            isGreedy = IsNextModeGreedy(lastAcceptedTag);
             cssTracker.PopTag();
         }
 
         return cssTracker.IsCompleted;
     }
 
-    private static bool IsNextModeLazy(CssTokenBase lastAcceptedTag) 
+    private static bool IsNextModeGreedy(CssTokenBase? lastAcceptedTag) 
         => lastAcceptedTag switch
         {
-            DirectChildCssToken => true,
-            _ => false
+            DirectChildCssToken => false,
+            _ => true
         };
 }

@@ -97,8 +97,8 @@ public class DeepChildLocationTests
         var htmlEntries = Extract.Html(html, css);
 
         string[] expected = [
-            """<li> <span class="bar"> Two </span> </li>""",
-            """<li> <span class="bar buzz"> Three </span> </li>""",
+            """<span class="bar"> Two </span>""",
+            """<span class="bar buzz"> Three </span>""",
             """<span id="four" class="bar buzz"> Four </span>"""
         ];
         Assert.That(htmlEntries, Is.EquivalentTo(expected));
