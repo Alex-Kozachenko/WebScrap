@@ -1,13 +1,14 @@
 using WebScrap.Common.Tags;
-using WebScrap.Css.Common.Tokens;
+
 using WebScrap.Css.Common.Comparers;
+using WebScrap.Css.Common;
 
 namespace WebScrap.Css.Traversing;
 
 public static class TraversingAPI
 {
     public static bool TraverseNames(
-        IReadOnlyCollection<CssTokenBase> expectedTags,
+        IReadOnlyCollection<CssToken> expectedTags,
         IReadOnlyCollection<OpeningTag> traversedTags) 
         => Traverse(
             new NameComparer(),
@@ -15,7 +16,7 @@ public static class TraversingAPI
             traversedTags);
 
     public static bool TraverseAttributes(
-        IReadOnlyCollection<CssTokenBase> expectedTags,
+        IReadOnlyCollection<CssToken> expectedTags,
         IReadOnlyCollection<OpeningTag> traversedTags) 
         => Traverse(
             new AttributesComparer(),
@@ -24,7 +25,7 @@ public static class TraversingAPI
 
     private static bool Traverse(
         IComparer comparer,
-        IReadOnlyCollection<CssTokenBase> expectedTags,
+        IReadOnlyCollection<CssToken> expectedTags,
         IReadOnlyCollection<OpeningTag> traversedTags) 
         => new CssTraverser(comparer, expectedTags, traversedTags)
             .Traverse();

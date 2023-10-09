@@ -1,3 +1,7 @@
+using WebScrap.Css.Common;
+using WebScrap.Css.Common.Selectors;
+using WebScrap.Css.Common.Tags;
+
 namespace WebScrap.Css.Traversing.Tests;
 
 [TestFixture]
@@ -10,11 +14,11 @@ public class TraversingAPI_Names_Tests
     public bool TraverseNames_With_AnyChildCssToken_Finds(string input)
     {
         // main div b
-        var cssTags = new List<CssTokenBase>
+        var cssTags = new List<CssToken>
         {
-            new RootCssToken("main", EmptyAttributes),
-            new AnyChildCssToken("div", EmptyAttributes),
-            new AnyChildCssToken("b", EmptyAttributes),
+            new(new RootCssSelector(), new CssTag("main")),
+            new(new AnyChildCssSelector(), new CssTag("div")),
+            new(new AnyChildCssSelector(), new CssTag("b"))
         };
 
         var tagsMet = input.Split(' ')
@@ -30,11 +34,11 @@ public class TraversingAPI_Names_Tests
     public bool TraverseNames_With_AnyChildCssToken_NotFinds(string input)
     {
         // main div b
-        var cssTags = new List<CssTokenBase>
+        var cssTags = new List<CssToken>
         {
-            new RootCssToken("main", EmptyAttributes),
-            new AnyChildCssToken("div", EmptyAttributes),
-            new AnyChildCssToken("b", EmptyAttributes),
+            new(new RootCssSelector(), new CssTag("main")),
+            new(new AnyChildCssSelector(), new CssTag("div")),
+            new(new AnyChildCssSelector(), new CssTag("b"))
         };
 
         var tagsMet = input.Split(' ')
@@ -49,10 +53,10 @@ public class TraversingAPI_Names_Tests
     public bool TraverseNames_With_DirectChildCssToken_Finds(string input)
     {
         // div>b
-        var cssTags = new List<CssTokenBase>
+        var cssTags = new List<CssToken>
         {
-            new RootCssToken("div", EmptyAttributes),
-            new DirectChildCssToken("b", EmptyAttributes),
+            new(new RootCssSelector(), new CssTag("div")),
+            new(new ChildCssSelector(), new CssTag("b"))
         };
 
         var tagsMet = input.Split(' ')
@@ -69,10 +73,10 @@ public class TraversingAPI_Names_Tests
             .Select(x => new OpeningTag(x, EmptyAttributes))
             .ToArray();
 
-        var cssTags = new List<CssTokenBase>
+        var cssTags = new List<CssToken>
         {
-            new RootCssToken("div", EmptyAttributes),
-            new RootCssToken("div", EmptyAttributes),
+            new(new RootCssSelector(), new CssTag("div")),
+            new(new RootCssSelector(), new CssTag("div"))
         };
 
         Assert.That(() => TraverseNames(cssTags, tagsMet), Throws.Exception);
@@ -85,17 +89,17 @@ public class TraversingAPI_Names_Tests
             .Select(x => new OpeningTag(x, EmptyAttributes))
             .ToArray();
 
-        var cssTags = new List<CssTokenBase>
+        var cssTags = new List<CssToken>
         {
-            new AnyChildCssToken("div", EmptyAttributes),
-            new AnyChildCssToken("div", EmptyAttributes),
+            new(new AnyChildCssSelector(), new CssTag("div")),
+            new(new AnyChildCssSelector(), new CssTag("div")),
         };
 
         Assert.That(() => TraverseNames(cssTags, tagsMet), Throws.Exception);
     }
 
     private static bool TraverseNames(
-        IReadOnlyCollection<CssTokenBase> cssTags,
+        IReadOnlyCollection<CssToken> cssTags,
         IReadOnlyCollection<OpeningTag> tagsMet) 
         => TraversingAPI.TraverseNames(cssTags, tagsMet);
 

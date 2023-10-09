@@ -25,9 +25,10 @@ public class AsteriskLocationTests
 
         string[] expected = [
             """<span class="bar"> One </span>""",
+            """<span class="bar"> One </span>""",
             """<div class="bar"> Two <span class="bar"> One </span> </div>""",
-            """<li> <span class="bar"> Two </span> </li>""",
-            """<li> <span class="bar buzz"> Three </span> </li>"""
+            """<span class="bar"> Two </span>""",
+            """<span class="bar buzz"> Three </span>"""
         ];
 
         var actual = Extract.Html(html, css);

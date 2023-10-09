@@ -1,12 +1,14 @@
-using WebScrap.Css.Common.Tokens;
+
 using WebScrap.Css.Common.Comparers;
 using WebScrap.Common.Tags;
+using WebScrap.Css.Common;
+using WebScrap.Css.Common.Selectors;
 
 namespace WebScrap.Css.Traversing;
 
 internal class CssTraverser(
     IComparer comparer, 
-    IReadOnlyCollection<CssTokenBase> expectedTags,
+    IReadOnlyCollection<CssToken> expectedTags,
     IReadOnlyCollection<OpeningTag> traversedTags)
 {
     private readonly CssTracker cssTracker = new(expectedTags, traversedTags);
@@ -53,10 +55,10 @@ internal class CssTraverser(
         cssTracker.PopTag();
     }
 
-    private static bool IsNextModeGreedy(CssTokenBase? lastAcceptedTag) 
-        => lastAcceptedTag switch
+    private static bool IsNextModeGreedy(CssToken? lastAcceptedTag) 
+        => lastAcceptedTag?.Selector switch
         {
-            DirectChildCssToken => false,
+            ChildCssSelector => false,
             _ => true
         };
 }

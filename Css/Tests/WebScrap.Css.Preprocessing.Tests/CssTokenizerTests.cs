@@ -1,10 +1,10 @@
-using static WebScrap.Css.Preprocessing.CssTokenizer;
-using WebScrap.Css.Common.Tokens;
+using WebScrap.Css.Common.Selectors;
+using WebScrap.Css.Preprocessing.Readers;
 
-namespace WebScrap.Css.Preprocessing.Tests;
+namespace WebScrap.Css.Preprocessing.Readers.Tests;
 
 [TestFixture]
-public class CssTokenizerTests
+public class CssTokensReaderTests
 {
     [Test]
     public void TokenizeCss_ShouldProcess_Descendants()
@@ -12,13 +12,13 @@ public class CssTokenizerTests
         var sample = "main div>p";
         (Type, string)[] expected =
         [
-            new(typeof(RootCssToken), "main"),
-            new(typeof(AnyChildCssToken), "div"),
-            new(typeof(DirectChildCssToken), "p"),
+            new(typeof(RootCssSelector), "main"),
+            new(typeof(AnyChildCssSelector), "div"),
+            new(typeof(ChildCssSelector), "p"),
         ];
 
-        (Type, string)[] result = TokenizeCss(sample)
-            .Select(x => (x.GetType(), x.Name.ToString()))
+        (Type, string)[] result = CssTokensReader.Read(sample)
+            .Select(x => (x.Selector.GetType(), x.Tag.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
     }
@@ -34,7 +34,7 @@ public class CssTokenizerTests
             new("class", "buzz"),
         }.ToLookup(x => x.Key, x => x.Value);
 
-        var result = TokenizeCss(sample)
+        var result = CssTokensReader.Read(sample)
             .First()
             .Attributes;
 
