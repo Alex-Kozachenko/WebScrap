@@ -21,7 +21,7 @@ public class CssProcessor
         ReadOnlySpan<char> css)
     {
         var cssListener = new CssTagsListener(CssTokenizer.TokenizeCss(css));
-        cssListener.Completed += OnCompletedCssMet;
+        cssListener.CssComplianceMet += OnCompletedCssMet;
         processor = new HtmlProcessor(tagFactory, [cssListener]);
     }
 
