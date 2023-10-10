@@ -10,8 +10,8 @@ public class ParseTableTests
         var html = """
         <table>
             <tr> <th> Key </th> <th> Value </th> </tr>
-            <tr> <td> Width </td> 2 <td> </tr>
-            <tr> <td> Height </td> 3 <td> </tr>
+            <tr> <td> Width </td> <td> 2 </td> </tr>
+            <tr> <td> Height </td> <td> 3 </td> </tr>
         </table>
         """;
 
