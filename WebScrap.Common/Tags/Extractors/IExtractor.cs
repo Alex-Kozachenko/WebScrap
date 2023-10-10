@@ -1,4 +1,4 @@
-namespace WebScrap.Tags.Attributes;
+namespace WebScrap.Common.Tags.Extractors;
 
 public interface IExtractor<TValue>
 {

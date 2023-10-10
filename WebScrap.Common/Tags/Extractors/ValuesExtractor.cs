@@ -1,6 +1,6 @@
 using WebScrap.Common.Tools;
 
-namespace WebScrap.Tags.Attributes;
+namespace WebScrap.Common.Tags.Extractors;
 
 public sealed class ValuesExtractor : IExtractor<string[]>
 {

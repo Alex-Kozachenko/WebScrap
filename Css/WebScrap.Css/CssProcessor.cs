@@ -7,9 +7,8 @@ using WebScrap.Css.Matching;
 namespace WebScrap.Css;
 
 public class CssProcessor(
-    TagFactoryBase tagFactory, 
     CssToken[] expectedTags) 
-    : ProcessorBase(tagFactory)
+    : ProcessorBase
 {
     private readonly CssToken[] expectedTags = expectedTags;
     public List<int> TagIndexes = [];

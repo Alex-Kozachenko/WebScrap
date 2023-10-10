@@ -1,4 +1,5 @@
 using WebScrap.Common.Contracts;
+using WebScrap.Common.Tags;
 
 namespace WebScrap.Tags;
 

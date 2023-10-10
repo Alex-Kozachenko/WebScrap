@@ -14,12 +14,13 @@ namespace WebScrap.Common;
 /// - Highly depends on <see cref="CharsProcessed"/> property value, 
 /// which is controlled by derived classes.
 /// </remarks>
-public abstract class ProcessorBase(
-    TagFactoryBase tagFactory)
+public abstract class ProcessorBase
 {
     private readonly Stack<OpeningTag> tagsHistory = new();
     public int CharsProcessed { get; private set; }
     protected OpeningTag[] TagsHistory => [..tagsHistory.Reverse()];
+
+    private TagFactoryBase tagFactory = new TagFactory();
 
     public void Run(ReadOnlySpan<char> html)
     {

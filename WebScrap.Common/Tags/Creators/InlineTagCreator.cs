@@ -1,9 +1,9 @@
 using WebScrap.Common.Tags;
 using WebScrap.Common.Contracts;
 
-namespace WebScrap.Tags.Creators;
+namespace WebScrap.Common.Tags.Creators;
 
-internal class InlineTagCreator : ITagCreator
+public class InlineTagCreator : ITagCreator
 {
     public TagBase Create(ReadOnlySpan<char> tagContent)
     {

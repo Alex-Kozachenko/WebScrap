@@ -11,8 +11,7 @@ public static class CssProcessorHelper
         ReadOnlySpan<char> css)
         {
             var cssTokens = PreprocessingAPI.Process(css);
-            var factory = TagsAPI.CreateTagFactory();
-            var processor = new CssProcessor(factory, cssTokens);
+            var processor = new CssProcessor(cssTokens);
             processor.Run(html);
             return processor.TagIndexes.ToImmutableArray();
         }

@@ -20,9 +20,8 @@ public static class Extract
         ReadOnlySpan<char> css)
     {
         html = html.TrimStart(' ');
-        var tagFactory = TagsAPI.CreateTagFactory();
         var cssTokens = PreprocessingAPI.Process(css);
-        var cssProcessor = new CssProcessor(tagFactory, cssTokens);
+        var cssProcessor = new CssProcessor(cssTokens);
         cssProcessor.Run(html);
         var tagIndexes = cssProcessor.TagIndexes;
         var tagRanges = ExtractTagRanges(cssProcessor, html.ToString(), tagIndexes);
