@@ -31,7 +31,7 @@ internal class CssTraverser(
         var areEqual = comparer.AreSame(css, tag);
         if (areEqual)
         {
-            isGreedy = IsNextModeGreedy(css);
+            isGreedy = IsNextModeGreedy(css.Selector);
         }
         else if(isGreedy is false)
         {
@@ -55,8 +55,8 @@ internal class CssTraverser(
         cssTracker.PopTag();
     }
 
-    private static bool IsNextModeGreedy(CssToken? lastAcceptedTag) 
-        => lastAcceptedTag?.Selector switch
+    private static bool IsNextModeGreedy(CssSelector? lastAcceptedSelector) 
+        => lastAcceptedSelector switch
         {
             ChildCssSelector => false,
             _ => true

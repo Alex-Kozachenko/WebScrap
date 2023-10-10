@@ -14,7 +14,7 @@ internal class CssTracker
         IReadOnlyCollection<CssToken> expectedTags, 
         IReadOnlyCollection<OpeningTag> traversedTags)
     {
-        AssertCss(expectedTags);
+        AssertCssStructur(expectedTags);
         this.expectedTags = new(expectedTags);
         this.traversedTags = new(traversedTags);
     }
@@ -37,7 +37,7 @@ internal class CssTracker
         traversedTags.Clear();
     }
 
-    private static void AssertCss(IReadOnlyCollection<CssToken> css)
+    private static void AssertCssStructur(IReadOnlyCollection<CssToken> css)
     {
         var selectors = css.Select(x => x.Selector).ToArray();
         
