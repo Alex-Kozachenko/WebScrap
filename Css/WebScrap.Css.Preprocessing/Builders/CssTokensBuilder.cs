@@ -1,6 +1,6 @@
 using WebScrap.Css.Common;
 
-namespace WebScrap.Css.Preprocessing;
+namespace WebScrap.Css.Preprocessing.Builders;
 
 internal static class CssTokensBuilder
 {

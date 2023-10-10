@@ -4,7 +4,7 @@ using WebScrap.Css.Common.Selectors;
 using WebScrap.Css.Common.Tags;
 using WebScrap.Css.Preprocessing.Readers;
 
-namespace WebScrap.Css.Preprocessing;
+namespace WebScrap.Css.Preprocessing.Builders;
 
 internal ref struct CssTokenBuilder(ReadOnlySpan<char> cssToken)
 {
@@ -23,19 +23,22 @@ internal ref struct CssTokenBuilder(ReadOnlySpan<char> cssToken)
 
     private CssTokenBuilder ReadAttributes(out CssAttributesLookup result)
     {
-        processed += CssAttributesReader.Read(cssToken[..^processed], out result);
+        processed += CssAttributesReader.Read(UnprocessedCssToken, out result);
         return this;
     }
 
     private CssTokenBuilder ReadTag(out CssTagBase result)
     {
-        processed += CssTagReader.Read(cssToken[..^processed], out result);
+        processed += CssTagReader.Read(UnprocessedCssToken, out result);
         return this;
     }
 
     private CssTokenBuilder ReadSelector(out CssSelector result)
     {
-        processed += CssSelectorReader.Read(cssToken[..^processed], out result);
+        processed += CssSelectorReader.Read(UnprocessedCssToken, out result);
         return this;
     }
+
+    private readonly ReadOnlySpan<char> UnprocessedCssToken 
+        => cssToken[..^processed];
 }
