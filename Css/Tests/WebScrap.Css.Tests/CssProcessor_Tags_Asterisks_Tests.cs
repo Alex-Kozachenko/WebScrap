@@ -3,17 +3,28 @@ using static WebScrap.Css.Tests.CssProcessor;
 namespace WebScrap.Css.Tests;
 
 [TestFixture]
-public class CssProcessor_Tags_Asterisks_Tests
+public class CssProcessor_Tags_Wildcards_Tests
 {
     [TestCase(
-        "<p>",
+        "<p>", "*",
         "^")]
-    public void CalculateTagIndexes_WithAsterisks_ShouldReturn_Indexes(
-        string html,
+    [TestCase(
+        "<main><div><p></p><div></div></div></main>", "div>*",
+        "           ^      ^")]
+    [TestCase(
+        "<div><p></p><div></div>", "div *",
+        "     ^      ^")]
+    [TestCase(
+        "<main><span></span></main>", "*>span",
+        "      ^")]
+    [TestCase(
+        "<main><p> <span></span> </p> </main>", "* span",
+        "          ^")]
+    public void CalculateTagIndexes_WithWildcards_ShouldReturn_Indexes(
+        string html, string css,
         string pointers)
     {
-        var css = "*";
-        var expected = pointers.ToSubstrings(html);
+        var expected = pointers.ToIndexes().ToSubstrings(html);
         var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
         Assert.That(results, Is.EquivalentTo(expected));
     }

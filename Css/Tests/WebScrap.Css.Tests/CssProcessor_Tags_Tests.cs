@@ -13,7 +13,7 @@ public class CssProcessor_Tags_Tests
         var (html, pointers) = (
             "<div><p>__</p>__<p>__</div>",
             "     ^          ^");
-        var expected = pointers.ToSubstrings(html);
+        var expected = pointers.ToIndexes().ToSubstrings(html);
         var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
         Assert.That(results, Is.EquivalentTo(expected));
     }
@@ -41,7 +41,7 @@ public class CssProcessor_Tags_Tests
         string pointers)
     {
         var css = "div>p";
-        var expected = pointers.ToSubstrings(html);
+        var expected = pointers.ToIndexes().ToSubstrings(html);
         var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
         Assert.That(results, Is.EquivalentTo(expected));
     }
