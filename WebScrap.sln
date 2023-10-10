@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Preprocessing"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Matching", "Css\WebScrap.Css.Matching\WebScrap.Css.Matching.csproj", "{44C79A60-4BD9-4646-9320-761EAA2CEBC4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tags", "Tags", "{60E511EB-9890-4B08-9EDE-37D7D72845C9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.Tags", "Core.Tags", "{60E511EB-9890-4B08-9EDE-37D7D72845C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Tags", "Tags\WebScrap.Tags\WebScrap.Tags.csproj", "{0ED2752D-E5EA-4BBB-B167-30CE5AB923E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Core.Tags", "Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj", "{0ED2752D-E5EA-4BBB-B167-30CE5AB923E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{8888A557-D313-48C5-873A-A11535B7592E}"
 EndProject

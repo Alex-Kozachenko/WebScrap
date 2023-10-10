@@ -1,4 +1,4 @@
-namespace WebScrap.Common.Tags.Extractors;
+namespace WebScrap.Core.Tags.Extractors;
 
 public static class AttributeExtractor
 {
@@ -26,7 +26,7 @@ public static class AttributeExtractor
         this ReadOnlySpan<char> tagContent, 
         out ReadOnlySpan<char> key)
     {
-        var result = new NameExtractor().Extract(tagContent, out var innerKey);
+        var result = new TagNameExtractor().Extract(tagContent, out var innerKey);
         key = innerKey;
         return result;
     }
@@ -35,7 +35,7 @@ public static class AttributeExtractor
         this ReadOnlySpan<char> tagContent, 
         out string[] values)
     {
-        var result = new ValuesExtractor().Extract(tagContent, out var innerValues);
+        var result = new AttributeValuesExtractor().Extract(tagContent, out var innerValues);
         values = innerValues;
         return result;
     }

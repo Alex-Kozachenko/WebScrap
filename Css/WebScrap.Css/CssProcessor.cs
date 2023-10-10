@@ -1,14 +1,13 @@
-using WebScrap.Common;
-using WebScrap.Common.Contracts;
 using WebScrap.Common.Css;
 using WebScrap.Common.Tags;
 using WebScrap.Css.Matching;
+using WebScrap.Core.Tags;
 
 namespace WebScrap.Css;
 
 public class CssProcessor(
     CssToken[] expectedTags) 
-    : ProcessorBase
+    : TagsProcessor
 {
     private readonly CssToken[] expectedTags = expectedTags;
     public List<int> TagIndexes = [];

@@ -1,8 +1,8 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Contracts;
 using WebScrap.Common.Tools;
+using WebScrap.Core.Tags.Creators;
 
-namespace WebScrap.Common;
+namespace WebScrap.Core.Tags;
 
 /// <summary>
 /// Represents a process of linear html-Matching,
@@ -14,13 +14,13 @@ namespace WebScrap.Common;
 /// - Highly depends on <see cref="CharsProcessed"/> property value, 
 /// which is controlled by derived classes.
 /// </remarks>
-public abstract class ProcessorBase
+public class TagsProcessor
 {
     private readonly Stack<OpeningTag> tagsHistory = new();
     public int CharsProcessed { get; private set; }
     protected OpeningTag[] TagsHistory => [..tagsHistory.Reverse()];
 
-    private TagFactoryBase tagFactory = new TagFactory();
+    private TagFactory tagFactory = new TagFactory();
 
     public void Run(ReadOnlySpan<char> html)
     {
@@ -62,6 +62,6 @@ public abstract class ProcessorBase
         }
     }
 
-    protected abstract void Process(OpeningTag tag);
-    protected abstract void Process(ClosingTag tag);
+    protected virtual void Process(OpeningTag tag) { }
+    protected virtual void Process(ClosingTag tag) { }
 }

@@ -1,8 +1,8 @@
 using WebScrap.Common.Tools;
 
-namespace WebScrap.Common.Tags.Extractors;
+namespace WebScrap.Core.Tags.Extractors;
 
-public sealed class ValuesExtractor : IExtractor<string[]>
+public sealed class AttributeValuesExtractor : IExtractor<string[]>
 {
     public ReadOnlySpan<char> Extract(
         ReadOnlySpan<char> tagContent, 

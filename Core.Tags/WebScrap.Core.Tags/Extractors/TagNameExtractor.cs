@@ -1,6 +1,6 @@
-namespace WebScrap.Common.Tags.Extractors;
+namespace WebScrap.Core.Tags.Extractors;
 
-public sealed class NameExtractor : IExtractor<string>
+public sealed class TagNameExtractor : IExtractor<string>
 {
     public ReadOnlySpan<char> Extract(
         ReadOnlySpan<char> tagContent, 

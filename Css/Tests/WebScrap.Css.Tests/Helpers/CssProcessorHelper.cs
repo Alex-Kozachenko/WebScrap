@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using WebScrap.Css.Preprocessing;
-using WebScrap.Tags;
+using WebScrap.Core.Tags;
 
 namespace WebScrap.Css.Tests.Helpers;
 

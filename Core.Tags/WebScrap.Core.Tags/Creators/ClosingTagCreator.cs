@@ -1,7 +1,6 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Contracts;
 
-namespace WebScrap.Common.Tags.Creators;
+namespace WebScrap.Core.Tags.Creators;
 
 public class ClosingTagCreator : ITagCreator
 {

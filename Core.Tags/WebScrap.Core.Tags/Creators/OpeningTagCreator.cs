@@ -1,8 +1,7 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Tags.Extractors;
-using WebScrap.Common.Contracts;
+using WebScrap.Core.Tags.Extractors;
 
-namespace WebScrap.Common.Tags.Creators;
+namespace WebScrap.Core.Tags.Creators;
 
 public class OpeningTagCreator : ITagCreator
 {

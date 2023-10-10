@@ -1,6 +1,6 @@
 using WebScrap.Common.Tags;
 
-namespace WebScrap.Common.Contracts;
+namespace WebScrap.Core.Tags.Creators;
 
 public interface ITagCreator
 {

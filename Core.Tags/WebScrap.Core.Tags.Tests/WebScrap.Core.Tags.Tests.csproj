@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebScrap.Tags\WebScrap.Tags.csproj" />
+    <ProjectReference Include="..\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
   </ItemGroup>
 
 </Project>
