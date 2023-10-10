@@ -11,7 +11,7 @@ public class NameComparer : IComparer
     public bool AreSame(CssToken css, ReadOnlySpan<char> tagName) 
         => css.Tag switch
         {
-            AnyCssTag => true,
+            WildcardCssTag => true,
             CssTag tag => tagName.SequenceEqual(tag.Name),
             _ => throw new InvalidOperationException("Uknown tag type"),
         };

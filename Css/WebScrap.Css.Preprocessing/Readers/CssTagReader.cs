@@ -14,7 +14,7 @@ internal readonly ref struct CssTagReader(ReadOnlySpan<char> css)
     {
         if (css[^1] == '*')
         {
-            tag = new AnyCssTag();
+            tag = new WildcardCssTag();
             return 1;
         }
 
@@ -33,7 +33,7 @@ internal readonly ref struct CssTagReader(ReadOnlySpan<char> css)
 
         tag = processed switch
         {
-            0 => new AnyCssTag(),
+            0 => new WildcardCssTag(),
             _ => new CssTag(css[^processed..].ToString()),
         };
 
