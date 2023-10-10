@@ -4,7 +4,6 @@ namespace WebScrap.Css.Preprocessing.Readers;
 
 internal ref struct CssAttributesReader
 {
-    private static readonly char[] delimeters = [' ', '>'];
     private ReadOnlySpan<char> css;
 
     internal CssAttributesReader(ReadOnlySpan<char> css)
@@ -13,26 +12,15 @@ internal ref struct CssAttributesReader
         this.css = css;
     }
 
-    private readonly int CurrentTokenIndex
-        => css.LastIndexOfAny(".#");
-
     public static int Read(ReadOnlySpan<char> css, out CssAttributesLookup attributes)
     {
-        var tokenDelimeterIndex = css.LastIndexOfAny("> ");
-        if (tokenDelimeterIndex != -1)
+        attributes = [];
+        return css.IndexOfAny(".#") switch
         {
-            return Read(css[tokenDelimeterIndex..][1..], out attributes);
-        }
-
-        var attributeDelimeterIndex = css.IndexOfAny(".#");
-        if (attributeDelimeterIndex == -1)
-        {
-             attributes = [];
-             return 0;
-        }
-
-        return new CssAttributesReader(css[attributeDelimeterIndex..])
-            .Read(out attributes);
+            -1 => 0,
+            var i => new CssAttributesReader(css[i..])
+                .Read(out attributes)
+        };
     }
 
     private int Read(out CssAttributesLookup attributes)
@@ -41,24 +29,26 @@ internal ref struct CssAttributesReader
         var result = new List<KeyValuePair<string, string>>();
         while (css.Length != 0)
         {
-            result.Add(new(ReadSelector(), ReadTarget()));
-            css = css[..CurrentTokenIndex];
+            var currentTokenIndex = css.LastIndexOfAny(".#");
+            var attribute = css[currentTokenIndex..];
+            result.Add(ReadAttribute(attribute));
+            css = css[..currentTokenIndex];
         }
         result.Reverse();
         attributes = new(result);
         return processed;
     }
 
-    private readonly string ReadSelector()
-        => css[CurrentTokenIndex] switch
+    private static KeyValuePair<string, string> ReadAttribute(ReadOnlySpan<char> attr)
+        => new(ReadSelector(attr[0]),  attr[1..].ToString());
+
+    private static string ReadSelector(char selector)
+        => selector switch
         {
             '#' => "id",
             '.' => "class",
-            _ => throw new ArgumentException($"Unknown attribute met: {css}")
+            _ => throw new ArgumentException($"Unknown attribute met: {selector}")
         };
-
-    private readonly string ReadTarget()
-        => css[CurrentTokenIndex..][1..].ToString();
 
     private static void ThrowIfUnsupported(ReadOnlySpan<char> css)
     {

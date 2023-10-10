@@ -2,7 +2,6 @@ using System.Collections.Immutable;
 using WebScrap.Common.Tags.Creators;
 using WebScrap.Common.Processors;
 using WebScrap.Css.Listeners;
-using WebScrap.Css.Preprocessing;
 
 namespace WebScrap.Css;
 
@@ -20,7 +19,8 @@ public class CssProcessor
         TagFactoryBase tagFactory,
         ReadOnlySpan<char> css)
     {
-        var cssListener = new CssTagsListener(CssTokensBuilder.Build(css));
+        var tokens = Preprocessing.API.Process(css);
+        var cssListener = new CssTagsListener(tokens);
         cssListener.CssComplianceMet += OnCompletedCssMet;
         processor = new HtmlProcessor(tagFactory, [cssListener]);
     }

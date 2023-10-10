@@ -1,23 +1,28 @@
-
 using WebScrap.Css.Common.Selectors;
 
 namespace WebScrap.Css.Preprocessing.Readers;
 
-internal readonly ref struct CssSelectorReader(char? selector)
+internal readonly ref struct CssSelectorReader(ReadOnlySpan<char> selector)
 {
-    internal static int Read(char? selector, out CssSelector cssSelector) 
-        => new CssSelectorReader(selector).Read(out cssSelector);
+    private readonly ReadOnlySpan<char> selector = selector;
 
-    private int Read(out CssSelector cssSelector) 
+    internal static int Read(ReadOnlySpan<char> selector, out CssSelector result) 
+        => new CssSelectorReader(selector).Read(out result);
+
+    private int Read(out CssSelector result) 
     {
-        cssSelector = selector switch
+        if (selector.IsEmpty)
         {
-            null => new RootCssSelector(),
+            result = new RootCssSelector();
+            return 0;
+        }
+
+        result = selector[0] switch
+        {
             ' ' => new AnyChildCssSelector(),
             '>' => new ChildCssSelector(),
             _ => throw new ArgumentException($"Unknown child selector: {selector}")
         };
-
-        return cssSelector is RootCssSelector ? 0 : 1;
+        return 1;
     }
 }
