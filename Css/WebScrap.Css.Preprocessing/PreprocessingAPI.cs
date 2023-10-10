@@ -1,4 +1,4 @@
-using WebScrap.Css.Common;
+using WebScrap.Common.Css;
 
 namespace WebScrap.Css.Preprocessing;
 

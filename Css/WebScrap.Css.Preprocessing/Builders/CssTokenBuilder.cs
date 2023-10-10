@@ -1,7 +1,7 @@
-using WebScrap.Css.Common;
-using WebScrap.Css.Common.Attributes;
-using WebScrap.Css.Common.Selectors;
-using WebScrap.Css.Common.Tags;
+using WebScrap.Common.Css;
+using WebScrap.Common.Css.Attributes;
+using WebScrap.Common.Css.Selectors;
+using WebScrap.Common.Css.Tags;
 using WebScrap.Css.Preprocessing.Readers;
 
 namespace WebScrap.Css.Preprocessing.Builders;

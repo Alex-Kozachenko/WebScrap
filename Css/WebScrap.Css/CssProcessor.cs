@@ -1,47 +1,35 @@
-using System.Collections.Immutable;
-using WebScrap.Common.Tags.Creators;
-using WebScrap.Common.Processors;
-using WebScrap.Css.Listeners;
+using WebScrap.Common;
+using WebScrap.Common.Contracts;
+using WebScrap.Common.Css;
+using WebScrap.Common.Tags;
+using WebScrap.Css.Matching;
 
 namespace WebScrap.Css;
 
-/// <summary>
-/// Processes the html with provided css-like-selectors,
-/// and returns detected html which conforms 
-/// the css from the parameter.
-/// </summary>
-public class CssProcessor
+public class CssProcessor(
+    TagFactoryBase tagFactory, 
+    CssToken[] expectedTags) 
+    : ProcessorBase(tagFactory)
 {
-    private readonly List<int> tagIndexes = [];
-    private readonly HtmlProcessor processor;
+    private readonly CssToken[] expectedTags = expectedTags;
+    public List<int> TagIndexes = [];
 
-    public CssProcessor(
-        TagFactoryBase tagFactory,
-        ReadOnlySpan<char> css)
+    protected override void Process(OpeningTag tag)
     {
-        var tokens = Preprocessing.PreprocessingAPI.Process(css);
-        var cssListener = new CssTagsListener(tokens);
-        cssListener.CssComplianceMet += OnCompletedCssMet;
-        processor = new HtmlProcessor(tagFactory, [cssListener]);
+        var isEntireCssMet = MatchingAPI.IsMatch.Names(
+                expectedTags, 
+                TagsHistory) 
+            && MatchingAPI.IsMatch.Attributes(
+                expectedTags, 
+                TagsHistory);
+
+        if (isEntireCssMet)
+        {
+            TagIndexes.Add(CharsProcessed);
+        }
     }
 
-    public void Run(ReadOnlySpan<char> html)
+    protected override void Process(ClosingTag tag)
     {
-        processor.Run(html);
-    }
-
-    public static ImmutableArray<int> CalculateTagIndexes(
-        TagFactoryBase tagFactory, 
-        ReadOnlySpan<char> html,
-        ReadOnlySpan<char> css)
-    {
-        var processor = new CssProcessor(tagFactory, css);
-        processor.Run(html);
-        return [.. processor.tagIndexes];
-    }
-
-    private void OnCompletedCssMet(object? sender, EventArgs args)
-    {
-        tagIndexes.Add(processor.CharsProcessed);
     }
 }

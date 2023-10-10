@@ -1,10 +1,10 @@
-using WebScrap.Common.Tags.Creators;
+using WebScrap.Common.Contracts;
 using WebScrap.Common.Tools;
 using WebScrap.Tags.Creators;
 
 namespace WebScrap.Tags;
 
-public class TagFactory : TagFactoryBase
+internal class TagFactory : TagFactoryBase
 {
     protected override ITagCreator GetTagCreator(ReadOnlySpan<char> tag)
     {

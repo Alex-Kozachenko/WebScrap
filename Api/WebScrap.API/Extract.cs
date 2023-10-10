@@ -1,7 +1,9 @@
 using System.Collections.Immutable;
 using WebScrap.Tags;
 using WebScrap.Css;
-using WebScrap.Common.Processors;
+using WebScrap.Common.Contracts;
+using WebScrap.Css.Preprocessing;
+using WebScrap.Common;
 
 namespace WebScrap.API;
 
@@ -18,21 +20,23 @@ public static class Extract
         ReadOnlySpan<char> css)
     {
         html = html.TrimStart(' ');
-        var tagFactory = new TagFactory();
-        var tagIndexes = CssProcessor.CalculateTagIndexes(tagFactory, html, css);
-        var tagRanges = ExtractTagRanges(tagFactory, html.ToString(), tagIndexes);
+        var tagFactory = TagsAPI.CreateTagFactory();
+        var cssTokens = PreprocessingAPI.Process(css);
+        var cssProcessor = new CssProcessor(tagFactory, cssTokens);
+        cssProcessor.Run(html);
+        var tagIndexes = cssProcessor.TagIndexes;
+        var tagRanges = ExtractTagRanges(cssProcessor, html.ToString(), tagIndexes);
         var tagStrings = ExtractStrings(html.ToString(), tagRanges);
         return tagStrings;
     }
 
     private static ImmutableArray<Range> ExtractTagRanges(
-        TagFactory tagFactory,
+        ProcessorBase processor,
         string html,
         IEnumerable<int> tagIndexes)
         => tagIndexes.Select(tagIndex =>
         {
             var substring = html[tagIndex..];
-            var processor = new HtmlProcessor(tagFactory, []);
             processor.Run(substring);
             var offset = processor.CharsProcessed;
             return tagIndex..(tagIndex + offset);

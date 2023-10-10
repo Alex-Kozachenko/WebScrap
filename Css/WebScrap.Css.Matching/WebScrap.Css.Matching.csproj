@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebScrap.Css.Preprocessing\WebScrap.Css.Preprocessing.csproj" />
-    <ProjectReference Include="..\WebScrap.Css.Matching\WebScrap.Css.Matching.csproj" />
+    <ProjectReference Include="..\..\WebScrap.Common\WebScrap.Common.csproj" />
   </ItemGroup>
 
 </Project>

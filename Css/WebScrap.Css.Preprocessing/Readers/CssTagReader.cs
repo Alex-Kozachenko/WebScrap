@@ -1,4 +1,4 @@
-using WebScrap.Css.Common.Tags;
+using WebScrap.Common.Css.Tags;
 
 namespace WebScrap.Css.Preprocessing.Readers;
 
@@ -11,6 +11,12 @@ internal readonly ref struct CssTagReader(ReadOnlySpan<char> css)
 
     private int Read(out CssTagBase tag)
     {
+        if (css.Length == 0)
+        {
+            tag = new WildcardCssTag();
+            return 0;
+        }
+        
         if (css[^1] == '*')
         {
             tag = new WildcardCssTag();

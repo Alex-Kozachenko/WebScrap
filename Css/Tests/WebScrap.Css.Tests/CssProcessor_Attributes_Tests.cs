@@ -1,4 +1,4 @@
-using static WebScrap.Css.Tests.CssProcessor;
+using static WebScrap.Css.Tests.Helpers.CssProcessorHelper;
 
 namespace WebScrap.Css.Tests;
 

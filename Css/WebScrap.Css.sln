@@ -13,11 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Preprocessing"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Preprocessing.Tests", "Tests\WebScrap.Css.Preprocessing.Tests\WebScrap.Css.Preprocessing.Tests.csproj", "{A880B5A1-841E-4B44-8DAB-26B04CAB136A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Traversing.Tests", "Tests\WebScrap.Css.Traversing.Tests\WebScrap.Css.Traversing.Tests.csproj", "{3EDF2B1F-C08F-46C0-BBB8-E28206B23044}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Matching.Tests", "Tests\WebScrap.Css.Matching.Tests\WebScrap.Css.Matching.Tests.csproj", "{3EDF2B1F-C08F-46C0-BBB8-E28206B23044}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Traversing", "WebScrap.Css.Traversing\WebScrap.Css.Traversing.csproj", "{ADC01988-B217-479B-B2BE-F15F9061FC50}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Common", "WebScrap.Css.Common\WebScrap.Css.Common.csproj", "{2790C1B4-630B-4BA3-AFB7-30753DCE7EE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Css.Matching", "WebScrap.Css.Matching\WebScrap.Css.Matching.csproj", "{ADC01988-B217-479B-B2BE-F15F9061FC50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +50,6 @@ Global
 		{ADC01988-B217-479B-B2BE-F15F9061FC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADC01988-B217-479B-B2BE-F15F9061FC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADC01988-B217-479B-B2BE-F15F9061FC50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2790C1B4-630B-4BA3-AFB7-30753DCE7EE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2790C1B4-630B-4BA3-AFB7-30753DCE7EE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2790C1B4-630B-4BA3-AFB7-30753DCE7EE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2790C1B4-630B-4BA3-AFB7-30753DCE7EE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C7B75264-793B-49AE-8500-B7DEA72EB0B4} = {8723977B-E62F-4392-8A16-6DC6B827BB67}

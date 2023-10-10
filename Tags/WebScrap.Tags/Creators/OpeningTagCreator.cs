@@ -1,5 +1,5 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Tags.Creators;
+using WebScrap.Common.Contracts;
 using static WebScrap.Tags.Attributes.AttributeExtractor;
 
 namespace WebScrap.Tags.Creators;

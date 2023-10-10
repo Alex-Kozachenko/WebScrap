@@ -1,4 +1,4 @@
-using WebScrap.Css.Common.Selectors;
+using WebScrap.Common.Css.Selectors;
 
 namespace WebScrap.Css.Preprocessing.Readers;
 
