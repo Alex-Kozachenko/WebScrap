@@ -19,7 +19,7 @@ public class CssProcessor
         TagFactoryBase tagFactory,
         ReadOnlySpan<char> css)
     {
-        var tokens = Preprocessing.API.Process(css);
+        var tokens = Preprocessing.PreprocessingAPI.Process(css);
         var cssListener = new CssTagsListener(tokens);
         cssListener.CssComplianceMet += OnCompletedCssMet;
         processor = new HtmlProcessor(tagFactory, [cssListener]);

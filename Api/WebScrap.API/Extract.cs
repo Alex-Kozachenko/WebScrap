@@ -14,14 +14,14 @@ public static class Extract
     /// <param name="css"></param>
     /// <returns></returns>
     public static ImmutableArray<string> Html(
-        string html,
-        string css)
+        ReadOnlySpan<char> html,
+        ReadOnlySpan<char> css)
     {
         html = html.TrimStart(' ');
         var tagFactory = new TagFactory();
         var tagIndexes = CssProcessor.CalculateTagIndexes(tagFactory, html, css);
-        var tagRanges = ExtractTagRanges(tagFactory, html, tagIndexes);
-        var tagStrings = ExtractStrings(html, tagRanges);
+        var tagRanges = ExtractTagRanges(tagFactory, html.ToString(), tagIndexes);
+        var tagStrings = ExtractStrings(html.ToString(), tagRanges);
         return tagStrings;
     }
 
@@ -41,7 +41,8 @@ public static class Extract
     private static ImmutableArray<string> ExtractStrings(
         string html,
         IEnumerable<Range> tagRanges)
-        => tagRanges.Select(range => html[range])
+        => tagRanges
+            .Select(range => html[range])
             .Select(x => x.ToString())
             .Select(x => x.Trim())
             .ToImmutableArray();

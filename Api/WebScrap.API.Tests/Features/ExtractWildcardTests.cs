@@ -1,7 +1,7 @@
 namespace WebScrap.API.Tests.Features;
 
 [TestFixture(Category=Categories.Features)]
-public class WildcardLocationTests
+public class ExtractWildcardTests
 {
     [Test]
     public void Test1()

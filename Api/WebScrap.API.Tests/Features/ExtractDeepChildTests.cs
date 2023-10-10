@@ -1,7 +1,7 @@
 namespace WebScrap.API.Tests.Features;
 
 [TestFixture(Category=Categories.Features)]
-public class DeepChildLocationTests
+public class ExtractDeepChildTests
 {
     [Test]
     public void Test1()

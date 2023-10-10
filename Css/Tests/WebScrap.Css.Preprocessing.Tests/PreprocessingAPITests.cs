@@ -17,7 +17,7 @@ public class PreprocessingAPITests
             new(typeof(ChildCssSelector), "p"),
         ];
 
-        (Type, string)[] result = API.Process(sample)
+        (Type, string)[] result = PreprocessingAPI.Process(sample)
             .Select(x => (x.Selector.GetType(), x.Tag.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
@@ -34,7 +34,7 @@ public class PreprocessingAPITests
             new("class", "buzz"),
         }.ToLookup(x => x.Key, x => x.Value);
 
-        var result = API.Process(sample)
+        var result = PreprocessingAPI.Process(sample)
             .First()
             .Attributes;
 
