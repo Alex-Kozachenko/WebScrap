@@ -1,14 +1,12 @@
-using System.Collections.Immutable;
 using WebScrap.Common.Tags;
 using WebScrap.Common.Processors;
-using WebScrap.Css.Common.Tokens;
+
 using WebScrap.Css.Traversing;
+using WebScrap.Css.Common;
 
 namespace WebScrap.Css.Listeners;
 
-/// <summary>
-/// </summary>
-internal class CssTagsListener(ImmutableArray<CssTokenBase> expectedTags)
+internal class CssTagsListener(CssToken[] expectedTags)
     : IProcessorListener
 {
     public event EventHandler? CssComplianceMet;

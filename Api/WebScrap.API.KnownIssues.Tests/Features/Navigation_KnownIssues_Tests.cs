@@ -2,17 +2,6 @@ namespace WebScrap.API.KnownIssues.Tests;
 
 public class Navigation_KnownIssues_Tests
 {
-    [TestCase(Category=Categories.KnownIssues)]
-    public void ExtractHtml_UnableToAccept_Html_With_WhitespacesOnStart()
-    {
-        var css = "div";
-        var html ="    <div></div>";
-
-        Assert.That(() => 
-            Extract.Html(html, css),
-            Throws.Exception);
-    }
-
     [Test]
     public void ExtractHtml_DropsProcessing_DueTo_TagName()
     {

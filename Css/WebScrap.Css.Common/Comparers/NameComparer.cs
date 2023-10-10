@@ -1,13 +1,18 @@
 using WebScrap.Common.Tags;
-using WebScrap.Css.Common.Tokens;
+using WebScrap.Css.Common.Tags;
 
 namespace WebScrap.Css.Common.Comparers;
 
 public class NameComparer : IComparer
 {
-    public bool AreSame(CssTokenBase css, OpeningTag tag) 
+    public bool AreSame(CssToken css, OpeningTag tag) 
         => AreSame(css, tag.Name);
     
-    public bool AreSame(CssTokenBase css, ReadOnlySpan<char> tagName) 
-        => tagName.SequenceEqual(css.Name);
+    public bool AreSame(CssToken css, ReadOnlySpan<char> tagName) 
+        => css.Tag switch
+        {
+            WildcardCssTag => true,
+            CssTag tag => tagName.SequenceEqual(tag.Name),
+            _ => throw new InvalidOperationException("Uknown tag type"),
+        };
 }

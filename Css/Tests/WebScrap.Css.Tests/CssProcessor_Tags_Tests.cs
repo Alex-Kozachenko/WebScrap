@@ -1,5 +1,4 @@
 using static WebScrap.Css.Tests.CssProcessor;
-using System.Collections.Immutable;
 
 namespace WebScrap.Css.Tests;
 
@@ -14,7 +13,7 @@ public class CssProcessor_Tags_Tests
         var (html, pointers) = (
             "<div><p>__</p>__<p>__</div>",
             "     ^          ^");
-        var expected = PointersToIndexes(pointers).Select(x => html[x..]);
+        var expected = pointers.ToIndexes().ToSubstrings(html);
         var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
         Assert.That(results, Is.EquivalentTo(expected));
     }
@@ -42,7 +41,7 @@ public class CssProcessor_Tags_Tests
         string pointers)
     {
         var css = "div>p";
-        var expected = PointersToIndexes(pointers).Select(x => html[x..]);
+        var expected = pointers.ToIndexes().ToSubstrings(html);
         var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
         Assert.That(results, Is.EquivalentTo(expected));
     }
@@ -83,19 +82,5 @@ public class CssProcessor_Tags_Tests
         Assert.That(
             () => CalculateTagIndexes(sample, css),
             Throws.ArgumentException);
-    }
-
-    private static int[] PointersToIndexes(ReadOnlySpan<char> pointers)
-    {
-        var result = new List<int>();
-        for (var i = 0; i < pointers.Length; i++)
-        {
-            var ch = pointers[i];
-            if (ch == '^')
-            {
-                result.Add(i);
-            }
-        }
-        return [.. result];
     }
 }

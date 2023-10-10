@@ -1,4 +1,3 @@
-
 namespace WebScrap.Features.IntegrationTests;
 
 [TestFixture]
@@ -6,6 +5,28 @@ public class HtmlExtractionFeatureTests
 {
     [Test]
     public void SingleTag_ShouldExtract()
+    {
+        var css = "main";
+        string[] expected = ["<main></main>"];
+        var html = "<main></main>";
+
+        var actual = Extract.Html(html, css);
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
+
+    [Test]
+    public void SingleTag_WithSpacesHtml_ShouldExtract()
+    {
+        var css = "main";
+        string[] expected = ["<main></main>"];
+        var html = "   <main></main>  ";
+
+        var actual = Extract.Html(html, css);
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
+
+    [Test]
+    public void SingleTag_ComplexCss_ShouldExtract()
     {
         var css = "main>div>p";
         string[] expected = ["<p> One </p>"];

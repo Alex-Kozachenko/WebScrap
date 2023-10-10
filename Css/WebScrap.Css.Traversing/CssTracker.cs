@@ -1,18 +1,20 @@
 using WebScrap.Common.Tags;
-using WebScrap.Css.Common.Tokens;
+using WebScrap.Css.Common;
+using WebScrap.Css.Common.Selectors;
+
 
 namespace WebScrap.Css.Traversing;
 
 internal class CssTracker
 {
-    internal readonly Stack<CssTokenBase> expectedTags;
+    internal readonly Stack<CssToken> expectedTags;
     internal readonly Stack<OpeningTag> traversedTags;
 
     internal CssTracker(
-        IReadOnlyCollection<CssTokenBase> expectedTags, 
+        IReadOnlyCollection<CssToken> expectedTags, 
         IReadOnlyCollection<OpeningTag> traversedTags)
     {
-        AssertCss(expectedTags);
+        AssertCssStructur(expectedTags);
         this.expectedTags = new(expectedTags);
         this.traversedTags = new(traversedTags);
     }
@@ -24,7 +26,7 @@ internal class CssTracker
     internal bool IsCompleted
         => expectedTags.Count == 0;
 
-    internal (CssTokenBase, OpeningTag) Peek()
+    internal (CssToken, OpeningTag) Peek()
         => (expectedTags.Peek(), traversedTags.Peek());
 
     internal void PopCss() => expectedTags.Pop();
@@ -35,15 +37,18 @@ internal class CssTracker
         traversedTags.Clear();
     }
 
-    private static void AssertCss(IReadOnlyCollection<CssTokenBase> css)
+    private static void AssertCssStructur(IReadOnlyCollection<CssToken> css)
     {
-        _ = css.ToArray() switch 
+        var selectors = css.Select(x => x.Selector).ToArray();
+        
+        if (selectors.First() is not RootCssSelector)
         {
-            var a when a.First() is not RootCssToken
-                => throw new ArgumentException("Incorrect css structure. First element should be root."),
-            var a when a.Skip(1).Any(x => x is RootCssToken)
-                => throw new ArgumentException("Incorrect css structure. Only first element could be root."),
-            _ => 0,
-        };
+            throw new ArgumentException("Incorrect css structure. First element should be root.");
+        }
+
+        if (selectors.Skip(1).Any(x => x is RootCssSelector))
+        {
+            throw new ArgumentException("Incorrect css structure. Only first element could be root.");
+        }
     }
 }

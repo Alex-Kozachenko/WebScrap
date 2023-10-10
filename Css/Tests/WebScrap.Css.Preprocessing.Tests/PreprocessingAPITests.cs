@@ -1,30 +1,30 @@
-using static WebScrap.Css.Preprocessing.CssTokenizer;
-using WebScrap.Css.Common.Tokens;
+using WebScrap.Css.Common.Selectors;
+using WebScrap.Css.Preprocessing;
 
 namespace WebScrap.Css.Preprocessing.Tests;
 
 [TestFixture]
-public class CssTokenizerTests
+public class PreprocessingAPITests
 {
     [Test]
-    public void TokenizeCss_ShouldProcess_Descendants()
+    public void Process_WithDescendants_ShouldWork()
     {
         var sample = "main div>p";
         (Type, string)[] expected =
         [
-            new(typeof(RootCssToken), "main"),
-            new(typeof(AnyChildCssToken), "div"),
-            new(typeof(DirectChildCssToken), "p"),
+            new(typeof(RootCssSelector), "main"),
+            new(typeof(AnyChildCssSelector), "div"),
+            new(typeof(ChildCssSelector), "p"),
         ];
 
-        (Type, string)[] result = TokenizeCss(sample)
-            .Select(x => (x.GetType(), x.Name.ToString()))
+        (Type, string)[] result = API.Process(sample)
+            .Select(x => (x.Selector.GetType(), x.Tag.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
     }
 
     [Test]
-    public void TokenizeCss_ShouldProcess_MultipleSelectors()
+    public void Process_WithMultipleSelectors_ShouldWork()
     {
         var sample = "p#foo.bar.buzz";
         var expected = new KeyValuePair<string, string>[]
@@ -34,7 +34,7 @@ public class CssTokenizerTests
             new("class", "buzz"),
         }.ToLookup(x => x.Key, x => x.Value);
 
-        var result = TokenizeCss(sample)
+        var result = API.Process(sample)
             .First()
             .Attributes;
 

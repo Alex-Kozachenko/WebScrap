@@ -1,11 +1,10 @@
 using WebScrap.Common.Tags;
-using WebScrap.Css.Common.Tokens;
 
 namespace WebScrap.Css.Common.Comparers;
 
 public class AttributesComparer : IComparer
 {
-    public bool AreSame(CssTokenBase css, OpeningTag tag) 
+    public bool AreSame(CssToken css, OpeningTag tag) 
         => IsSubset(
             css.Attributes, 
             tag.Attributes);
