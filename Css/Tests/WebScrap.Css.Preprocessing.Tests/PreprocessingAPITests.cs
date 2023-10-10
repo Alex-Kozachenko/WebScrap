@@ -7,7 +7,7 @@ namespace WebScrap.Css.Preprocessing.Tests;
 public class PreprocessingAPITests
 {
     [Test]
-    public void Read_ShouldProcess_Descendants()
+    public void Process_WithDescendants_ShouldWork()
     {
         var sample = "main div>p";
         (Type, string)[] expected =
@@ -24,7 +24,7 @@ public class PreprocessingAPITests
     }
 
     [Test]
-    public void Read_ShouldProcess_MultipleSelectors()
+    public void Process_WithMultipleSelectors_ShouldWork()
     {
         var sample = "p#foo.bar.buzz";
         var expected = new KeyValuePair<string, string>[]
