@@ -1,5 +1,6 @@
 using WebScrap.Common.Tags;
 using WebScrap.Core.Tags;
+using WebScrap.Core.Tags.Data;
 
 namespace WebScrap.Html.Extracting;
 
@@ -19,9 +20,9 @@ public class TableValuesProcessor : TagsProcessorBase
         }
     }
 
-    protected override void Process(ClosingTag tag)
+    protected override void Process(ClosingTag tag, TagInfo tagInfo)
     {
-        base.Process(tag);
+        base.Process(tag, tagInfo);
 
         if (tag.Name == "td" 
             && lastTdTagBeginIndex.HasValue)
