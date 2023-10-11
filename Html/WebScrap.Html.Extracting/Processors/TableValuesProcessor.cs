@@ -10,13 +10,13 @@ public class TableValuesProcessor : TagsProcessorBase
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
     public Range[][] ValuesRanges => [..valuesRanges];
-    protected override void Process(OpeningTag tag)
+    protected override void Process(OpeningTag tag, TagsHistoryRecord tagsHistoryRecord)
     {
-        base.Process(tag);
+        base.Process(tag, tagsHistoryRecord);
 
         if (tag.Name == "td")
         {
-            lastTdTagBeginIndex = CharsProcessed;
+            lastTdTagBeginIndex = tagsHistoryRecord.TagOffset;
         }
     }
 
@@ -27,7 +27,7 @@ public class TableValuesProcessor : TagsProcessorBase
         if (tag.Name == "td" 
             && lastTdTagBeginIndex.HasValue)
         {
-            currentRowRanges.Add(lastTdTagBeginIndex.Value..CharsProcessed);
+            currentRowRanges.Add(lastTdTagBeginIndex.Value..tagInfo.Range.End);
             lastTdTagBeginIndex = null;
         }
 

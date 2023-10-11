@@ -9,13 +9,13 @@ public class TableHeadersProcessor : TagsProcessorBase
     private int? lastTagBeginIndex = null;
     private readonly List<Range> headerRanges = [];
     public Range[] HeaderRanges => [..headerRanges];
-    protected override void Process(OpeningTag tag)
+    protected override void Process(OpeningTag tag, TagsHistoryRecord tagsHistoryRecord)
     {
-        base.Process(tag);
+        base.Process(tag, tagsHistoryRecord);
 
         if (tag.Name == "th")
         {
-            lastTagBeginIndex = CharsProcessed;
+            lastTagBeginIndex = tagsHistoryRecord.TagOffset;
         }
     }
 
@@ -25,7 +25,7 @@ public class TableHeadersProcessor : TagsProcessorBase
 
         if (tag.Name == "th" && lastTagBeginIndex.HasValue)
         {
-            headerRanges.Add(lastTagBeginIndex.Value..CharsProcessed);
+            headerRanges.Add(lastTagBeginIndex.Value..tagInfo.Range.End.Value);
             lastTagBeginIndex = null;
         }
     }

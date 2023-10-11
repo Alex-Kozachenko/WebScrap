@@ -18,24 +18,28 @@ public class TagsProcessorBase
 {
     private readonly TagFactory tagFactory = new();
     private readonly Stack<TagsHistoryRecord> tagsHistory = new();
+    private readonly Queue<TagInfo> processedTagsHistory = new();
 
-    // TODO: remove; This field is hellata confusive >:-O
-    public int CharsProcessed { get; private set; }
     protected OpeningTag[] TagsHistory 
         => tagsHistory
             .Reverse()
             .Select(x => x.Metadata)
             .ToArray();
 
+    public TagInfo[] ProcessedTags 
+        => processedTagsHistory
+            .Reverse()
+            .ToArray();
+
     public void Run(ReadOnlySpan<char> html)
     {
-        CharsProcessed = 0;
+        var charsProcessed = 0;
         tagsHistory.Clear();
         do
         {
-            Process(html[CharsProcessed..]);
-            CharsProcessed += Proceed(html[CharsProcessed..]);
-        } while (CharsProcessed < html.Length && tagsHistory.Count != 0);
+            Process(html[charsProcessed..], charsProcessed);
+            charsProcessed += Proceed(html[charsProcessed..]);
+        } while (charsProcessed < html.Length && tagsHistory.Count != 0);
     }
 
     protected virtual void Process(OpeningTag tag, TagsHistoryRecord tagHistoryRecord) { }
@@ -54,7 +58,7 @@ public class TagsProcessorBase
         return tagFactory.CreateTagBase(html);
     }
 
-    private void Process(ReadOnlySpan<char> html)
+    private void Process(ReadOnlySpan<char> html, int charsProcessed)
     {
         var tag = ExtractTag(html);
         if (tag is InlineTag iTag)
@@ -65,8 +69,8 @@ public class TagsProcessorBase
         if (tag is OpeningTag oTag)
         {
             var record = new TagsHistoryRecord(
-                CharsProcessed, 
-                CharsProcessed + GetInnerOffset(html, oTag), 
+                charsProcessed, 
+                charsProcessed + GetInnerOffset(html, oTag), 
                 oTag);
             tagsHistory.Push(record);
             Process(oTag, record);
@@ -74,9 +78,10 @@ public class TagsProcessorBase
         
         if (tag is ClosingTag cTag)
         {
-            var tagInfo = GetTagInfo(html, tagsHistory.Peek(), CharsProcessed);
+            var tagInfo = GetTagInfo(html, tagsHistory.Peek(), charsProcessed);
             Process(cTag, tagInfo);
             tagsHistory.Pop();
+            processedTagsHistory.Enqueue(tagInfo);
         }
     }
 
