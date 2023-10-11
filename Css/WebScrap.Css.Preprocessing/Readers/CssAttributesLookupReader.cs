@@ -8,7 +8,7 @@ internal ref struct CssAttributesReader
 
     internal CssAttributesReader(ReadOnlySpan<char> css)
     {
-        ThrowIfUnsupported(css);
+        CssValidator.ThrowIfUnsupported(css, "[]");
         this.css = css;
     }
 
@@ -49,13 +49,4 @@ internal ref struct CssAttributesReader
             '.' => "class",
             _ => throw new ArgumentException($"Unknown attribute met: {selector}")
         };
-
-    private static void ThrowIfUnsupported(ReadOnlySpan<char> css)
-    {
-        _ = css.IndexOfAny("[],") switch 
-        {
-            -1 => 0,
-            var i => throw new ArgumentException($"Unable to process css. Css contains unsupported chars: {css[i..]}.")
-        };
-    }
 }

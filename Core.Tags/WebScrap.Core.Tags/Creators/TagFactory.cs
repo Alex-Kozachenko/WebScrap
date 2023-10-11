@@ -1,5 +1,5 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Tools;
+using WebScrap.Core.Tags.Tools;
 
 namespace WebScrap.Core.Tags.Creators;
 

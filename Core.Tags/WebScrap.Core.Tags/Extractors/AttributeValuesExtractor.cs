@@ -1,5 +1,3 @@
-using WebScrap.Common.Tools;
-
 namespace WebScrap.Core.Tags.Extractors;
 
 public sealed class AttributeValuesExtractor : IExtractor<string[]>
