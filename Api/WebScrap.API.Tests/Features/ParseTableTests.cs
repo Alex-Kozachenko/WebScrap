@@ -20,7 +20,10 @@ public class ParseTableTests
             ["<td> Width </td>", "<td> 2 </td>"],
             ["<td> Height </td>", "<td> 3 </td>"]];
 
-        var actual = Parse.Table(html, css);
+        // TODO: merge this calls into single API.
+        var extractedHtml = Extract.Html(html, css)
+            .First();
+        var actual = Parse.Table(extractedHtml);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }

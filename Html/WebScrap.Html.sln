@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Html.Extracting", "WebScrap.Html.Extracting\WebScrap.Html.Extracting.csproj", "{24A35044-43AC-4234-A354-AAD8015C9D4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3B8B0D83-FB6E-4A93-9860-AA9B02881DEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.Html.Extracting.Tests", "Tests\WebScrap.Html.Extracting.Tests\WebScrap.Html.Extracting.Tests.csproj", "{794E55AB-EBEA-42CE-B75D-381C16198ED4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24A35044-43AC-4234-A354-AAD8015C9D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A35044-43AC-4234-A354-AAD8015C9D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24A35044-43AC-4234-A354-AAD8015C9D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24A35044-43AC-4234-A354-AAD8015C9D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{794E55AB-EBEA-42CE-B75D-381C16198ED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{794E55AB-EBEA-42CE-B75D-381C16198ED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{794E55AB-EBEA-42CE-B75D-381C16198ED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{794E55AB-EBEA-42CE-B75D-381C16198ED4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{794E55AB-EBEA-42CE-B75D-381C16198ED4} = {3B8B0D83-FB6E-4A93-9860-AA9B02881DEB}
+	EndGlobalSection
+EndGlobal

@@ -28,7 +28,6 @@ public class TagsProcessorBase
         do
         {
             Process(html[CharsProcessed..]);
-            CharsProcessed += Proceed(html[CharsProcessed..]);
         } while (CharsProcessed < html.Length && tagsHistory.Count != 0);
     }
 
@@ -45,6 +44,7 @@ public class TagsProcessorBase
         var tag = tagFactory.CreateTagBase(html);
         if (tag is InlineTag iTag)
         {
+            CharsProcessed += Proceed(html);
             return;
         }
 
@@ -52,10 +52,13 @@ public class TagsProcessorBase
         {
             tagsHistory.Push(oTag);
             Process(oTag);
+            CharsProcessed += Proceed(html);
         }
         
         if (tag is ClosingTag cTag)
         {
+            // HACK: please make a decent TagIndexes instead of this call order magick.
+            CharsProcessed += Proceed(html);
             Process(cTag);
             tagsHistory.Pop();
         }

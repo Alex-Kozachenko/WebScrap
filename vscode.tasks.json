@@ -30,10 +30,10 @@
             "problemMatcher": []
         },
         {
-            "label": "test tags",
+            "label": "test html",
             "type": "shell",
             "command": "dotnet",
-            "args": [ "test", "Tags" ],
+            "args": [ "test", "Html" ],
             "problemMatcher": []
         },
         {
@@ -43,7 +43,7 @@
                 "kind": "test"
             },
             "dependsOrder": "sequence",
-            "dependsOn":["test css", "test tags", "test api"]
+            "dependsOn":["test css", "test html", "test api"]
         }
     ]
 }
