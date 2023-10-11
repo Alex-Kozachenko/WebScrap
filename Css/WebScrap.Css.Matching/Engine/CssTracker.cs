@@ -1,9 +1,8 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Css;
-using WebScrap.Common.Css.Selectors;
+using WebScrap.Css.Data;
+using WebScrap.Css.Data.Selectors;
 
-
-namespace WebScrap.Css.Matching;
+namespace WebScrap.Css.Matching.Engine;
 
 internal class CssTracker
 {
@@ -15,11 +14,6 @@ internal class CssTracker
         OpeningTag[] traversedTags)
     {
         AssertCssStructure(expectedTags);
-
-        if (expectedTags.First().Selector is not RootCssSelector)
-        {
-            throw new ArgumentException("Incorrect expected tags");
-        }
 
         this.expectedTags = new(expectedTags);
         this.traversedTags = new(traversedTags);

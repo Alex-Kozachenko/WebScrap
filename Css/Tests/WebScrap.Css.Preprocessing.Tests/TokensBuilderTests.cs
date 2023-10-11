@@ -1,13 +1,12 @@
-using WebScrap.Common.Css.Selectors;
-using WebScrap.Css.Preprocessing;
+using WebScrap.Css.Data.Selectors;
 
 namespace WebScrap.Css.Preprocessing.Tests;
 
 [TestFixture]
-public class APITests
+public class TokensBuilderTests
 {
     [Test]
-    public void Process_WithDescendants_ShouldWork()
+    public void Build_WithDescendants_ShouldWork()
     {
         var sample = "main div>p";
         (Type, string)[] expected =
@@ -17,14 +16,15 @@ public class APITests
             new(typeof(ChildCssSelector), "p"),
         ];
 
-        (Type, string)[] result = PreprocessingAPI.Process(sample)
+        (Type, string)[] result = new TokensBuilder()
+            .Build(sample)
             .Select(x => (x.Selector.GetType(), x.Tag.ToString()))
             .ToArray();
         Assert.That(result, Is.EquivalentTo(expected));
     }
 
     [Test]
-    public void Process_WithMultipleSelectors_ShouldWork()
+    public void Build_WithMultipleSelectors_ShouldWork()
     {
         var sample = "p#foo.bar.buzz";
         var expected = new KeyValuePair<string, string>[]
@@ -34,7 +34,8 @@ public class APITests
             new("class", "buzz"),
         }.ToLookup(x => x.Key, x => x.Value);
 
-        var result = PreprocessingAPI.Process(sample)
+        var result = new TokensBuilder()
+            .Build(sample)
             .First()
             .Attributes;
 

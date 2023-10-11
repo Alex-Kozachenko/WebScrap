@@ -1,5 +1,5 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Css;
+using WebScrap.Css.Data;
 
 namespace WebScrap.Css.Matching.Comparers;
 

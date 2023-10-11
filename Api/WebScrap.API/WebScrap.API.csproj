@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Css\WebScrap.Css\WebScrap.Css.csproj" />
+    <ProjectReference Include="..\..\Css\WebScrap.Css.API\WebScrap.Css.API.csproj" />
     <ProjectReference Include="..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
-    <ProjectReference Include="..\..\Html\WebScrap.Html.Extracting\WebScrap.Html.Extracting.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -1,23 +1,25 @@
-using WebScrap.Common.Css;
+using WebScrap.Css.Data;
 using WebScrap.Common.Tags;
-using WebScrap.Css.Matching;
 using WebScrap.Core.Tags;
+using WebScrap.Css.Contracts;
 
 namespace WebScrap.Css;
 
 public class CssProcessor(
-    CssToken[] expectedTags) 
-    : TagsProcessor
+    ICssComparer comparer,
+    ITokensBuilder tokensBuilder,
+    ReadOnlySpan<char> css) 
+    : TagsProcessorBase
 {
-    private readonly CssToken[] expectedTags = expectedTags;
+    private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
     public List<int> TagIndexes = [];
 
     protected override void Process(OpeningTag tag)
     {
-        var isEntireCssMet = MatchingAPI.IsMatch.Names(
+        var isEntireCssMet = comparer.CompareNames(
                 expectedTags, 
                 TagsHistory) 
-            && MatchingAPI.IsMatch.Attributes(
+            && comparer.CompareAttributes(
                 expectedTags, 
                 TagsHistory);
 

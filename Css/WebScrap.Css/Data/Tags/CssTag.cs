@@ -1,4 +1,4 @@
-namespace WebScrap.Common.Css.Tags;
+namespace WebScrap.Css.Data.Tags;
 
 public record class CssTag(string Name) : CssTagBase(Name)
 {

@@ -1,8 +1,8 @@
-using WebScrap.Common.Css.Attributes;
-using WebScrap.Common.Css.Selectors;
-using WebScrap.Common.Css.Tags;
+using WebScrap.Css.Data.Attributes;
+using WebScrap.Css.Data.Selectors;
+using WebScrap.Css.Data.Tags;
 
-namespace WebScrap.Common.Css;
+namespace WebScrap.Css.Data;
 
 public record class CssToken
 {

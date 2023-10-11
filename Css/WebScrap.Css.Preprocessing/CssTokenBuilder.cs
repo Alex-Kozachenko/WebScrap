@@ -1,10 +1,10 @@
-using WebScrap.Common.Css;
-using WebScrap.Common.Css.Attributes;
-using WebScrap.Common.Css.Selectors;
-using WebScrap.Common.Css.Tags;
+using WebScrap.Css.Data.Attributes;
+using WebScrap.Css.Data.Selectors;
+using WebScrap.Css.Data.Tags;
+using WebScrap.Css.Data;
 using WebScrap.Css.Preprocessing.Readers;
 
-namespace WebScrap.Css.Preprocessing.Builders;
+namespace WebScrap.Css.Preprocessing;
 
 internal ref struct CssTokenBuilder(ReadOnlySpan<char> cssToken)
 {

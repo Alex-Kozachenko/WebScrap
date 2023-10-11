@@ -1,4 +1,4 @@
-namespace WebScrap.Common.Css.Selectors;
+namespace WebScrap.Css.Data.Selectors;
 
 /// <summary>
 /// Represents ' ' selector.

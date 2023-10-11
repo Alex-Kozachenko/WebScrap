@@ -1,6 +1,6 @@
 using WebScrap.Common.Tags;
-using WebScrap.Common.Css;
-using WebScrap.Common.Css.Tags;
+using WebScrap.Css.Data;
+using WebScrap.Css.Data.Tags;
 
 namespace WebScrap.Css.Matching.Comparers;
 

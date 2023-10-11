@@ -1,4 +1,4 @@
-namespace WebScrap.Common.Css.Tags;
+namespace WebScrap.Css.Data.Tags;
 
 /// <summary>
 /// Represents an wildcard selector.

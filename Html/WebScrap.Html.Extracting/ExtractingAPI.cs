@@ -1,5 +1,5 @@
 ﻿// using System.Collections.Immutable;
-// using WebScrap.Common.Css;
+// using WebScrap.Css.Data;
 // using WebScrap.Html.Extracting.Listeners;
 
 // namespace WebScrap.Html.Extracting;

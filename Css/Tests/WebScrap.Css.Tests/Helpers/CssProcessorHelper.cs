@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using WebScrap.Css.Preprocessing;
-using WebScrap.Core.Tags;
+using WebScrap.Css.Matching;
 
 namespace WebScrap.Css.Tests.Helpers;
 
@@ -10,9 +10,10 @@ public static class CssProcessorHelper
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
         {
-            var cssTokens = PreprocessingAPI.Process(css);
-            var processor = new CssProcessor(cssTokens);
-            processor.Run(html);
-            return processor.TagIndexes.ToImmutableArray();
+            var builder = new TokensBuilder();
+            var comparer = new CssComparer();
+            var cssProcessor = new CssProcessor(comparer, builder, css);
+            cssProcessor.Run(html);
+            return [.. cssProcessor.TagIndexes];
         }
 }

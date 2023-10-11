@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WebScrap.Common\WebScrap.Common.csproj" />
+    <ProjectReference Include="..\WebScrap.Css\WebScrap.Css.csproj" />
   </ItemGroup>
 
 </Project>

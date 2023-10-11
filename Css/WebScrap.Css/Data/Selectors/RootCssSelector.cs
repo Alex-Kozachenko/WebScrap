@@ -1,3 +1,3 @@
-namespace WebScrap.Common.Css.Selectors;
+namespace WebScrap.Css.Data.Selectors;
 
 public record class RootCssSelector : CssSelector;

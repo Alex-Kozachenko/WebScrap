@@ -1,10 +1,8 @@
 
-using WebScrap.Common.Tags;
-using WebScrap.Common.Css;
-using WebScrap.Common.Css.Selectors;
+using WebScrap.Css.Data.Selectors;
 using WebScrap.Css.Matching.Comparers;
 
-namespace WebScrap.Css.Matching;
+namespace WebScrap.Css.Matching.Engine;
 
 internal class CssTraverser(
     IComparer comparer, 

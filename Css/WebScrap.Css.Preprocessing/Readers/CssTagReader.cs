@@ -1,4 +1,4 @@
-using WebScrap.Common.Css.Tags;
+using WebScrap.Css.Data.Tags;
 
 namespace WebScrap.Css.Preprocessing.Readers;
 

@@ -1,4 +1,4 @@
-using WebScrap.Common.Css.Attributes;
+using WebScrap.Css.Data.Attributes;
 
 namespace WebScrap.Css.Preprocessing.Readers;
 

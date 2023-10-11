@@ -1,10 +1,11 @@
-using WebScrap.Common.Css;
+using WebScrap.Css.Contracts;
+using WebScrap.Css.Data;
 
-namespace WebScrap.Css.Preprocessing.Builders;
+namespace WebScrap.Css.Preprocessing;
 
-internal static class CssTokensBuilder
+public class TokensBuilder : ITokensBuilder
 {
-    internal static CssToken[] Build(ReadOnlySpan<char> css)
+    public CssToken[] Build(ReadOnlySpan<char> css)
     {
         css = css.Trim(' ');
         var result = new List<CssToken>();

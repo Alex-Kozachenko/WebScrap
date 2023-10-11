@@ -14,7 +14,7 @@ namespace WebScrap.Core.Tags;
 /// - Highly depends on <see cref="CharsProcessed"/> property value, 
 /// which is controlled by derived classes.
 /// </remarks>
-public class TagsProcessor
+public class TagsProcessorBase
 {
     private readonly Stack<OpeningTag> tagsHistory = new();
     public int CharsProcessed { get; private set; }

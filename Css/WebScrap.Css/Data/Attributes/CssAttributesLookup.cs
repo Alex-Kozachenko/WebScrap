@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace WebScrap.Common.Css.Attributes;
+namespace WebScrap.Css.Data.Attributes;
 
 public class CssAttributesLookup
     : ILookup<string, string>
