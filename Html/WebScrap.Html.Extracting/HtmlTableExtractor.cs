@@ -21,7 +21,6 @@ public class HtmlTableExtractor
         Range[] headersRanges, 
         Range[][] rowValuesRanges)
     {
-
         var headers = headersRanges.Select(x => html[x].Trim(' ')).ToArray();
         var valuesRows = new List<string[]>();
 

@@ -20,18 +20,21 @@ public class TableValuesProcessor : TagsProcessorBase
         }
     }
 
-    protected override void Process(ClosingTag tag, TagInfo tagInfo)
+    protected override void Process(
+        OpeningTag openingTag, 
+        ClosingTag closingTag, 
+        TagRanges tagRanges)
     {
-        base.Process(tag, tagInfo);
+        base.Process(openingTag, closingTag, tagRanges);
 
-        if (tag.Name == "td" 
+        if (closingTag.Name == "td" 
             && lastTdTagBeginIndex.HasValue)
         {
-            currentRowRanges.Add(lastTdTagBeginIndex.Value..tagInfo.Range.End);
+            currentRowRanges.Add(lastTdTagBeginIndex.Value..tagRanges.Range.End);
             lastTdTagBeginIndex = null;
         }
 
-        if (tag.Name == "tr" && currentRowRanges.Count != 0)
+        if (closingTag.Name == "tr" && currentRowRanges.Count != 0)
         {
             valuesRanges.Add([.. currentRowRanges]);
             currentRowRanges.Clear();

@@ -31,8 +31,8 @@ public static class Extract
             var substring = html[tagIndex..];
             var processor = new TagsProcessorBase();
             processor.Run(substring);
-            var offset = processor.ProcessedTags.First().Range.End.Value + 1;
-            return tagIndex..(tagIndex + offset);
+            var length = processor.ProcessedTagsRanges.First().TagRange.Length;
+            return tagIndex..(tagIndex + length);
         }).ToImmutableArray();
 
     private static ImmutableArray<string> ExtractStrings(

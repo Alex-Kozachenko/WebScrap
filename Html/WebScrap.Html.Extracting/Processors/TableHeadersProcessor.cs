@@ -19,13 +19,16 @@ public class TableHeadersProcessor : TagsProcessorBase
         }
     }
 
-    protected override void Process(ClosingTag tag, TagInfo tagInfo)
+    protected override void Process(
+        OpeningTag openingTag, 
+        ClosingTag closingTag, 
+        TagRanges tagRanges)
     {
-        base.Process(tag, tagInfo);
+        base.Process(openingTag, closingTag, tagRanges);
 
-        if (tag.Name == "th" && lastTagBeginIndex.HasValue)
+        if (closingTag.Name == "th" && lastTagBeginIndex.HasValue)
         {
-            headerRanges.Add(lastTagBeginIndex.Value..tagInfo.Range.End.Value);
+            headerRanges.Add(lastTagBeginIndex.Value..tagRanges.Range.End.Value);
             lastTagBeginIndex = null;
         }
     }
