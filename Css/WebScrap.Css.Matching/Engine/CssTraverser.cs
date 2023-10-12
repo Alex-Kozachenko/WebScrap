@@ -24,8 +24,8 @@ internal class CssTraverser(
 
     private void Process()
     {
-        var (css, tag) = cssTracker.Peek();
-        var areEqual = comparer.AreSame(css, tag);
+        var (css, tagInfo) = cssTracker.Peek();
+        var areEqual = comparer.AreSame(css, tagInfo);
         if (areEqual)
         {
             isGreedy = IsNextModeGreedy(css.Selector);
@@ -43,8 +43,8 @@ internal class CssTraverser(
             return;
         }
 
-        var (css, tag) = cssTracker.Peek();
-        var areEqual = comparer.AreSame(css, tag);
+        var (css, tagInfo) = cssTracker.Peek();
+        var areEqual = comparer.AreSame(css, tagInfo);
         if (areEqual)
         {
             cssTracker.PopCss();

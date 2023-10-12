@@ -1,6 +1,6 @@
 namespace WebScrap.Core.Tags;
 
-public record class OpenedTag(
-    TagInfo Metadata,
+public record class UnprocessedTag(
+    TagInfo TagInfo,
     int TagOffset, 
     int? InnerOffset);

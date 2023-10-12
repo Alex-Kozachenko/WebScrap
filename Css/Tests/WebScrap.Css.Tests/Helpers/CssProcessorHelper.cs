@@ -13,7 +13,6 @@ public static class CssProcessorHelper
             var builder = new TokensBuilder();
             var comparer = new CssComparer();
             var cssProcessor = new CssProcessor(comparer, builder, css);
-            cssProcessor.Run(html);
-            return [.. cssProcessor.TagIndexes];
+            return cssProcessor.ProcessCss(html);
         }
 }

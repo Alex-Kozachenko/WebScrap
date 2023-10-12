@@ -1,4 +1,4 @@
-using WebScrap.Common.Tags;
+using WebScrap.Core.Tags;
 using WebScrap.Css.Data;
 using WebScrap.Css.Contracts;
 using WebScrap.Css.Matching.Comparers;
@@ -10,20 +10,20 @@ public class CssComparer : ICssComparer
 {
     public bool CompareAttributes(
         CssToken[] expectedCssTokens, 
-        OpeningTag[] tagsHistory)
-        => Compare(new AttributesComparer(), expectedCssTokens, tagsHistory);
+        TagInfo[] tagInfos)
+        => Compare(new AttributesComparer(), expectedCssTokens, tagInfos);
 
     public bool CompareNames(
         CssToken[] expectedCssTokens, 
-        OpeningTag[] tagsHistory)
-        => Compare(new NameComparer(), expectedCssTokens, tagsHistory);
+        TagInfo[] tagInfos)
+        => Compare(new NameComparer(), expectedCssTokens, tagInfos);
 
     private static bool Compare(
         IComparer comparer, 
         CssToken[] expectedCssTokens, 
-        OpeningTag[] tagsHistory)
+        TagInfo[] tagInfos)
     {
-        var tracker = new CssTracker(expectedCssTokens, tagsHistory);
+        var tracker = new CssTracker(expectedCssTokens, tagInfos);
         return new CssTraverser(comparer, tracker).Traverse();
     }
 }

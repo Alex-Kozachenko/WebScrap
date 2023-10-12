@@ -1,7 +1,7 @@
 namespace WebScrap.Core.Tags;
 
 public record class ProcessedTag(
-    TagInfo Metadata, 
+    TagInfo TagInfo, 
     Range TagRange, 
     Range InnerTextRange)
 {

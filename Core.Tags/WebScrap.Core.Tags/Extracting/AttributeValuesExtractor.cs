@@ -1,4 +1,4 @@
-namespace WebScrap.Core.Tags.Extractors;
+namespace WebScrap.Core.Tags.Extracting;
 
 internal sealed class AttributeValuesExtractor : IExtractor<string[]>
 {
@@ -23,7 +23,7 @@ internal sealed class AttributeValuesExtractor : IExtractor<string[]>
         const string valueScreen = "\"'";
 
         var clipped = valuesString
-            .Clip(valueScreen, valueScreen);
+            .Clip(valueScreen, valueScreen, true);
 
         var ranges = GetRanges(clipped)
             .Where(x => x.End.Value != 0);

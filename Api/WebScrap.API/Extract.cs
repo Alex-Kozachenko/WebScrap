@@ -28,10 +28,11 @@ public static class Extract
         IEnumerable<int> tagIndexes)
         => tagIndexes.Select(tagIndex =>
         {
+            // Deprecated? 
+            // TODO: please remove. The processorBase already returns all of that.
             var substring = html[tagIndex..];
             var processor = new TagsProcessorBase();
-            processor.Run(substring);
-            var length = processor.ProcessedTagsRanges.First().TagRange.Length;
+            var length = processor.Process(substring).First().TagRange.End.Value;
             return tagIndex..(tagIndex + length);
         }).ToImmutableArray();
 

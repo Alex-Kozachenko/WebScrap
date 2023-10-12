@@ -1,14 +1,14 @@
-using WebScrap.Common.Tags;
+using WebScrap.Core.Tags;
 using WebScrap.Css.Data;
 
 namespace WebScrap.Css.Matching.Comparers;
 
 public class AttributesComparer : IComparer
 {
-    public bool AreSame(CssToken css, OpeningTag tag) 
+    public bool AreSame(CssToken css, TagInfo tagInfo) 
         => IsSubset(
             css.Attributes, 
-            tag.Attributes);
+            tagInfo.Attributes);
 
     /// <summary>
     /// Checks if <see cref="SuperSet"/> lookup contains all keys and values, 

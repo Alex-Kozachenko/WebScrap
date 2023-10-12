@@ -1,32 +1,46 @@
 using WebScrap.Css.Data;
-using WebScrap.Common.Tags;
-using WebScrap.Core.Tags;
 using WebScrap.Css.Contracts;
-using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags;
+using System.Collections.Immutable;
 
 namespace WebScrap.Css;
 
-public class CssProcessor(
+public sealed class CssProcessor(
     ICssComparer comparer,
     ITokensBuilder tokensBuilder,
     ReadOnlySpan<char> css) 
     : TagsProcessorBase
 {
     private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
-    public List<int> TagIndexes = [];
+    private readonly List<int> tagIndexes = [];
 
-    protected override void Process(OpeningTag tag, TagsHistoryRecord tagsHistoryRecord)
+    public ImmutableArray<int> ProcessCss(ReadOnlySpan<char> html)
     {
-        var isEntireCssMet = comparer.CompareNames(
-                expectedTags, 
-                TagsHistory) 
-            && comparer.CompareAttributes(
-                expectedTags, 
-                TagsHistory);
+        Process(html);
+        return [..tagIndexes];
+    }
 
-        if (isEntireCssMet)
+    protected override void Process(
+        UnprocessedTag[] openedTags, 
+        UnprocessedTag unprocessedTag)
+    {
+        var tagInfos = openedTags
+            .Select(x => x.TagInfo)
+            .ToList();
+
+        tagInfos.Add(unprocessedTag.TagInfo);
+
+        var namesMet = comparer.CompareNames(
+                expectedTags, 
+                [..tagInfos]);
+
+        var attributesMet = comparer.CompareAttributes(
+                expectedTags, 
+                [..tagInfos]);
+
+        if (namesMet && attributesMet)
         {
-            TagIndexes.Add(tagsHistoryRecord.TagOffset);
+            tagIndexes.Add(unprocessedTag.TagOffset);
         }
     }
 }

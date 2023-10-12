@@ -1,4 +1,4 @@
-using WebScrap.Common.Tags;
+using WebScrap.Core.Tags;
 using WebScrap.Css.Data;
 using WebScrap.Css.Data.Selectors;
 
@@ -7,34 +7,34 @@ namespace WebScrap.Css.Matching.Engine;
 internal class CssTracker
 {
     internal readonly Stack<CssToken> expectedTags;
-    internal readonly Stack<OpeningTag> traversedTags;
+    internal readonly Stack<TagInfo> tagsHistory;
 
     internal CssTracker(
         CssToken[] expectedTags, 
-        OpeningTag[] traversedTags)
+        TagInfo[] tagsHistory)
     {
         AssertCssStructure(expectedTags);
 
         this.expectedTags = new(expectedTags);
-        this.traversedTags = new(traversedTags);
+        this.tagsHistory = new(tagsHistory);
     }
 
     internal bool IsEmpty
-        => traversedTags.Count == 0 
+        => tagsHistory.Count == 0 
         || expectedTags.Count == 0;
 
     internal bool IsCompleted
         => expectedTags.Count == 0;
 
-    internal (CssToken, OpeningTag) Peek()
-        => (expectedTags.Peek(), traversedTags.Peek());
+    internal (CssToken, TagInfo) Peek()
+        => (expectedTags.Peek(), tagsHistory.Peek());
 
     internal void PopCss() => expectedTags.Pop();
-    internal void PopTag() => traversedTags.Pop();
+    internal void PopTag() => tagsHistory.Pop();
 
     internal void Clear()
     {
-        traversedTags.Clear();
+        tagsHistory.Clear();
     }
 
     private static void AssertCssStructure(IReadOnlyCollection<CssToken> css)

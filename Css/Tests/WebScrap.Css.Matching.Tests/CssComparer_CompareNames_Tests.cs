@@ -22,7 +22,7 @@ public class MatchingAPI_Names_Tests
         };
 
         var tagsMet = input.Split(' ')
-            .Select(x => new OpeningTag(x, EmptyAttributes))
+            .Select(x => new TagInfo(x, EmptyAttributes))
             .ToArray();
 
         return CompareNames(cssTags, tagsMet);
@@ -42,7 +42,7 @@ public class MatchingAPI_Names_Tests
         };
 
         var tagsMet = input.Split(' ')
-            .Select(x => new OpeningTag(x, EmptyAttributes))
+            .Select(x => new TagInfo(x, EmptyAttributes))
             .ToArray();
 
         return CompareNames(cssTags, tagsMet);
@@ -60,7 +60,7 @@ public class MatchingAPI_Names_Tests
         };
 
         var tagsMet = input.Split(' ')
-            .Select(x => new OpeningTag(x, EmptyAttributes))
+            .Select(x => new TagInfo(x, EmptyAttributes))
             .ToArray();
 
         return CompareNames(cssTags, tagsMet);
@@ -70,7 +70,7 @@ public class MatchingAPI_Names_Tests
     public void CompareNames_With_Second_RootChildCssToken_Fails()
     {
         var tagsMet = new string[] { "doesntmatter"  }
-            .Select(x => new OpeningTag(x, EmptyAttributes))
+            .Select(x => new TagInfo(x, EmptyAttributes))
             .ToArray();
 
         var cssTags = new List<CssToken>
@@ -86,7 +86,7 @@ public class MatchingAPI_Names_Tests
     public void CompareNames_Without_RootChildCssToken_Fails()
     {
         var tagsMet = new string[] { "doesntmatter" }
-            .Select(x => new OpeningTag(x, EmptyAttributes))
+            .Select(x => new TagInfo(x, EmptyAttributes))
             .ToArray();
 
         var cssTags = new List<CssToken>
@@ -100,7 +100,7 @@ public class MatchingAPI_Names_Tests
 
     private static bool CompareNames(
         IReadOnlyCollection<CssToken> cssTags,
-        IReadOnlyCollection<OpeningTag> tagsMet)
+        IReadOnlyCollection<TagInfo> tagsMet)
         => new CssComparer().CompareNames(
             [.. cssTags], 
             [.. tagsMet]);

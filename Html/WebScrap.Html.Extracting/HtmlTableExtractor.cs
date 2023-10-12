@@ -5,10 +5,10 @@ public class HtmlTableExtractor
     public string[][] ExtractTable(ReadOnlySpan<char> html)
     {
         var headersProcessor = new TableHeadersProcessor();
-        headersProcessor.Run(html);
+        headersProcessor.Process(html);
 
         var valuesProcessor = new TableValuesProcessor();
-        valuesProcessor.Run(html);
+        valuesProcessor.Process(html);
 
         return ExtractStrings(
             html.ToString(), 
