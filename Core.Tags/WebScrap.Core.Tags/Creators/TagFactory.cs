@@ -6,6 +6,11 @@ internal class TagFactory
 {
     public TagBase CreateTagBase(ReadOnlySpan<char> tag)
     {
+        if (!tag.StartsWith("<"))
+        {
+            throw new ArgumentException($"Html should start with tag. {tag}");
+        }
+
         var tagCreator = GetTagCreator(tag);
         tag = tag.Clip("<", ">");
         return tag.IndexOf('/') switch 
@@ -15,7 +20,7 @@ internal class TagFactory
         };
     }
 
-    private ITagCreator GetTagCreator(ReadOnlySpan<char> tag)
+    private static ITagCreator GetTagCreator(ReadOnlySpan<char> tag)
     {
         tag = tag.Clip("<", ">");
         return tag.IndexOf('/') switch

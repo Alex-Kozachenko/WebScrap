@@ -3,7 +3,7 @@ using WebScrap.Core.Tags.Extractors;
 
 namespace WebScrap.Core.Tags.Creators;
 
-public class OpeningTagCreator : ITagCreator
+internal class OpeningTagCreator : ITagCreator
 {
     public TagBase Create(ReadOnlySpan<char> tagContent)
     {

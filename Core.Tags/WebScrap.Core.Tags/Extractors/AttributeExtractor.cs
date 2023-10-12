@@ -1,6 +1,6 @@
 namespace WebScrap.Core.Tags.Extractors;
 
-public static class AttributeExtractor
+internal static class AttributeExtractor
 {
     public static ILookup<string, string> EmptyAttributes 
         => Array.Empty<byte>()

@@ -2,7 +2,7 @@ using WebScrap.Common.Tags;
 
 namespace WebScrap.Core.Tags.Creators;
 
-public class InlineTagCreator : ITagCreator
+internal class InlineTagCreator : ITagCreator
 {
     public TagBase Create(ReadOnlySpan<char> tagContent)
     {

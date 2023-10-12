@@ -1,6 +1,6 @@
 using WebScrap.Common.Tags;
 
-namespace WebScrap.Core.Tags.Data;
+namespace WebScrap.Core.Tags;
 
 public record class ProcessedTag(
     OpeningTag Metadata, 

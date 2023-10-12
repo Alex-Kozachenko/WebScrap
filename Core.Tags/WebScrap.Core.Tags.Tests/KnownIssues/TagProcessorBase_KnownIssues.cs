@@ -1,6 +1,6 @@
 namespace WebScrap.Core.Tags.Tests.KnownIssues;
 
-public class TagsProcessorBaseKnownIssues
+public class TagsProcessorBase_KnownIssues
 {
     [Test]
     /// <summary>
