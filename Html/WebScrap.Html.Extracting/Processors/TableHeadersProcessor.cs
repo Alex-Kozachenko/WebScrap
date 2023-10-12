@@ -28,7 +28,7 @@ public class TableHeadersProcessor : TagsProcessorBase
 
         if (closingTag.Name == "th" && lastTagBeginIndex.HasValue)
         {
-            headerRanges.Add(lastTagBeginIndex.Value..tagRanges.Range.End.Value);
+            headerRanges.Add(tagRanges.InnerTextRange);
             lastTagBeginIndex = null;
         }
     }

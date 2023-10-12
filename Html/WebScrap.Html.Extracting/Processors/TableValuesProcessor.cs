@@ -30,7 +30,7 @@ public class TableValuesProcessor : TagsProcessorBase
         if (closingTag.Name == "td" 
             && lastTdTagBeginIndex.HasValue)
         {
-            currentRowRanges.Add(lastTdTagBeginIndex.Value..tagRanges.Range.End);
+            currentRowRanges.Add(tagRanges.InnerTextRange);
             lastTdTagBeginIndex = null;
         }
 

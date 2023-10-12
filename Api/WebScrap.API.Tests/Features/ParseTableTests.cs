@@ -16,9 +16,9 @@ public class ParseTableTests
         """;
 
         string[][] expected = [
-            ["<th> Key </th>", "<th> Value </th>"],
-            ["<td> Width </td>", "<td> 2 </td>"],
-            ["<td> Height </td>", "<td> 3 </td>"]];
+            ["Key", "Value"],
+            ["Width", "2"],
+            ["Height", "3"]];
 
         // TODO: merge this calls into single API.
         var extractedHtml = Extract.Html(html, css)

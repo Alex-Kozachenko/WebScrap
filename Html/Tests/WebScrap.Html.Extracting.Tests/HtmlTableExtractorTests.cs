@@ -15,9 +15,9 @@ public class HtmlTableExtractorTests
         """;
 
         string[][] expected = [
-            ["<th> Key </th>", "<th> Value </th>"],
-            ["<td> Width </td>", "<td> 2 </td>"],
-            ["<td> Height </td>", "<td> 3 </td>"]];
+            ["Key", "Value"],
+            ["Width", "2"],
+            ["Height", "3"]];
 
         var actual = new HtmlTableExtractor().ExtractTable(html);
         Assert.That(actual, Is.EquivalentTo(expected));
