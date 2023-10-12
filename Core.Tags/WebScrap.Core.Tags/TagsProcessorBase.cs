@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using WebScrap.Common.Tags;
 using WebScrap.Core.Tags.Creators;
 using WebScrap.Core.Tags.Data;
@@ -8,7 +9,7 @@ public class TagsProcessorBase
 {
     private readonly TagFactory tagFactory = new();
     private readonly Stack<TagsHistoryRecord> tagsHistory = new();
-    private readonly Queue<(OpeningTag, TagRanges)> processedTagsRangesHistory = new();
+    private readonly Queue<ProcessedTag> processedTags = new();
 
     protected OpeningTag[] TagsHistory 
         => tagsHistory
@@ -16,12 +17,7 @@ public class TagsProcessorBase
             .Select(x => x.Metadata)
             .ToArray();
 
-    public (OpeningTag Tag, TagRanges TagRange)[] ProcessedTagsRanges 
-        => processedTagsRangesHistory
-            .Reverse()
-            .ToArray();
-
-    public void Run(ReadOnlySpan<char> html)
+    public ImmutableArray<ProcessedTag> Process(ReadOnlySpan<char> html)
     {
         var charsProcessed = 0;
         tagsHistory.Clear();
@@ -32,10 +28,12 @@ public class TagsProcessorBase
             Process(tag, currentHtml, charsProcessed);
             charsProcessed += Proceed(currentHtml);
         } while (charsProcessed < html.Length && tagsHistory.Count != 0);
+
+        return [.. processedTags.Reverse()];
     }
 
     protected virtual void Process(OpeningTag tag, TagsHistoryRecord tagHistoryRecord) { }
-    protected virtual void Process(OpeningTag openingTag, ClosingTag closingTag, TagRanges tagInfo) { }
+    protected virtual void Process(ProcessedTag tag) { }
 
     private int Proceed(ReadOnlySpan<char> html)
         => TagsNavigator.GetNextTagIndex(html[1..]) + 1;
@@ -54,13 +52,16 @@ public class TagsProcessorBase
     {
         switch (tag)
         {
-            case InlineTag t: break;
-            case OpeningTag t: Process(t, html, charsProcessed); break;
-            case ClosingTag t: Process(t, html, charsProcessed); break;
+            case InlineTag: break;
+            case OpeningTag t: ProcessOpeningTag(t, html, charsProcessed); break;
+            case ClosingTag: ProcessClosingTag(html, charsProcessed); break;
         };
     }
 
-    private void Process(OpeningTag tag, ReadOnlySpan<char> html, int charsProcessed)
+    private void ProcessOpeningTag(
+        OpeningTag tag, 
+        ReadOnlySpan<char> html, 
+        int charsProcessed)
     {
         var record = new TagsHistoryRecord(
                 charsProcessed, 
@@ -70,24 +71,16 @@ public class TagsProcessorBase
         Process(tag, record);
     }
 
-    private void Process(ClosingTag tag, ReadOnlySpan<char> html, int charsProcessed)
+    private void ProcessClosingTag(ReadOnlySpan<char> html, int charsProcessed)
     {
-        var tagInfo = GetTagInfo(html, tagsHistory.Peek(), charsProcessed);
-        Process(tagsHistory.Peek().Metadata, tag, tagInfo);
-        processedTagsRangesHistory.Enqueue((tagsHistory.Peek().Metadata, tagInfo));
+        var processedTag = GetProcessedTag(html, tagsHistory.Peek(), charsProcessed);
+        Process(processedTag);
+        processedTags.Enqueue(processedTag);
+
         tagsHistory.Pop();
     }
 
-    private static int? GetInnerOffset(ReadOnlySpan<char> html, OpeningTag openingTag)
-    {
-        return openingTag switch
-        {
-            InlineTag => null,
-            _ => html[1..].IndexOf('>') + 1 + 1
-        };
-    }
-
-    private static TagRanges GetTagInfo(
+    private static ProcessedTag GetProcessedTag(
         ReadOnlySpan<char> html, 
         TagsHistoryRecord latestTag, 
         int closingTagOffset)
@@ -99,10 +92,15 @@ public class TagsProcessorBase
                 null => 0..0,
                 var o => o.Value..closingTagOffset
             };
+        return new(latestTag.Metadata, range, innerRange);
+    }
 
-        return new(
-            Range: range,
-            InnerTextRange: innerRange
-        );
+    private static int? GetInnerOffset(ReadOnlySpan<char> html, OpeningTag openingTag)
+    {
+        return openingTag switch
+        {
+            InlineTag => null,
+            _ => html[1..].IndexOf('>') + 1 + 1
+        };
     }
 }
