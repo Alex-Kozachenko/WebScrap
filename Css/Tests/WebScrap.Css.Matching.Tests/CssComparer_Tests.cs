@@ -57,7 +57,7 @@ public class CssComparer_Tests
         {
             new(new RootCssSelector(), new CssTag("div")),
             new(new DirectChildCssSelector(), new CssTag("b"))
-        };
+    };
 
         var tagsMet = input.Split(' ')
             .Select(x => new TagInfo(x, EmptyAttributes))

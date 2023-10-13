@@ -1,15 +1,13 @@
-WebScrap `v0.3`
+WebScrap `v0.4`
 =======
 
 Features
 =======
 
-## Extract html with simple css-like queries
-- Id and Class selectors.
-- Deep descendance.
+- Extract raw html by css selectors.
+- Parse html table.
 
-
-For full list of features, please refer to [Features integration tests](/WebScrap.Tests.IntegrationTests/Features/).
+Please refer to [Features integration tests](/Api/WebScrap.API.Tests/Features/) for more details.
 
 Usage
 =======
@@ -42,8 +40,17 @@ var htmlEntries = Extract.Html(html, css);
 <span id="four" class="bar buzz"> Four </span>
 ```
 
-Please refer to a [API test set](./Api/WebScrap.API.Tests/) for more usecases.
-
 Known Issues
 ======
+
+The project currently under active development, and there are some issues, some of the obvious, which are not the priority right now.
+
+## CSS
+- multiple css entries, comma-separated, are not supported.
+- attribute-based css are not supported.
+
+## HTML
+- multiple root tags are not supported.
+- object model returns tags in reverse order.
+
 Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozachenko%2FWebScrap+KnownIssues.cs&type=code) tests sets, for actual list of current well-known issues.
