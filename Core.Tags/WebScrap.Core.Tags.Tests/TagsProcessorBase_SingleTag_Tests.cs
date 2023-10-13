@@ -26,8 +26,8 @@ public class TagsProcessorBase_SingleTag_Tests
         
         Assert.Multiple(() =>
         {
-            Assert.That(result[0].Metadata.Name, Is.EqualTo("main"));
-            Assert.That(result[0].Metadata.Attributes, Is.Empty);
+            Assert.That(result[0].TagInfo.Name, Is.EqualTo("main"));
+            Assert.That(result[0].TagInfo.Attributes, Is.Empty);
         });
     }
 
@@ -49,8 +49,8 @@ public class TagsProcessorBase_SingleTag_Tests
             Assert.That(html[result[0].InnerTextRange], Is.EqualTo("Lorem"));
         });
         
-        Assert.That(result[0].Metadata.Name, Is.EqualTo("main"));
-        Assert.That(result[0].Metadata.Attributes, Is.Empty);
+        Assert.That(result[0].TagInfo.Name, Is.EqualTo("main"));
+        Assert.That(result[0].TagInfo.Attributes, Is.Empty);
     }
 
     [Test]
@@ -71,14 +71,14 @@ public class TagsProcessorBase_SingleTag_Tests
             Assert.That(html[result[0].InnerTextRange], Is.EqualTo("Lorem"));
         });
         
-        Assert.That(result[0].Metadata.Name, Is.EqualTo("main"));
+        Assert.That(result[0].TagInfo.Name, Is.EqualTo("main"));
 
         Assert.Multiple(() =>
         {
-            Assert.That(result[0].Metadata.Attributes["id"], Contains.Item("idmain"));
-            Assert.That(result[0].Metadata.Attributes["class"], Contains.Item("bar"));
-            Assert.That(result[0].Metadata.Attributes["class"], Contains.Item("buzz"));
-            Assert.That(result[0].Metadata.Attributes["data-id"], Contains.Item("id"));
+            Assert.That(result[0].TagInfo.Attributes["id"], Contains.Item("idmain"));
+            Assert.That(result[0].TagInfo.Attributes["class"], Contains.Item("bar"));
+            Assert.That(result[0].TagInfo.Attributes["class"], Contains.Item("buzz"));
+            Assert.That(result[0].TagInfo.Attributes["data-id"], Contains.Item("id"));
         });
     }
 }

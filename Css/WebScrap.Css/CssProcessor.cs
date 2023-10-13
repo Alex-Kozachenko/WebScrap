@@ -19,11 +19,6 @@ public sealed class CssProcessor(
     private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
     private readonly List<Range> cssCompliantTagRanges = [];
 
-    /// <summary>
-    /// Runs the html processing.
-    /// </summary>
-    /// <param name="html"> The html for processing. </param>
-    /// <returns> Ranges of css-compliant tags. </returns>
     public ImmutableArray<Range> ProcessCss(ReadOnlySpan<char> html)
     {
         Process(html);

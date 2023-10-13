@@ -23,8 +23,8 @@ public class TagsProcessorBase_KnownIssues
         var result = processor.Process(html);
 
         Assert.Multiple(() => {
-            Assert.That(result[2].Metadata.Name, Is.EqualTo("p"));
-            Assert.That(result[1].Metadata.Name, Is.EqualTo("aside"));
+            Assert.That(result[2].TagInfo.Name, Is.EqualTo("p"));
+            Assert.That(result[1].TagInfo.Name, Is.EqualTo("aside"));
         });
     }
 

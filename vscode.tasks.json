@@ -23,6 +23,13 @@
             "problemMatcher": []
         },
         {
+            "label": "test tags",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [ "test", "Core.Tags" ],
+            "problemMatcher": []
+        },
+        {
             "label": "test css",
             "type": "shell",
             "command": "dotnet",
@@ -42,8 +49,7 @@
             "group": {
                 "kind": "test"
             },
-            "dependsOrder": "sequence",
-            "dependsOn":["test css", "test html", "test api"]
+            "dependsOn":["test tags", "test css", "test html", "test api"]
         }
     ]
 }

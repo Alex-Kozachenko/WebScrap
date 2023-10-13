@@ -2,11 +2,11 @@ namespace WebScrap.Core.Tags.Extracting;
 
 internal static class AttributeExtractor
 {
-    public static ILookup<string, string> EmptyAttributes 
+    internal static ILookup<string, string> EmptyAttributes 
         => Array.Empty<byte>()
             .ToLookup(x => string.Empty, x => string.Empty);
 
-    public static ILookup<string, string> GetAttributes(
+    internal static ILookup<string, string> GetAttributes(
         ReadOnlySpan<char> tagContent)
     {
         tagContent = tagContent.TrimEnd('/');
