@@ -23,6 +23,13 @@
             "problemMatcher": []
         },
         {
+            "label": "test tags",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [ "test", "Core.Tags" ],
+            "problemMatcher": []
+        },
+        {
             "label": "test css",
             "type": "shell",
             "command": "dotnet",
@@ -30,10 +37,10 @@
             "problemMatcher": []
         },
         {
-            "label": "test tags",
+            "label": "test html",
             "type": "shell",
             "command": "dotnet",
-            "args": [ "test", "Tags" ],
+            "args": [ "test", "Html" ],
             "problemMatcher": []
         },
         {
@@ -42,8 +49,7 @@
             "group": {
                 "kind": "test"
             },
-            "dependsOrder": "sequence",
-            "dependsOn":["test css", "test tags", "test api"]
+            "dependsOn":["test tags", "test css", "test html", "test api"]
         }
     ]
 }

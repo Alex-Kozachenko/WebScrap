@@ -1,5 +1,4 @@
-using static WebScrap.Css.Tests.CssProcessor;
-using System.Collections.Immutable;
+using static WebScrap.Css.Tests.Helpers.CssProcessorHelper;
 
 namespace WebScrap.Css.Tests;
 
@@ -7,53 +6,56 @@ namespace WebScrap.Css.Tests;
 public class CssProcessor_Tags_Tests
 {
 
-    [TestCase]
-    public void CalculateTagIndexes_WithMultipleTags_ShouldReturn_MultipleIndexes()
-    {
-        var css = "p";
-        var (html, pointers) = (
-            "<div><p>__</p>__<p>__</div>",
-            "     ^          ^");
-        var expected = PointersToIndexes(pointers).Select(x => html[x..]);
-        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
-        Assert.That(results, Is.EquivalentTo(expected));
-    }
-
     [TestCase(
-        "<p>__</p>__<p>__",
-        "")]
+        "p", 
+        "<div><p>__</p>__<p>__</p></div>", 
+        "     ^^^^^^^^^  ^^^^^^^^^      ")]
     [TestCase(
-        "<div><p>_",
-        "     ^")]
+        "div>p", 
+        "<p>__</p>__", 
+        "           ")]
     [TestCase(
-        "<div><p>_<p>_",
-        "     ^")]
+        "div>p", 
+        "<div> <p>_</p> </div>",
+        "      ^^^^^^^^       ")]
     [TestCase(
-        "<div>_<a></a>_<p>_",
-        "              ^")]
+        "div>p", 
+        "<div> <p>_<p>_</p>__</p> </div>",
+        "      ^^^^^^^^^^^^^^^^^^      ")]
     [TestCase(
-        "<div>_<div></div>_<p>_",
-        "                  ^")]
+        "div>p", 
+        "<div>_<a></a>_<p>_</p> </div>",
+        "              ^^^^^^^^       ")]
     [TestCase(
-        "<div><div><p>_",
-        "          ^")]
-    public void CalculateTagIndexes_WithComplexCss_ShouldReturn_MultipleIndexes(
-        string html,
+        "div>p", 
+        "<div>_<div></div>_<p>_</p>_</div>",
+        "                  ^^^^^^^^       ")]
+    [TestCase(
+        "div>p", 
+        "<div><div> <p>_</p> </div></div>",
+        "           ^^^^^^^^             ")]
+    public void CalculateTagIndexes_WithTags_ShouldReturn_Ranges(
+        string css, 
+        string html, 
         string pointers)
     {
-        var css = "div>p";
-        var expected = PointersToIndexes(pointers).Select(x => html[x..]);
-        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
+        var expected = pointers.ToRanges().ToSubstrings(html);
+        var results = CalculateTagRanges(html, css).ToSubstrings(html);
         Assert.That(results, Is.EquivalentTo(expected));
     }
 
-    [TestCase("<div><aside><p>_")]
-    [TestCase("<div></div>_<p>_")]
-
-    public void CalculateTagIndexes_DirectChildMissing_ShouldReturn_Empty(string html)
+    
+    [TestCase(
+        "div>p",
+        "<main><div><aside><p>_</p> </aside></div></main>")]
+    [TestCase(
+        "div>p",
+        "<main><div></div>_<p>_</p></main>")]
+    public void CalculateTagIndexes_WithUnlocatableCss_Returns_EmptyResults(
+        string css,
+        string html)
     {
-        var css = "div>p";
-        var results = CalculateTagIndexes(html, css).Select(x => html[x..]);
+        var results = CalculateTagRanges(html, css).ToSubstrings(html);
         Assert.Multiple(() =>
         {
             foreach (var result in results)
@@ -61,16 +63,6 @@ public class CssProcessor_Tags_Tests
                 Assert.That(result, Is.Empty);
             }
         });
-    }
-
-    [TestCase]
-    public void CalculateTagIndexes_WithSingleTag_ShouldReturn_SingleIndex()
-    {
-        var css = "p";
-        var html = "<p>__</p>";
-        var expected = 0;
-        var result = CalculateTagIndexes(html, css).First();
-        Assert.That(result, Is.EqualTo(expected));
     }
 
     [TestCase("_____<p></p>")]
@@ -81,21 +73,7 @@ public class CssProcessor_Tags_Tests
     {
         var css = "p";
         Assert.That(
-            () => CalculateTagIndexes(sample, css),
+            () => CalculateTagRanges(sample, css),
             Throws.ArgumentException);
-    }
-
-    private static int[] PointersToIndexes(ReadOnlySpan<char> pointers)
-    {
-        var result = new List<int>();
-        for (var i = 0; i < pointers.Length; i++)
-        {
-            var ch = pointers[i];
-            if (ch == '^')
-            {
-                result.Add(i);
-            }
-        }
-        return [.. result];
     }
 }

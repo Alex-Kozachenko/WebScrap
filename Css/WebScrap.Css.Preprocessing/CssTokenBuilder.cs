@@ -1,59 +1,44 @@
-using WebScrap.Css.Common.Tokens;
-using System.Collections.Immutable;
+using WebScrap.Css.Data.Attributes;
+using WebScrap.Css.Data.Selectors;
+using WebScrap.Css.Data.Tags;
+using WebScrap.Css.Data;
+using WebScrap.Css.Preprocessing.Readers;
 
 namespace WebScrap.Css.Preprocessing;
 
-internal static class CssTokenBuilder
+internal ref struct CssTokenBuilder(ReadOnlySpan<char> cssToken)
 {
-    internal static CssTokenBase Build(
-        ReadOnlyMemory<char> css,
-        ReadOnlySpan<char> childSelectors)
+    private readonly ReadOnlySpan<char> cssToken = cssToken;
+    private int processed = 0;
+
+    public static CssToken Build(ReadOnlySpan<char> cssToken)
     {
-        ThrowIfUnsupported(css);
-        var childSelector = css.Span[0];
-        return childSelectors.Contains(childSelector)
-            ? Build(css[1..], childSelector)
-            : Build(css, (char?)null);
+        new CssTokenBuilder(cssToken)
+            .ReadAttributes(out var attributes)
+            .ReadTag(out var tag)
+            .ReadSelector(out var selector);
+        
+        return new (selector, tag, attributes);
     }
 
-    private static CssTokenBase Build(ReadOnlyMemory<char> css, char? childSelector)
+    private CssTokenBuilder ReadAttributes(out CssAttributesLookup result)
     {
-        var tagName = GetTagName(css);
-        return Build(css, childSelector, tagName);
+        processed += CssAttributesReader.Read(UnprocessedCssToken, out result);
+        return this;
     }
 
-    private static ReadOnlyMemory<char> GetTagName(ReadOnlyMemory<char> css)
+    private CssTokenBuilder ReadTag(out CssTagBase result)
     {
-        var counter = 0;
-        while (counter < css.Length 
-            && char.IsLetter(css.Span[counter])) 
-            {
-                counter++;
-            }
-        return css[..counter];
+        processed += CssTagReader.Read(UnprocessedCssToken, out result);
+        return this;
     }
 
-    private static CssTokenBase Build(
-        ReadOnlyMemory<char> css, 
-        char? childSelector, 
-        ReadOnlyMemory<char> tagName)
+    private CssTokenBuilder ReadSelector(out CssSelector result)
     {
-        var attributes = new AttributesReader(css[tagName.Length..]).Read();
-        return childSelector switch 
-        {
-            null => new RootCssToken(tagName.ToString(), attributes),
-            ' ' => new AnyChildCssToken(tagName.ToString(), attributes),
-            '>' => new DirectChildCssToken(tagName.ToString(), attributes),
-            _ => throw new ArgumentException($"Unknown child selector: {childSelector}")
-        };
+        processed += CssSelectorReader.Read(UnprocessedCssToken, out result);
+        return this;
     }
 
-    private static void ThrowIfUnsupported(ReadOnlyMemory<char> css)
-    {
-        _ = css.Span.IndexOfAny("*[],") switch 
-        {
-            -1 => 0,
-            var i => throw new ArgumentException($"Unable to process css. Css contains unsupported chars: {css[i..]}.")
-        };        
-    }
+    private readonly ReadOnlySpan<char> UnprocessedCssToken 
+        => cssToken[..^processed];
 }

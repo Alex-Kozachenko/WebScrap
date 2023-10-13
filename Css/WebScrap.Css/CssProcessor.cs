@@ -1,47 +1,52 @@
+using WebScrap.Css.Data;
+using WebScrap.Css.Contracts;
+using WebScrap.Core.Tags;
 using System.Collections.Immutable;
-using WebScrap.Common.Tags.Creators;
-using WebScrap.Common.Processors;
-using WebScrap.Css.Listeners;
-using WebScrap.Css.Preprocessing;
 
 namespace WebScrap.Css;
 
 /// <summary>
-/// Processes the html with provided css-like-selectors,
-/// and returns detected html which conforms 
-/// the css from the parameter.
+/// Represents a tags processor, 
+/// which filters out the tags,
+/// which comply the provided css.
 /// </summary>
-public class CssProcessor
+public sealed class CssProcessor(
+    ICssComparer comparer,
+    ITokensBuilder tokensBuilder,
+    ReadOnlySpan<char> css) 
+    : TagsProcessorBase
 {
-    private readonly List<int> tagIndexes = [];
-    private readonly HtmlProcessor processor;
+    private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
+    private readonly List<Range> cssCompliantTagRanges = [];
 
-    public CssProcessor(
-        TagFactoryBase tagFactory,
-        ReadOnlySpan<char> css)
+    /// <summary>
+    /// Processes the html and returns tags which are compliant against the css selectors.
+    /// </summary>
+    public ImmutableArray<Range> ProcessCss(ReadOnlySpan<char> html)
     {
-        var cssListener = new CssTagsListener(CssTokenizer.TokenizeCss(css));
-        cssListener.Completed += OnCompletedCssMet;
-        processor = new HtmlProcessor(tagFactory, [cssListener]);
+        Process(html);
+        return [..cssCompliantTagRanges];
     }
 
-    public void Run(ReadOnlySpan<char> html)
+    protected override void Process(
+        UnprocessedTag[] openedTags, 
+        ProcessedTag tag)
     {
-        processor.Run(html);
-    }
+        var tagInfos = openedTags
+            .Select(x => x.TagInfo)
+            .ToArray();
 
-    public static ImmutableArray<int> CalculateTagIndexes(
-        TagFactoryBase tagFactory, 
-        ReadOnlySpan<char> html,
-        ReadOnlySpan<char> css)
-    {
-        var processor = new CssProcessor(tagFactory, css);
-        processor.Run(html);
-        return [.. processor.tagIndexes];
-    }
+        var namesMet = comparer.CompareNames(
+                expectedTags, 
+                tagInfos);
 
-    private void OnCompletedCssMet(object? sender, EventArgs args)
-    {
-        tagIndexes.Add(processor.CharsProcessed);
+        var attributesMet = comparer.CompareAttributes(
+                expectedTags, 
+                tagInfos);
+
+        if (namesMet && attributesMet)
+        {
+            cssCompliantTagRanges.Add(tag.TagRange);
+        }
     }
 }
