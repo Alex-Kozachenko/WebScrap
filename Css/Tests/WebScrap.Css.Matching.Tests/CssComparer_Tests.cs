@@ -5,7 +5,7 @@ using WebScrap.Css.Data.Tags;
 namespace WebScrap.Css.Matching.Tests;
 
 [TestFixture]
-public class MatchingAPI_Names_Tests
+public class CssComparer_Tests
 {
     [TestCase("main div p b", ExpectedResult = true)]
     [TestCase("main div b", ExpectedResult = true)]

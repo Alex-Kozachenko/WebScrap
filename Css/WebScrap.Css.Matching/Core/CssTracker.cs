@@ -2,7 +2,7 @@ using WebScrap.Core.Tags;
 using WebScrap.Css.Data;
 using WebScrap.Css.Data.Selectors;
 
-namespace WebScrap.Css.Matching.Engine;
+namespace WebScrap.Css.Matching.Core;
 
 internal class CssTracker
 {

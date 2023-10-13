@@ -2,7 +2,7 @@ using WebScrap.Core.Tags;
 using WebScrap.Css.Data;
 using WebScrap.Css.Contracts;
 using WebScrap.Css.Matching.Comparers;
-using WebScrap.Css.Matching.Engine;
+using WebScrap.Css.Matching.Core;
 
 namespace WebScrap.Css.Matching;
 

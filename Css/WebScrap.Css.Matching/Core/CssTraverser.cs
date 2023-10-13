@@ -2,7 +2,7 @@
 using WebScrap.Css.Data.Selectors;
 using WebScrap.Css.Matching.Comparers;
 
-namespace WebScrap.Css.Matching.Engine;
+namespace WebScrap.Css.Matching.Core;
 
 internal class CssTraverser(
     IComparer comparer, 
