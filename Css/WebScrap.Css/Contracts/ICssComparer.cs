@@ -3,6 +3,9 @@ using WebScrap.Core.Tags;
 
 namespace WebScrap.Css.Contracts;
 
+/// <summary>
+/// Represents a comparer for css token via name and attributes.
+/// </summary>
 public interface ICssComparer
 {
     public bool CompareNames(

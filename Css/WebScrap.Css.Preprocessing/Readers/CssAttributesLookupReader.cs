@@ -8,7 +8,7 @@ internal ref struct CssAttributesReader
 
     internal CssAttributesReader(ReadOnlySpan<char> css)
     {
-        CssValidator.ThrowIfUnsupported(css, "[]");
+        CssValidator.ThrowIfUnsupportedAttribute(css);
         this.css = css;
     }
 

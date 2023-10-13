@@ -17,8 +17,8 @@ public class CssComparer_Tests
         var cssTags = new List<CssToken>
         {
             new(new RootCssSelector(), new CssTag("main")),
-            new(new AnyChildCssSelector(), new CssTag("div")),
-            new(new AnyChildCssSelector(), new CssTag("b"))
+            new(new ChildCssSelector(), new CssTag("div")),
+            new(new ChildCssSelector(), new CssTag("b"))
         };
 
         var tagsMet = input.Split(' ')
@@ -37,8 +37,8 @@ public class CssComparer_Tests
         var cssTags = new List<CssToken>
         {
             new(new RootCssSelector(), new CssTag("main")),
-            new(new AnyChildCssSelector(), new CssTag("div")),
-            new(new AnyChildCssSelector(), new CssTag("b"))
+            new(new ChildCssSelector(), new CssTag("div")),
+            new(new ChildCssSelector(), new CssTag("b"))
         };
 
         var tagsMet = input.Split(' ')
@@ -56,7 +56,7 @@ public class CssComparer_Tests
         var cssTags = new List<CssToken>
         {
             new(new RootCssSelector(), new CssTag("div")),
-            new(new ChildCssSelector(), new CssTag("b"))
+            new(new DirectChildCssSelector(), new CssTag("b"))
         };
 
         var tagsMet = input.Split(' ')
@@ -91,8 +91,8 @@ public class CssComparer_Tests
 
         var cssTags = new List<CssToken>
         {
-            new(new AnyChildCssSelector(), new CssTag("div")),
-            new(new AnyChildCssSelector(), new CssTag("div")),
+            new(new ChildCssSelector(), new CssTag("div")),
+            new(new ChildCssSelector(), new CssTag("div")),
         };
 
         Assert.That(() => CompareNames(cssTags, tagsMet), Throws.Exception);

@@ -2,6 +2,16 @@ using System.Collections;
 
 namespace WebScrap.Css.Data.Attributes;
 
+/// <summary>
+/// Represents a lookup for css attributes in format <attributeName>: <attributeValue>.
+/// If attribute has multiple values, they are stored separately.
+/// </summary>
+/// <remarks>
+/// For example:
+/// p.foo.bar
+/// class=foo
+/// class=bar
+/// </remarks>
 public class CssAttributesLookup
     : ILookup<string, string>
 {

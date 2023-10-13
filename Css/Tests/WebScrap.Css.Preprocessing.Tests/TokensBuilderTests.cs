@@ -12,8 +12,8 @@ public class TokensBuilderTests
         (Type, string)[] expected =
         [
             new(typeof(RootCssSelector), "main"),
-            new(typeof(AnyChildCssSelector), "div"),
-            new(typeof(ChildCssSelector), "p"),
+            new(typeof(ChildCssSelector), "div"),
+            new(typeof(DirectChildCssSelector), "p"),
         ];
 
         (Type, string)[] result = new TokensBuilder()

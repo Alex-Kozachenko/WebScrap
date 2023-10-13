@@ -19,8 +19,8 @@ internal readonly ref struct CssSelectorReader(ReadOnlySpan<char> selector)
 
         result = selector[0] switch
         {
-            ' ' => new AnyChildCssSelector(),
-            '>' => new ChildCssSelector(),
+            ' ' => new ChildCssSelector(),
+            '>' => new DirectChildCssSelector(),
             _ => throw new ArgumentException($"Unknown child selector: {selector}")
         };
         return 1;

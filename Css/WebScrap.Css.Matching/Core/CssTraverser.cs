@@ -55,7 +55,7 @@ internal class CssTraverser(
     private static bool IsNextModeGreedy(CssSelector? lastAcceptedSelector) 
         => lastAcceptedSelector switch
         {
-            ChildCssSelector => false,
+            DirectChildCssSelector => false,
             _ => true
         };
 }

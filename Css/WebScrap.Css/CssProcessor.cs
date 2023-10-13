@@ -7,7 +7,7 @@ namespace WebScrap.Css;
 
 /// <summary>
 /// Represents a tags processor, 
-/// which filters out the tags
+/// which filters out the tags,
 /// which comply the provided css.
 /// </summary>
 public sealed class CssProcessor(
@@ -19,6 +19,9 @@ public sealed class CssProcessor(
     private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
     private readonly List<Range> cssCompliantTagRanges = [];
 
+    /// <summary>
+    /// Processes the html and returns tags which are compliant against the css selectors.
+    /// </summary>
     public ImmutableArray<Range> ProcessCss(ReadOnlySpan<char> html)
     {
         Process(html);

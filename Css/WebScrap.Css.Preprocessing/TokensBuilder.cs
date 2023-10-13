@@ -8,7 +8,7 @@ public class TokensBuilder : ITokensBuilder
     public CssToken[] Build(ReadOnlySpan<char> css)
     {
         css = css.Trim(' ');
-        CssValidator.ThrowIfUnsupported(css, ",+");
+        CssValidator.ThrowIfUnsupportedCharacters(css);
         var result = new List<CssToken>();
 
         while (css.IsEmpty is false)
