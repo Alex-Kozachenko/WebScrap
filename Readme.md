@@ -46,4 +46,4 @@ Please refer to a [API test set](./Api/WebScrap.API.Tests/) for more usecases.
 
 Known Issues
 ======
-Please refer to a [KnownIssues test set](./Api/WebScrap.API.KnownIssues.Tests/Features) for actual list of current well-known issues.
+Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozachenko%2FWebScrap+KnownIssues.cs&type=code) tests sets, for actual list of current well-known issues.

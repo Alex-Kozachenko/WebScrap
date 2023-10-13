@@ -8,9 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebScrap.Css.Common\WebScrap.Css.Common.csproj" />
-    <ProjectReference Include="..\WebScrap.Css.Preprocessing\WebScrap.Css.Preprocessing.csproj" />
-    <ProjectReference Include="..\WebScrap.Css.Traversing\WebScrap.Css.Traversing.csproj" />
+    <ProjectReference Include="..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
   </ItemGroup>
 
 </Project>
