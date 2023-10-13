@@ -4,28 +4,22 @@ namespace WebScrap.Html.Extracting;
 
 public class TableHeadersProcessor : TagsProcessorBase
 {
-    private int? lastTagBeginIndex = null;
     private readonly List<Range> headerRanges = [];
-    public Range[] HeaderRanges => [..headerRanges];
 
-    protected override void Process(
-        UnprocessedTag[] openedTags, 
-        UnprocessedTag unprocessedTag)
+    public Range[] ProcessHeaders(ReadOnlySpan<char> html)
     {
-        if (unprocessedTag.TagInfo.Name == "th")
-        {
-            lastTagBeginIndex = unprocessedTag.TagOffset;
-        }
+        headerRanges.Clear();
+        Process(html);
+        return [.. headerRanges];
     }
 
     protected override void Process(
         UnprocessedTag[] openedTags, 
         ProcessedTag tag) 
     { 
-        if (tag.TagInfo.Name == "th" && lastTagBeginIndex.HasValue)
+        if (tag.TagInfo.Name == "th")
         {
             headerRanges.Add(tag.InnerTextRange);
-            lastTagBeginIndex = null;
         }
     }
 }

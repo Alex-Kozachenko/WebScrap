@@ -4,16 +4,18 @@ public class HtmlTableExtractor
 {
     public string[][] ExtractTable(ReadOnlySpan<char> html)
     {
-        var headersProcessor = new TableHeadersProcessor();
-        headersProcessor.Process(html);
-
-        var valuesProcessor = new TableValuesProcessor();
-        valuesProcessor.Process(html);
+        var ranges = new
+        {
+            headers = new TableHeadersProcessor()
+                .ProcessHeaders(html),
+            values = new TableValuesProcessor()
+                .ProcessValues(html)
+        };
 
         return ExtractStrings(
-            html.ToString(), 
-            headersProcessor.HeaderRanges, 
-            valuesProcessor.ValuesRanges);
+            html.ToString(),
+            ranges.headers, 
+            ranges.values);
     }
 
     private string[][] ExtractStrings(

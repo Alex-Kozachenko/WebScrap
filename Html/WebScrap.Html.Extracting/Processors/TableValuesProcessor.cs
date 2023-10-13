@@ -4,36 +4,45 @@ namespace WebScrap.Html.Extracting;
 
 public class TableValuesProcessor : TagsProcessorBase
 {
-    private int? lastTdTagBeginIndex = null;
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
-    public Range[][] ValuesRanges => [..valuesRanges];
-
-    protected override void Process(
-        UnprocessedTag[] openedTags, 
-        UnprocessedTag unprocessedTag)
+    
+    public Range[][] ProcessValues(ReadOnlySpan<char> html)
     {
-        if (unprocessedTag.TagInfo.Name == "td")
-        {
-            lastTdTagBeginIndex = unprocessedTag.TagOffset;
-        }
+        valuesRanges.Clear();
+        Process(html);
+        return [..valuesRanges];
     }
 
     protected override void Process(
         UnprocessedTag[] openedTags, 
         ProcessedTag tag)
     {
-        if (tag.TagInfo.Name == "td" 
-            && lastTdTagBeginIndex.HasValue)
+        _ = TryProcessCell(tag) 
+            || TryProcessRow(tag.TagInfo);
+    }
+
+    private bool TryProcessCell(ProcessedTag tag)
+    {
+        if (tag.TagInfo.Name != "td")
         {
-            currentRowRanges.Add(tag.InnerTextRange);
-            lastTdTagBeginIndex = null;
+            return false;
         }
 
-        if (tag.TagInfo.Name == "tr" && currentRowRanges.Count != 0)
+        currentRowRanges.Add(tag.InnerTextRange);
+        return true;
+    }
+
+    private bool TryProcessRow(TagInfo tagInfo)
+    {
+        var isCurrentRowFilled = currentRowRanges.Count != 0;
+        if (tagInfo.Name != "tr" || isCurrentRowFilled is false)
         {
-            valuesRanges.Add([.. currentRowRanges]);
-            currentRowRanges.Clear();
+            return false;
         }
+
+        valuesRanges.Add([.. currentRowRanges]);
+        currentRowRanges.Clear();
+        return true;
     }
 }
