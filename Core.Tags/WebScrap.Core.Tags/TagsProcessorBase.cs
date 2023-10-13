@@ -53,10 +53,13 @@ public class TagsProcessorBase
         var currentHtml = html[charsProcessed..];
         openedTags.TryPeek(out var lastOpenedTag);
 
-        var tagManager = new TagCreatorManager(
-            new UnprocessedTagCreator(unprocessedTagListeners, charsProcessed),
-            new ProcessedTagCreator(processedTagListeners, charsProcessed, lastOpenedTag!));
-        tagManager.Run(currentHtml);
+        var detector = new TagDetector(
+            unprocessedTagListeners,
+            processedTagListeners,
+            new UnprocessedTagCreator(charsProcessed),
+            new ProcessedTagCreator(charsProcessed, lastOpenedTag!));
+        
+        detector.Detect(currentHtml);
 
         return TagsNavigator.GetNextTagIndex(currentHtml[1..]) + 1;
     }
