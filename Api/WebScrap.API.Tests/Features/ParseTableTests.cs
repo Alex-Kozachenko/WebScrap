@@ -20,7 +20,6 @@ public class ParseTableTests
             ["Width", "2"],
             ["Height", "3"]];
 
-        // TODO: merge this calls into single API.
         var extractedHtml = Extract.Html(html, css)
             .First();
         var actual = Parse.Table(extractedHtml);

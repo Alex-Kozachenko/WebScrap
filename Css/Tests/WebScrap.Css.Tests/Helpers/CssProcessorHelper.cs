@@ -4,9 +4,9 @@ using WebScrap.Css.Matching;
 
 namespace WebScrap.Css.Tests.Helpers;
 
-public static class CssProcessorHelper
+internal static class CssProcessorHelper
 {
-    internal static ImmutableArray<int> CalculateTagIndexes(
+    internal static ImmutableArray<Range> CalculateTagRanges(
         ReadOnlySpan<char> html,
         ReadOnlySpan<char> css)
         {

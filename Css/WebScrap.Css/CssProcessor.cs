@@ -5,6 +5,11 @@ using System.Collections.Immutable;
 
 namespace WebScrap.Css;
 
+/// <summary>
+/// Represents a tags processor, 
+/// which filters out the tags
+/// which comply the provided css.
+/// </summary>
 public sealed class CssProcessor(
     ICssComparer comparer,
     ITokensBuilder tokensBuilder,
@@ -12,35 +17,38 @@ public sealed class CssProcessor(
     : TagsProcessorBase
 {
     private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
-    private readonly List<int> tagIndexes = [];
+    private readonly List<Range> cssCompliantTagRanges = [];
 
-    public ImmutableArray<int> ProcessCss(ReadOnlySpan<char> html)
+    /// <summary>
+    /// Runs the html processing.
+    /// </summary>
+    /// <param name="html"> The html for processing. </param>
+    /// <returns> Ranges of css-compliant tags. </returns>
+    public ImmutableArray<Range> ProcessCss(ReadOnlySpan<char> html)
     {
         Process(html);
-        return [..tagIndexes];
+        return [..cssCompliantTagRanges];
     }
 
     protected override void Process(
         UnprocessedTag[] openedTags, 
-        UnprocessedTag unprocessedTag)
+        ProcessedTag tag)
     {
         var tagInfos = openedTags
             .Select(x => x.TagInfo)
-            .ToList();
-
-        tagInfos.Add(unprocessedTag.TagInfo);
+            .ToArray();
 
         var namesMet = comparer.CompareNames(
                 expectedTags, 
-                [..tagInfos]);
+                tagInfos);
 
         var attributesMet = comparer.CompareAttributes(
                 expectedTags, 
-                [..tagInfos]);
+                tagInfos);
 
         if (namesMet && attributesMet)
         {
-            tagIndexes.Add(unprocessedTag.TagOffset);
+            cssCompliantTagRanges.Add(tag.TagRange);
         }
     }
 }
