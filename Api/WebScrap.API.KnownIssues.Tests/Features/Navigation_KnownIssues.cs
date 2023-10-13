@@ -1,6 +1,6 @@
 namespace WebScrap.API.KnownIssues.Tests;
 
-public class Navigation_KnownIssues_Tests
+public class Navigation_KnownIssues
 {
     [Test]
     public void ExtractHtml_DropsProcessing_DueTo_TagName()
