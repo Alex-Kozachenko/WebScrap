@@ -20,9 +20,11 @@ public class ParseTableTests
             ["Width", "2"],
             ["Height", "3"]];
 
-        var extractedHtml = new Extract().Html(html, css)
+        var extractedHtml = new Scrapper().Scrap(html, css)
+            .AsHtml()
             .First();
-        var actual = Parse.Table(extractedHtml);
+
+        var actual = Parser.ParseTable(extractedHtml);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }

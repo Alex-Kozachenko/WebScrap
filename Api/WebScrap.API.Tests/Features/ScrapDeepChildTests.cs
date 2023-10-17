@@ -21,7 +21,10 @@ public class ExtractDeepChildTests
             "<b> Ipsum </b>",
             "<b> Important </b>"];
         
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -44,7 +47,10 @@ public class ExtractDeepChildTests
             "<b> Ipsum </b>",
             "<b> Ipsum </b>"];
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -67,7 +73,10 @@ public class ExtractDeepChildTests
             "<b> Barata <b> Nictu </b> </b>",
             "<b> Nictu </b>"];
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -94,13 +103,17 @@ public class ExtractDeepChildTests
                 </div>
             </main>
         """;
-        var htmlEntries = new Extract().Html(html, css);
 
         string[] expected = [
             """<span class="bar"> Two </span>""",
             """<span class="bar buzz"> Three </span>""",
             """<span id="four" class="bar buzz"> Four </span>"""
         ];
+
+        var htmlEntries = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(htmlEntries, Is.EquivalentTo(expected));
     }
 }

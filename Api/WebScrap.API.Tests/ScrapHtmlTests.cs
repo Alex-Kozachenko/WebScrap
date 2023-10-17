@@ -1,7 +1,7 @@
 namespace WebScrap.Features.IntegrationTests;
 
 [TestFixture]
-public class HtmlExtractionFeatureTests
+public class ScrapHtmlTests
 {
     [Test]
     public void SingleTag_ShouldExtract()
@@ -10,7 +10,10 @@ public class HtmlExtractionFeatureTests
         string[] expected = ["<main></main>"];
         var html = "<main></main>";
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -21,7 +24,10 @@ public class HtmlExtractionFeatureTests
         string[] expected = ["<main></main>"];
         var html = "   <main></main>  ";
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -38,7 +44,10 @@ public class HtmlExtractionFeatureTests
         </main>
         """;
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -58,7 +67,10 @@ public class HtmlExtractionFeatureTests
         </main>
         """;
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -80,7 +92,10 @@ public class HtmlExtractionFeatureTests
         """;
         string[] expected = ["<p>One</p>","<p>Two</p>"];
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -97,7 +112,10 @@ public class HtmlExtractionFeatureTests
         """;
         string[] expected = ["<p>One cup of <strong>a caffeine</strong> for a <i>good</i> start! </p>"];
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -133,7 +151,10 @@ public class HtmlExtractionFeatureTests
             "<p id='main' class='some bigger classes'> Two </p>"
         ];
 
-        var actual = new Extract().Html(html, css);
+        var actual = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }
