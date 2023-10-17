@@ -14,6 +14,6 @@ public class Scrapper
     {
         html = html.TrimStart(' ');
         var tagRanges = CssAPI.GetTagRanges(css, html);
-        return new ScrapResult(tagRanges, html);
+        return new ScrapResult(html, tagRanges);
     }
 }

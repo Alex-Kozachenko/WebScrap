@@ -3,13 +3,28 @@ using WebScrap.Modules.Export.Json;
 
 namespace WebScrap.API.Data;
 
-public readonly ref struct ScrapResult(
-    ImmutableArray<Range> tagRanges, 
-    ReadOnlySpan<char> html)
+/// <summary>
+/// Represents the result of scrapping.
+/// </summary>
+public readonly ref struct ScrapResult
 {
-    private readonly ImmutableArray<Range> tagRanges = tagRanges;
-    private readonly ReadOnlySpan<char> html = html;
+    private readonly ReadOnlySpan<char> html;
+    private readonly ImmutableArray<Range> tagRanges;
 
+    internal ScrapResult(
+        ReadOnlySpan<char> html,
+        ImmutableArray<Range> tagRanges)
+    {
+        this.html = html;
+        this.tagRanges = tagRanges;
+    }
+
+    /// <summary>
+    /// Gets the stored value in JSON format.
+    /// </summary>
+    /// <remarks>
+    /// The format is a collection of objects.
+    /// </remarks>
     public ImmutableArray<string> AsJson()
     {
         var tagStrings = ExtractStrings(html.ToString(), tagRanges);
