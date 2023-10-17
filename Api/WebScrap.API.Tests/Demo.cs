@@ -21,13 +21,17 @@ public class Demo
                 </div>
             </main>
         """;
-        var htmlEntries = new Extract().Html(html, css);
 
         string[] expected = [
             """<span class="bar"> Two </span>""",
             """<span class="bar buzz"> Three </span>""",
             """<span id="four" class="bar buzz"> Four </span>"""
         ];
+
+        var htmlEntries = new Scrapper()
+            .Scrap(html, css)
+            .AsHtml();
+
         Assert.That(htmlEntries, Is.EquivalentTo(expected));
     }
 }

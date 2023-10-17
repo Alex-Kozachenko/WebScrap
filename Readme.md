@@ -4,7 +4,7 @@ A `HTML` parser, for extracting the text from a web pages, with `CSS` selectors.
 
 ## Purpose
 
-The purpose of this library is to get the **essential data** from a web-page for a user.
+The purpose of this library is to get the **essential data** from a web-page for a user, in `JSON` format.
 
 It could be further used for:
 1. Analyzing the **essential data**. Like a charts, diagramms, plain tables.
@@ -30,10 +30,12 @@ var html = """
     </main>
 """;
 
-var htmlEntries = new Extract().Html(html, css);
+var json = new Scrapper()
+    .Scrap(html, css)
+    .AsJson();
 // OUTPUT:
-<span class="bar"> Lorem </span>
-<p class="bar buzz"> Lorem </span>
+{ "value":" Lorem " },
+{ "value":" Lorem " },
 ```
 
 ## Known Issues
@@ -66,6 +68,10 @@ The solution consists of lesser projects, which are domain-based, core and API.
 ### API
 
 - [API](./Api) integrated the `Domains` into single and simple facade, for use.
+
+### Modules
+
+- [Modules](./Modules)  contains extra projects around the main one.
 
 ## Goals
 

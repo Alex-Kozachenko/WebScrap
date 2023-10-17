@@ -2,9 +2,10 @@ using WebScrap.Html.Extracting;
 
 namespace WebScrap.API;
 
-public static class Parse
+public static class Parser
 {
-    public static string[][] Table(
+    [Obsolete("Will be integrated into Json output.")]
+    public static string[][] ParseTable(
         ReadOnlySpan<char> html)
     {
         return new HtmlTableExtractor().ExtractTable(html);

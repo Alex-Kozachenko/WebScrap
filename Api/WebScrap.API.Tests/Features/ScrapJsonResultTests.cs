@@ -3,9 +3,9 @@ namespace WebScrap.API.Tests.Features;
 public class ExtractJsonResultTests
 {
     [Test]
-    public void Extract_Json_SingleTag_ShouldWork()
+    public void Scarp_SingleTag_AsJson_ShouldWork()
     {
-        var extract = new Extract(new Contracts.Config(Contracts.OutputFormatType.Json));
+        var scrapper = new Scrapper();
         var css = "p";
         var html = """
         <main>
@@ -21,7 +21,10 @@ public class ExtractJsonResultTests
             """{"value":" Content "}"""
         ];
 
-        var actual = extract.Html(html, css);
+        var actual = scrapper
+            .Scrap(html, css)
+            .AsJson();
+
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }
