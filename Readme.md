@@ -30,7 +30,7 @@ var html = """
     </main>
 """;
 
-var htmlEntries = Extract.Html(html, css);
+var htmlEntries = new Extract().Html(html, css);
 // OUTPUT:
 <span class="bar"> Lorem </span>
 <p class="bar buzz"> Lorem </span>

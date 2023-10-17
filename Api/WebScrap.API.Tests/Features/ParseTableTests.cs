@@ -20,7 +20,7 @@ public class ParseTableTests
             ["Width", "2"],
             ["Height", "3"]];
 
-        var extractedHtml = Extract.Html(html, css)
+        var extractedHtml = new Extract().Html(html, css)
             .First();
         var actual = Parse.Table(extractedHtml);
         Assert.That(actual, Is.EquivalentTo(expected));
