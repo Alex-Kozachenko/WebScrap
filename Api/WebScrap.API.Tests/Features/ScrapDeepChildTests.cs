@@ -110,7 +110,6 @@ public class ExtractDeepChildTests
             """<span id="four" class="bar buzz"> Four </span>"""
         ];
 
-
         var htmlEntries = new Scrapper()
             .Scrap(html, css)
             .AsHtml();
