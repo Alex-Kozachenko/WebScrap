@@ -31,7 +31,7 @@ public class ExtractWildcardTests
             """<span class="bar buzz"> Three </span>"""
         ];
 
-        var actual = Extract.Html(html, css);
+        var actual = new Extract().Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }

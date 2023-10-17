@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference 
-      Include="..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
-    <ProjectReference 
-      Include="..\..\Css\WebScrap.Css.API\WebScrap.Css.API.csproj" />
-    <ProjectReference 
-      Include="..\..\Html\WebScrap.Html.Extracting\WebScrap.Html.Extracting.csproj" />
+    <ProjectReference Include="..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
+    <ProjectReference Include="..\..\Css\WebScrap.Css.API\WebScrap.Css.API.csproj" />
+    <ProjectReference Include="..\..\Html\WebScrap.Html.Extracting\WebScrap.Html.Extracting.csproj" />
+    <ProjectReference Include="..\..\Modules\Export.Json\WebScrap.Modules.Export.Json\WebScrap.Modules.Export.Json.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

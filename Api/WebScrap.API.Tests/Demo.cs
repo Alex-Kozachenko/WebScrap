@@ -21,7 +21,7 @@ public class Demo
                 </div>
             </main>
         """;
-        var htmlEntries = Extract.Html(html, css);
+        var htmlEntries = new Extract().Html(html, css);
 
         string[] expected = [
             """<span class="bar"> Two </span>""",

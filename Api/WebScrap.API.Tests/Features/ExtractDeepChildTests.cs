@@ -21,7 +21,7 @@ public class ExtractDeepChildTests
             "<b> Ipsum </b>",
             "<b> Important </b>"];
         
-        var actual = Extract.Html(html, css);
+        var actual = new Extract().Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -44,7 +44,7 @@ public class ExtractDeepChildTests
             "<b> Ipsum </b>",
             "<b> Ipsum </b>"];
 
-        var actual = Extract.Html(html, css);
+        var actual = new Extract().Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -67,7 +67,7 @@ public class ExtractDeepChildTests
             "<b> Barata <b> Nictu </b> </b>",
             "<b> Nictu </b>"];
 
-        var actual = Extract.Html(html, css);
+        var actual = new Extract().Html(html, css);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
@@ -94,7 +94,7 @@ public class ExtractDeepChildTests
                 </div>
             </main>
         """;
-        var htmlEntries = Extract.Html(html, css);
+        var htmlEntries = new Extract().Html(html, css);
 
         string[] expected = [
             """<span class="bar"> Two </span>""",

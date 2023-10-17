@@ -6,7 +6,7 @@ namespace WebScrap.Modules.Export.Json;
 
 public class JsonApi
 {
-    public static JsonArray Export(ReadOnlyMemory<char>[] tags)
+    public static JsonArray Export(IEnumerable<ReadOnlyMemory<char>> tags)
     {
         var result = new List<JsonNode>();
         foreach (var tag in tags)
