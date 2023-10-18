@@ -1,4 +1,4 @@
-namespace WebScrap.Modules.Extracting.Html.Tests;
+namespace WebScrap.Modules.Extracting.Html.Tables.Tests;
 
 [TestFixture]
 public class TableExtractorTests

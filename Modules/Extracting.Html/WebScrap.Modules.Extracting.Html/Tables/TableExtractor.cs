@@ -1,6 +1,6 @@
 using WebScrap.Modules.Extracting.Html.Contracts.Data;
 
-namespace WebScrap.Modules.Extracting.Html;
+namespace WebScrap.Modules.Extracting.Html.Tables;
 
 public class TableExtractor : ITableExtractor
 {
