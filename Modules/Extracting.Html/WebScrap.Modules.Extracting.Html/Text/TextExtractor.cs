@@ -5,6 +5,9 @@ namespace WebScrap.Modules.Extracting.Html.Text;
 public class TextExtractor : ITextExtractor
 {
     public string ExtractText(ReadOnlySpan<char> html)
+        => ExtractTextInternal(html).Trim();
+
+    private string ExtractTextInternal(ReadOnlySpan<char> html)
     {
         var (open, close) = (html.IndexOf('<'), html.IndexOf('>'));
         return (open, close) switch 
@@ -16,7 +19,7 @@ public class TextExtractor : ITextExtractor
                 when o > c
                 => SkipTag(html, c),
             (var o, var c) 
-                => html[..o].ToString() + ExtractText(html[c..])
+                => html[..o].ToString() + ExtractTextInternal(html[c..])
         };
     }
 

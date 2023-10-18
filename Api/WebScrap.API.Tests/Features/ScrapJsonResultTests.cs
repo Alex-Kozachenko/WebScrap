@@ -17,8 +17,8 @@ public class ExtractJsonResultTests
         """;
 
         string[] expected = [
-            """{"value":" Preface "}""", 
-            """{"value":" Content "}"""
+            """{"value":"Preface"}""", 
+            """{"value":"Content"}"""
         ];
 
         var actual = scrapper

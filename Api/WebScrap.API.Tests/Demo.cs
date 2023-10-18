@@ -1,3 +1,5 @@
+using WebScrap.API.Tests;
+
 namespace WebScrap.Tests.IntegrationTests;
 
 public class Demo
@@ -5,33 +7,42 @@ public class Demo
     [Test]
     public void Demo1()
     {
-        var css = "main>div>p#foo span.bar";
+        var css = ".target";
         var html = """
             <main>
-                <br />
-                <div>
-                    <p> LoremIpsum </p>
-                    <p id="foo"> 
-                        <div>
-                            <span class="bar"> Two </span>
-                            <span class="bar buzz"> Three </span>
-                            <span id="four" class="bar buzz"> Four </span>
-                        </div>
-                    </p>
-                </div>
+                <span class="target"> Two </span>
+                <span class="target buzz"> Three </span>
+                <span id="four" class="target buzz"> Four </span>
+                <table class="target">
+                    <tr> <th> Key </th> <th> Value </th> </tr>
+                    <tr> <td> Width </td> <td> 2 </td> </tr>
+                    <tr> <td> Height </td> <td> 3 </td> </tr>
+                </table>
             </main>
         """;
 
         string[] expected = [
-            """<span class="bar"> Two </span>""",
-            """<span class="bar buzz"> Three </span>""",
-            """<span id="four" class="bar buzz"> Four </span>"""
+            """{ "value": "Two" }""",
+            """{ "value": "Three" }""",
+            """{ "value": "Four" }""",
+            """
+            {
+                "value": 
+                {
+                    "headers": ["Key", "Value"],
+                    "values": [
+                        ["Width", "2"],
+                        ["Height", "3"]
+                    ]
+                }
+            }
+            """
         ];
 
-        var htmlEntries = new Scrapper()
+        var json = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson();
 
-        Assert.That(htmlEntries, Is.EquivalentTo(expected));
+        Helpers.AssertJson(expected, json);
     }
 }

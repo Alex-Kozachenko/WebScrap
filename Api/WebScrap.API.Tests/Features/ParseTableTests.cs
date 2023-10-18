@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-
 namespace WebScrap.API.Tests;
 
 [TestFixture(Category=Categories.Features)]
@@ -34,14 +32,6 @@ public class ParseTableTests
             .AsJson()
             .First();
 
-        AssertJson(expected, actual);
-    }
-
-    private void AssertJson(string expected, string actual)
-    {
-        var exArr = JsonArray.Parse(expected);
-        var acArr = JsonArray.Parse(actual);
-        var equals = JsonNode.DeepEquals(exArr, acArr);
-        Assert.That(equals, Is.True);
+        Helpers.AssertJson(expected, actual);
     }
 }

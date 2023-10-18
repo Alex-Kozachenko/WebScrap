@@ -20,13 +20,17 @@ It could be further used for:
 ```csharp
 using WebScrap.API;
 
-var css = ".bar";
+var css = ".target";
 var html = """
     <main>
-        <div>
-            <span class="bar"> Lorem </span>
-        </div>
-        <p class="bar buzz"> Lorem </span>
+        <span class="target"> Two </span>
+        <span class="target buzz"> Three </span>
+        <span id="four" class="target buzz"> Four </span>
+        <table class="target">
+            <tr> <th> Key </th> <th> Value </th> </tr>
+            <tr> <td> Width </td> <td> 2 </td> </tr>
+            <tr> <td> Height </td> <td> 3 </td> </tr>
+        </table>
     </main>
 """;
 
@@ -34,8 +38,17 @@ var json = new Scrapper()
     .Scrap(html, css)
     .AsJson();
 // OUTPUT:
-{ "value":" Lorem " },
-{ "value":" Lorem " },
+{ "value":"Lorem" },
+{ "value":"Ipsum" },
+{ "value": 
+    {
+        "headers": ["Key", "Value"],
+        "values": [
+            ["Width", "2"],
+            ["Height", "3"]
+        ]
+    }
+}
 ```
 
 ## Known Issues
@@ -54,24 +67,22 @@ Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozache
 
 ## Solution structure
 
-The solution consists of lesser projects, which are domain-based, core and API.
-
-### Domains
-
-- [Html](./Html/) is all about html parsing.
-- [Css](./Css/) is all about processing the css query and getting the html tags.
+The solution consists of modular projects, which are categorized as Core, API and Modules.
 
 ### Core
 
+- [Css](./Css/) is all about processing the css query and getting the html tags.
 - [Core.Tags](./Core.Tags/) contains the html processor, which is designed to be used in Domains.
 
 ### API
 
-- [API](./Api) integrated the `Domains` into single and simple facade, for use.
+- [API](./Api) an integrated solution into a simple calls.
 
 ### Modules
 
-- [Modules](./Modules)  contains extra projects around the main one.
+- [Modules](./Modules) libraries for postprocessing the result from Core.
+
+NOTE: Every lesser project tends to be isolated as possible, except the API which gathers all projects for integration.
 
 ## Goals
 
