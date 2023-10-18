@@ -22,7 +22,7 @@ public readonly ref struct ScrapResult
     /// <summary>
     /// Gets the stored value in JSON format.
     /// </summary>
-    /// <returns
+    /// <returns>
     /// Array of json objects in string format.
     /// { value: %JsonValue% }
     /// where %JsonValue% is any JsonObject.

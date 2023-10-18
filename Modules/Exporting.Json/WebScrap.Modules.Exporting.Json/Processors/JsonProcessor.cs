@@ -36,8 +36,7 @@ internal class JsonProcessor
             headers = table.Header,
             values = table.ValueRows
         };
-        var a = JsonSerializer.SerializeToElement(result);
-        return a;
+        return JsonSerializer.SerializeToElement(result);
     }
 
     private static JsonElement ExtractString(ReadOnlyMemory<char> tag)
