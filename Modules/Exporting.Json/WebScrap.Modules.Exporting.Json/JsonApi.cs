@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
-using WebScrap.Modules.Export.Json.Tools;
+using WebScrap.Modules.Exporting.Json.Tools;
 
-namespace WebScrap.Modules.Export.Json;
+namespace WebScrap.Modules.Exporting.Json;
 
 public class JsonApi
 {
@@ -11,6 +11,7 @@ public class JsonApi
         var result = new List<JsonNode>();
         foreach (var tag in tags)
         {
+            var isSpecialTag = false;
             var strippedTag = Html.Strip(tag.Span);
             var obj = new { value = strippedTag };
             result.Add(JsonSerializer.SerializeToNode(obj)!);

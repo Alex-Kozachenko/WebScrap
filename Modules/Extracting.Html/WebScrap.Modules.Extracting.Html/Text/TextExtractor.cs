@@ -1,8 +1,10 @@
-namespace WebScrap.Modules.Export.Json.Tools;
+using WebScrap.Modules.Extracting.Html.Contracts;
 
-internal static class Html
+namespace WebScrap.Modules.Extracting.Html.Text;
+
+internal class TextExtractor : ITextExtractor
 {
-    internal static string Strip(ReadOnlySpan<char> html)
+    public string ExtractText(ReadOnlySpan<char> html)
     {
         var (open, close) = (html.IndexOf('<'), html.IndexOf('>'));
         return (open, close) switch 
@@ -14,10 +16,10 @@ internal static class Html
                 when o > c
                 => SkipTag(html, c),
             (var o, var c) 
-                => html[..o].ToString() + Strip(html[c..])
+                => html[..o].ToString() + ExtractText(html[c..])
         };
     }
 
-    internal static string SkipTag(ReadOnlySpan<char> html, int tagEnd)
-        => Strip(html[1..][tagEnd..]);
+    internal string SkipTag(ReadOnlySpan<char> html, int tagEnd)
+        => ExtractText(html[1..][tagEnd..]);
 }

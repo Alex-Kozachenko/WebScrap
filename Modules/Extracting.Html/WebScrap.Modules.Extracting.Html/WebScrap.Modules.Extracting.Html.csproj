@@ -1,15 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference 
-      Include="..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
+    <ProjectReference Include="..\..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
 </Project>

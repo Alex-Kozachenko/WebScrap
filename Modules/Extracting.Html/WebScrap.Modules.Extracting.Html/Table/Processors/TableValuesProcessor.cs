@@ -1,13 +1,13 @@
 using WebScrap.Core.Tags;
 
-namespace WebScrap.Html.Extracting;
+namespace WebScrap.Modules.Extracting.Html;
 
-public class TableValuesProcessor : TagsProcessorBase
+internal class TableValuesProcessor : TagsProcessorBase
 {
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
     
-    public Range[][] ProcessValues(ReadOnlySpan<char> html)
+    internal Range[][] ProcessValues(ReadOnlySpan<char> html)
     {
         valuesRanges.Clear();
         Process(html);
