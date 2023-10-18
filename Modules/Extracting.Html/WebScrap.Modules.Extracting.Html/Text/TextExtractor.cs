@@ -2,7 +2,7 @@ using WebScrap.Modules.Extracting.Html.Contracts;
 
 namespace WebScrap.Modules.Extracting.Html.Text;
 
-internal class TextExtractor : ITextExtractor
+public class TextExtractor : ITextExtractor
 {
     public string ExtractText(ReadOnlySpan<char> html)
     {

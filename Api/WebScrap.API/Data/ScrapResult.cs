@@ -1,5 +1,5 @@
 using System.Collections.Immutable;
-using WebScrap.Modules.Export.Json;
+using WebScrap.Modules.Exporting.Json;
 
 namespace WebScrap.API.Data;
 
