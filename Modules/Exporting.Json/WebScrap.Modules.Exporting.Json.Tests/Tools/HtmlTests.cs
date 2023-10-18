@@ -1,6 +1,6 @@
-using WebScrap.Modules.Export.Json.Tools;
+using WebScrap.Modules.Exporting.Json.Tools;
 
-namespace WebScrap.Modules.Export.Json.Tests.Tools;
+namespace WebScrap.Modules.Exporting.Json.Tests.Tools;
 
 public class HtmlTests
 {

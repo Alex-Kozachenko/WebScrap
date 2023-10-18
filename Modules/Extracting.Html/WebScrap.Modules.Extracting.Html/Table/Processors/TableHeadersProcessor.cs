@@ -1,12 +1,12 @@
 using WebScrap.Core.Tags;
 
-namespace WebScrap.Html.Extracting;
+namespace WebScrap.Modules.Extracting.Html;
 
-public class TableHeadersProcessor : TagsProcessorBase
+internal class TableHeadersProcessor : TagsProcessorBase
 {
     private readonly List<Range> headerRanges = [];
 
-    public Range[] ProcessHeaders(ReadOnlySpan<char> html)
+    internal Range[] ProcessHeaders(ReadOnlySpan<char> html)
     {
         headerRanges.Clear();
         Process(html);

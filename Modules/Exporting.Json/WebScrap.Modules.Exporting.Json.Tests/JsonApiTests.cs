@@ -1,4 +1,4 @@
-namespace WebScrap.Modules.Export.Json.Tests;
+namespace WebScrap.Modules.Exporting.Json.Tests;
 
 public class JsonApiTests
 {
