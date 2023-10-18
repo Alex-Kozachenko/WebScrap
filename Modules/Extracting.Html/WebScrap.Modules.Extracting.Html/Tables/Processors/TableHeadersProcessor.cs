@@ -1,6 +1,6 @@
 using WebScrap.Core.Tags;
 
-namespace WebScrap.Modules.Extracting.Html;
+namespace WebScrap.Modules.Extracting.Html.Tables;
 
 internal class TableHeadersProcessor : TagsProcessorBase
 {

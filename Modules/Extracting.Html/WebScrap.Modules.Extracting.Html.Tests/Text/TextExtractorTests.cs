@@ -1,6 +1,4 @@
-using WebScrap.Modules.Extracting.Html.Text;
-
-namespace WebScrap.Modules.Extracting.Html.Tests.Text;
+namespace WebScrap.Modules.Extracting.Html.Text.Tests;
 
 public class TextExtractorTests
 {

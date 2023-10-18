@@ -22,9 +22,11 @@ public readonly ref struct ScrapResult
     /// <summary>
     /// Gets the stored value in JSON format.
     /// </summary>
-    /// <remarks>
-    /// The format is a collection of objects.
-    /// </remarks>
+    /// <returns>
+    /// Array of json objects in string format.
+    /// { value: %JsonValue% }
+    /// where %JsonValue% is any JsonObject.
+    /// </returns>
     public ImmutableArray<string> AsJson()
     {
         var tagStrings = ExtractStrings(html.ToString(), tagRanges);
