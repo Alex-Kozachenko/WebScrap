@@ -15,16 +15,22 @@ public class ParseTableTests
         </table>
         """;
 
-        string[][] expected = [
-            ["Key", "Value"],
-            ["Width", "2"],
-            ["Height", "3"]];
+        string expected = """
+        {
+            "headers": [
+                ["Key", "Value"]
+            ],
+            "values": [
+                ["Width", "2"],
+                ["Height", "3"]
+            ]
+        }
+        """;
 
-        var extractedHtml = new Scrapper().Scrap(html, css)
-            .AsHtml()
+        var actual = new Scrapper().Scrap(html, css)
+            .AsJson()
             .First();
 
-        var actual = Parser.ParseTable(extractedHtml);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 }

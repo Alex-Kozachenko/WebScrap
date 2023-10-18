@@ -37,10 +37,17 @@
             "problemMatcher": []
         },
         {
-            "label": "test html",
+            "label": "test Modules Json",
             "type": "shell",
             "command": "dotnet",
-            "args": [ "test", "Html" ],
+            "args": [ "test", "Modules/Exporting.Json" ],
+            "problemMatcher": []
+        },
+        {
+            "label": "test Modules Html",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [ "test", "Modules/Extracting.Html" ],
             "problemMatcher": []
         },
         {
@@ -49,7 +56,7 @@
             "group": {
                 "kind": "test"
             },
-            "dependsOn":["test tags", "test css", "test html", "test api"]
+            "dependsOn":["test tags", "test css", "test Modules Json", "test Modules Html", "test api"]
         }
     ]
 }
