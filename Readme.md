@@ -55,6 +55,9 @@ var json = new Scrapper()
 
 The project currently under active development, and there are some issues, some of the obvious, which are not the priority right now.
 
+### Global
+- `No SDK found`: VSCode reports "No SDK found" if second workspace is opened. @2023.11.19
+
 ### CSS
 - multiple css entries, comma-separated, are not supported.
 - attribute-based css are not supported.

@@ -11,31 +11,36 @@
 		},
 		"tasks": [
 			{
-				"label": "build",
+				"label": "dotnet: build",
 				"type": "shell",
 				"command": "dotnet",
 				"args": [
 					"build",
-					"${workspaceFolderBasename}"
+					"/property:GenerateFullPaths=true", 
+					"/consoleloggerparameters:NoSummary"
 				],
-				"group":{
+				"problemMatcher": [
+					"$msCompile"
+				],
+				"group": {
 					"kind": "build",
 					"isDefault": true
 				},
-				"problemMatcher": "$msCompile"
 			},
 			{
-				"label": "test",
+				"label": "dotnet: test",
 				"type": "shell",
 				"command": "dotnet",
 				"args": [
-					"test",
-					"${workspaceFolderBasename}.Tests"
+					"test"					
+				],
+				"problemMatcher": [
+					"$msCompile"
 				],
 				"group": {
 					"kind": "test",
 					"isDefault": true
-				}
+				},
 			}
 		]
 	}
