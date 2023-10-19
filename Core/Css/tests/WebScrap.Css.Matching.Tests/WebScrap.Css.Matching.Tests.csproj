@@ -19,9 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WebScrap.Css\WebScrap.Css.csproj" />
-    <ProjectReference Include="..\..\WebScrap.Css.Preprocessing\WebScrap.Css.Preprocessing.csproj" />
-    <ProjectReference Include="..\..\WebScrap.Css.Matching\WebScrap.Css.Matching.csproj" />
+    <ProjectReference Include="..\..\src\WebScrap.Css.Matching\WebScrap.Css.Matching.csproj" />
   </ItemGroup>
 
 </Project>

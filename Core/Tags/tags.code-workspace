@@ -1,17 +1,9 @@
 {
 	"folders": [
 		{
-			"path": "./src"
-		},
-		{
-			"path": "./tests"
+			"path": "."
 		}
 	],
-	"settings": 
-	{
-		"dotnet.defaultSolution": "tests/tests.sln",
-		"dotnet-test-explorer.testProjectPath":"**/*Test.@(csproj|vbproj|fsproj)"
-	},
 	"tasks": {
 		"version": "2.0.0",
 		"presentation":{
@@ -20,25 +12,30 @@
 		"tasks": [
 			{
 				"label": "dotnet: build",
-				"options": { "cwd": "../src" },
 				"type": "shell",
 				"command": "dotnet",
 				"args": [
-					"build"
+					"build",
+					"/property:GenerateFullPaths=true", 
+					"/consoleloggerparameters:NoSummary"
 				],
-				"group":{
+				"problemMatcher": [
+					"$msCompile"
+				],
+				"group": {
 					"kind": "build",
 					"isDefault": true
 				},
-				"problemMatcher": "$msCompile"
 			},
 			{
 				"label": "dotnet: test",
-				"options": { "cwd": "../tests" },
 				"type": "shell",
 				"command": "dotnet",
 				"args": [
-					"test",
+					"test"					
+				],
+				"problemMatcher": [
+					"$msCompile"
 				],
 				"group": {
 					"kind": "test",

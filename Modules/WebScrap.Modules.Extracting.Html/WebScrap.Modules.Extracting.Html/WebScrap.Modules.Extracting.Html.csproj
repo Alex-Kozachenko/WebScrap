@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
+    <ProjectReference Include="..\..\..\Core\Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

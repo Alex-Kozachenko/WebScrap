@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core.Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
-    <ProjectReference Include="..\..\..\Css\WebScrap.Css.API\WebScrap.Css.API.csproj" />
+    <ProjectReference Include="..\..\..\Core\Tags\WebScrap.Core.Tags\WebScrap.Core.Tags.csproj" />
+    <ProjectReference Include="..\..\..\Core\Css\src\WebScrap.Css.API\WebScrap.Css.API.csproj" />
     <ProjectReference Include="..\..\..\Modules\WebScrap.Modules.Exporting.Json\WebScrap.Modules.Exporting.Json\WebScrap.Modules.Exporting.Json.csproj" />
   </ItemGroup>
 
