@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Extracting.Html\WebScrap.Modules.Extracting.Html\WebScrap.Modules.Extracting.Html.csproj" />
+    <ProjectReference Include="..\..\WebScrap.Modules.Extracting.Html\WebScrap.Modules.Extracting.Html\WebScrap.Modules.Extracting.Html.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

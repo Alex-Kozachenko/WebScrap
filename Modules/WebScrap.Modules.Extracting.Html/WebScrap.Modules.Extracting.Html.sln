@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrap.Modules.Extracting.Html", "WebScrap.Modules.Extracting.Html\WebScrap.Modules.Extracting.Html.csproj", "{E5D6CEBF-E6A8-4A23-8074-41DE64DCC1F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrap.Modules.Extracting.Html.Tests", "WebScrap.Modules.Extracting.Html.Tests\WebScrap.Modules.Extracting.Html.Tests.csproj", "{286335E9-FAF6-4884-B430-B082C9F5EE47}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5D6CEBF-E6A8-4A23-8074-41DE64DCC1F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5D6CEBF-E6A8-4A23-8074-41DE64DCC1F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5D6CEBF-E6A8-4A23-8074-41DE64DCC1F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5D6CEBF-E6A8-4A23-8074-41DE64DCC1F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{286335E9-FAF6-4884-B430-B082C9F5EE47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{286335E9-FAF6-4884-B430-B082C9F5EE47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{286335E9-FAF6-4884-B430-B082C9F5EE47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{286335E9-FAF6-4884-B430-B082C9F5EE47}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDD3DED9-EC24-4861-A638-F0126E1AF82D}
+	EndGlobalSection
+EndGlobal
