@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebScrap.API\WebScrap.API.csproj" />
+    <ProjectReference Include="..\..\src\WebScrap.API\WebScrap.API.csproj" />
   </ItemGroup>
 
 </Project>
