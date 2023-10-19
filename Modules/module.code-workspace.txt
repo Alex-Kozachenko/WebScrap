@@ -1,3 +1,6 @@
+// Please use this file for new Modules. 
+// Remove .txt and put in root of module.
+// And remove this comment.
 {
 	"folders": [
 		{
