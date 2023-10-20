@@ -68,25 +68,6 @@ The project currently under active development, and there are some issues, some 
 
 Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozachenko%2FWebScrap+KnownIssues.cs&type=code) tests sets, for actual list of current well-known issues.
 
-## Solution structure
-
-The solution consists of modular projects, which are categorized as Core, API and Modules.
-
-### Core
-
-- [Css](./Css/) is all about processing the css query and getting the html tags.
-- [Core.Tags](./Core.Tags/) contains the html processor, which is designed to be used in Domains.
-
-### API
-
-- [API](./Api) an integrated solution into a simple calls.
-
-### Modules
-
-- [Modules](./Modules) libraries for postprocessing the result from Core.
-
-NOTE: Every lesser project tends to be isolated as possible, except the API which gathers all projects for integration.
-
 ## Goals
 
 This project is for extracting text from html in a performant way.
