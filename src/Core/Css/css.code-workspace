@@ -1,0 +1,57 @@
+{
+	"folders": [
+		{
+			"path": "./src"
+		},
+		{
+			"path": "./tests"
+		}
+	],
+	"settings": 
+	{
+		"dotnet.defaultSolution": "tests/tests.sln",
+		"dotnet-test-explorer.testProjectPath":"**/*Test.@(csproj|vbproj|fsproj)"
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"presentation":{
+			"reveal": "silent"
+		},
+		"tasks": [
+			{
+				"label": "dotnet: build",
+				"options": { "cwd": "../src" },
+				"type": "shell",
+				"command": "dotnet",
+				"args": [
+					"build"
+				],
+				"group":{
+					"kind": "build",
+					"isDefault": true
+				},
+				"problemMatcher": "$msCompile"
+			},
+			{
+				"label": "dotnet: test",
+				"options": { "cwd": "../tests" },
+				"type": "shell",
+				"command": "dotnet",
+				"args": [
+					"test",
+				],
+				"group": {
+					"kind": "test",
+					"isDefault": true
+				},
+			}
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-dotnettools.vscode-dotnet-runtime",
+			"ms-dotnettools.csharp",
+			"ms-dotnettools.csdevkit",
+		]
+	}
+}

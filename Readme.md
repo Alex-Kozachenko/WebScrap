@@ -2,6 +2,15 @@
 
 A `HTML` parser, for extracting the text from a web pages, with `CSS` selectors.
 
+## Purpose
+
+The purpose of this library is to get the **essential data** from a web-page for a user, in `JSON` format.
+
+It could be further used for:
+1. Analyzing the **essential data**. Like a charts, diagramms, plain tables.
+2. Tracking the history of the **essential data**. Like prices for sales, currencies, user activity.
+3. Searching for specific **essential data**. Some word in multiple html resources, like movie title, or any other product, any mentioning.
+
 ## Usage
 
 1. Use the `WebScrap.API` namespace as entry point.
@@ -11,25 +20,43 @@ A `HTML` parser, for extracting the text from a web pages, with `CSS` selectors.
 ```csharp
 using WebScrap.API;
 
-var css = ".bar";
+var css = ".target";
 var html = """
     <main>
-        <div>
-            <span class="bar"> Lorem </span>
-        </div>
-        <p class="bar buzz"> Lorem </span>
+        <span class="target"> Two </span>
+        <span class="target buzz"> Three </span>
+        <span id="four" class="target buzz"> Four </span>
+        <table class="target">
+            <tr> <th> Key </th> <th> Value </th> </tr>
+            <tr> <td> Width </td> <td> 2 </td> </tr>
+            <tr> <td> Height </td> <td> 3 </td> </tr>
+        </table>
     </main>
 """;
 
-var htmlEntries = Extract.Html(html, css);
+var json = new Scrapper()
+    .Scrap(html, css)
+    .AsJson();
 // OUTPUT:
-<span class="bar"> Lorem </span>
-<p class="bar buzz"> Lorem </span>
+{ "value":"Lorem" },
+{ "value":"Ipsum" },
+{ "value": 
+    {
+        "headers": ["Key", "Value"],
+        "values": [
+            ["Width", "2"],
+            ["Height", "3"]
+        ]
+    }
+}
 ```
 
 ## Known Issues
 
 The project currently under active development, and there are some issues, some of the obvious, which are not the priority right now.
+
+### Global
+- `No SDK found`: VSCode reports "No SDK found" if second workspace is opened. @2023.11.19
 
 ### CSS
 - multiple css entries, comma-separated, are not supported.
@@ -40,23 +67,6 @@ The project currently under active development, and there are some issues, some 
 - object model returns tags in reverse order.
 
 Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozachenko%2FWebScrap+KnownIssues.cs&type=code) tests sets, for actual list of current well-known issues.
-
-## Solution structure
-
-The solution consists of lesser projects, which are domain-based, core and API.
-
-### Domains
-
-- [Html](./Html/) is all about html parsing.
-- [Css](./Css/) is all about processing the css query and getting the html tags.
-
-### Core
-
-- [Core.Tags](./Core.Tags/) contains the html processor, which is designed to be used in Domains.
-
-### API
-
-- [API](./Api) integrated the `Domains` into single and simple facade, for use.
 
 ## Goals
 
@@ -74,4 +84,5 @@ This project is for extracting text from html in a performant way.
 
 ## Footnote
 
-Please refer to the [Changelog](./Changelog.md) for the progress.
+- The versioning is complied to the Semver 2.0.0. Please refer to [semver.org](https://semver.org/) for details.
+- Please refer to the [Changelog](./Changelog.md) for the progress.
