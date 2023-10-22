@@ -21,13 +21,12 @@ public class Demo
             </main>
         """;
 
-        string[] expected = [
-            """{ "value": "Two" }""",
-            """{ "value": "Three" }""",
-            """{ "value": "Four" }""",
-            """
-            {
-                "value": 
+        string expected = """
+        [
+            { "value": "Two" },
+            { "value": "Three" },
+            { "value": "Four" },
+            { "value": 
                 {
                     "headers": ["Key", "Value"],
                     "values": [
@@ -36,13 +35,14 @@ public class Demo
                     ]
                 }
             }
-            """
-        ];
+        ]
+        """;
 
-        var json = new Scrapper()
+        var actual = new Scrapper()
             .Scrap(html, css)
-            .AsJson();
+            .AsJson()
+            .ToJsonString();
 
-        Helpers.AssertJson(expected, json);
+        Helpers.AssertJson(expected, actual);
     }
 }

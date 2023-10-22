@@ -16,15 +16,18 @@ public class ExtractJsonResultTests
         </main>
         """;
 
-        string[] expected = [
-            """{"value":"Preface"}""", 
-            """{"value":"Content"}"""
-        ];
+        string expected = """
+          [
+            { "value":"Preface" },
+            { "value":"Content" },
+          ]
+        """;
 
         var actual = scrapper
             .Scrap(html, css)
-            .AsJson();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        Helpers.AssertJson(expected, actual);
     }
 }
