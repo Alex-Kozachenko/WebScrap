@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text.Json.Nodes;
 using WebScrap.Modules.Exporting.Json;
 
 namespace WebScrap.API.Data;
@@ -27,12 +28,10 @@ public readonly ref struct ScrapResult
     /// { value: %JsonValue% }
     /// where %JsonValue% is any JsonObject.
     /// </returns>
-    public ImmutableArray<string> AsJson()
+    public JsonArray AsJson()
     {
         var tagStrings = ExtractStrings(html.ToString(), tagRanges);
-        return JsonApi.Export(tagStrings)
-            .Select(x => x!.ToJsonString())
-            .ToImmutableArray();
+        return JsonApi.Export(tagStrings);
     }
 
     public ImmutableArray<string> AsHtml()
