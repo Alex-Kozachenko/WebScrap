@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrap.API.KnownIssues.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScrap.API.Tests", "WebScrap.API.Tests\WebScrap.API.Tests.csproj", "{AB737E88-E859-4F94-ABA2-4EB076F44F6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScrap.API", "..\src\WebScrap.API\WebScrap.API.csproj", "{DED93970-C610-437E-B376-286C83119528}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AB737E88-E859-4F94-ABA2-4EB076F44F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB737E88-E859-4F94-ABA2-4EB076F44F6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB737E88-E859-4F94-ABA2-4EB076F44F6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DED93970-C610-437E-B376-286C83119528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DED93970-C610-437E-B376-286C83119528}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DED93970-C610-437E-B376-286C83119528}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DED93970-C610-437E-B376-286C83119528}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,17 +23,23 @@ public class Demo
 
         string expected = """
         [
-            { "value": "Two" },
-            { "value": "Three" },
-            { "value": "Four" },
-            { "value": 
-                {
-                    "headers": ["Key", "Value"],
-                    "values": [
-                        ["Width", "2"],
-                        ["Height", "3"]
-                    ]
-                }
+            {
+                "key": ".target",
+                "values": 
+                [
+                    { "value": "Two" },
+                    { "value": "Three" },
+                    { "value": "Four" },
+                    { "value": 
+                        {
+                            "headers": ["Key", "Value"],
+                            "values": [
+                                ["Width", "2"],
+                                ["Height", "3"]
+                            ]
+                        }
+                    }
+                ]
             }
         ]
         """;

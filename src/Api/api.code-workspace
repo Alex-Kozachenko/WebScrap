@@ -10,7 +10,6 @@
 	"settings": 
 	{
 		"dotnet.defaultSolution": "tests/tests.sln",
-		"dotnet-test-explorer.testProjectPath":"**/*Test.@(csproj|vbproj|fsproj)"
 	},
 	"tasks": {
 		"version": "2.0.0",

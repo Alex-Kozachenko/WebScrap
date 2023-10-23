@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Text.Json.Nodes;
+using WebScrap.API.Formatters;
 using WebScrap.Modules.Exporting.Json;
 
 namespace WebScrap.API.Data;
@@ -10,14 +11,14 @@ namespace WebScrap.API.Data;
 public readonly ref struct ScrapResult
 {
     private readonly ReadOnlySpan<char> html;
-    private readonly ImmutableArray<Range> tagRanges;
+    readonly (ReadOnlyMemory<char>, Range[])[] cssTagRanges;
 
     internal ScrapResult(
         ReadOnlySpan<char> html,
-        ImmutableArray<Range> tagRanges)
+        params (ReadOnlyMemory<char>, Range[])[] cssTagRanges)
     {
         this.html = html;
-        this.tagRanges = tagRanges;
+        this.cssTagRanges = cssTagRanges;
     }
 
     /// <summary>
@@ -30,12 +31,18 @@ public readonly ref struct ScrapResult
     /// </returns>
     public JsonArray AsJson()
     {
-        var tagStrings = ExtractStrings(html.ToString(), tagRanges);
-        return JsonApi.Export(tagStrings);
+        var arrays = new List<(ReadOnlyMemory<char> css, JsonArray)>();
+        foreach (var cssTagRange in cssTagRanges)
+        {
+            var tagStrings = ExtractStrings(html.ToString(), cssTagRange.Item2);
+            arrays.Add((cssTagRange.Item1, JsonApi.Export(tagStrings)));
+        }
+        
+        return JsonFormatter.Format([..arrays]);
     }
 
     public ImmutableArray<string> AsHtml()
-        => ExtractStrings(html.ToString(), tagRanges)
+        => ExtractStrings(html.ToString(), cssTagRanges.First().Item2)
             .Select(x => x.ToString())
             .ToImmutableArray();
 
