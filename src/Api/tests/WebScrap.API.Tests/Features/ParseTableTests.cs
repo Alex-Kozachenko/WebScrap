@@ -18,14 +18,20 @@ public class ParseTableTests
         string expected = """
         [
             {
-                "value": 
-                {
-                    "headers": ["Key", "Value"],
-                    "values": [
-                        ["Width", "2"],
-                        ["Height", "3"]
-                    ]
-                }
+                "key": "table",
+                "values" : 
+                [
+                    {
+                        "value": 
+                        {
+                            "headers": ["Key", "Value"],
+                            "values": [
+                                ["Width", "2"],
+                                ["Height", "3"]
+                            ]
+                        }
+                    }
+                ]
             }
         ]
         """;

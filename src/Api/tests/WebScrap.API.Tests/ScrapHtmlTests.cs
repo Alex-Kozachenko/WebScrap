@@ -1,41 +1,58 @@
+using static WebScrap.API.Tests.Helpers;
+
 namespace WebScrap.Features.IntegrationTests;
 
 [TestFixture]
 public class ScrapHtmlTests
 {
     [Test]
-    public void SingleTag_ShouldExtract()
+    public void Scrap_SingleEmptyTag_ShouldExtract()
     {
         var css = "main";
-        string[] expected = ["<main></main>"];
         var html = "<main></main>";
+        var expected = """
+        [
+            {
+                "key": "main",
+                "values": []
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
-    public void SingleTag_WithSpacesHtml_ShouldExtract()
+    public void Scrap_SingleTag_WithSpacesHtml_ShouldExtract()
     {
         var css = "main";
-        string[] expected = ["<main></main>"];
         var html = "   <main></main>  ";
+        var expected = """
+        [
+            {
+                "key": "main",
+                "values": []
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
-    public void SingleTag_ComplexCss_ShouldExtract()
+    public void Scrap_SingleTag_ComplexCss_ShouldExtract()
     {
         var css = "main>div>p";
-        string[] expected = ["<p> One </p>"];
         var html = """
         <main>
             <div>
@@ -43,19 +60,32 @@ public class ScrapHtmlTests
             </div>
         </main>
         """;
+        
+        var expected = """
+        [
+            {
+                "key": "main>div>p",
+                "values": [
+                    {
+                        "value": "One"
+                    }
+                ]
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
-    public void SingleTag_OnTheMiddle_ShouldExtract()
+    public void Scrap_SingleTag_OnTheMiddle_ShouldExtract()
     {
         var css = "main>div>p";
-        string[] expected = ["<p> One </p>"];
         var html = """
         <main>
             <p>
@@ -67,15 +97,29 @@ public class ScrapHtmlTests
         </main>
         """;
 
+        var expected = """
+        [
+            {
+                "key": "main>div>p",
+                "values": [
+                    {
+                        "value": "One"
+                    }
+                ]
+            }
+        ]
+        """;
+
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
-    public void MultipleTags_ShouldExtract()
+    public void Scrap_MultipleTags_ShouldExtract()
     {
         var css = "main>div>p";
         var html = """
@@ -90,17 +134,33 @@ public class ScrapHtmlTests
             </div>
         </main>
         """;
-        string[] expected = ["<p>One</p>","<p>Two</p>"];
+
+        var expected = """
+        [
+            {
+                "key": "main>div>p",
+                "values": [
+                    {
+                        "value": "One"
+                    },
+                    {
+                        "value": "Two"
+                    }
+                ]
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
-    public void ComplexTag_ShouldExtract()
+    public void Scrap_ComplexTag_ShouldExtract()
     {
         var css = "main>div>p";
         var html = """
@@ -110,17 +170,30 @@ public class ScrapHtmlTests
             </div>
         </main>
         """;
-        string[] expected = ["<p>One cup of <strong>a caffeine</strong> for a <i>good</i> start! </p>"];
+
+        var expected = """
+        [
+            {
+                "key": "main>div>p",
+                "values": [
+                    {
+                        "value": "One cup of a caffeine for a good start!"
+                    },
+                ]
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
-    public void AttributedTags_Simple_ShouldExtract()
+    public void Scrap_AttributedTags_Simple_ShouldExtract()
     {
         var css = "p#main.some.classes";
         var html = """
@@ -142,19 +215,26 @@ public class ScrapHtmlTests
         </main>
         """;
 
-        string[] expected = 
+        var expected = """
         [
-            "<p id='main' class='some classes'> One </p>",
-            "<p id='main' class='some bigger classes'> Two </p>",
-            "<p id='main' class='some classes'> Important </p>",
-            "<p id='main' class='some classes'> One </p>",
-            "<p id='main' class='some bigger classes'> Two </p>"
-        ];
+            {
+                "key": "p#main.some.classes",
+                "values": [
+                    { "value": "One" },
+                    { "value": "Two" },
+                    { "value": "Important" },
+                    { "value": "One" },
+                    { "value": "Two" },
+                ]
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 }

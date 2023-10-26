@@ -5,6 +5,6 @@ namespace WebScrap.Modules.Exporting.Json;
 
 public class JsonApi
 {
-    public static JsonArray Export(IEnumerable<ReadOnlyMemory<char>> tags) 
+    public static JsonArray Export(IEnumerable<string> tags) 
         => new JsonProcessor().Process(tags);
 }

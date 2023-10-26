@@ -1,3 +1,5 @@
+using static WebScrap.API.Tests.Helpers;
+
 namespace WebScrap.API.Tests.Features;
 
 [TestFixture(Category=Categories.Features)]
@@ -17,15 +19,24 @@ public class ExtractDeepChildTests
         </main>
         """;
 
-        string[] expected = [
-            "<b> Ipsum </b>",
-            "<b> Important </b>"];
-        
+        var expected = """
+        [
+            {
+                "key": "div.container b",
+                "values": [
+                    { "value": "Ipsum" },
+                    { "value": "Important" },
+                ]
+            }
+        ]
+        """;
+
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
@@ -43,15 +54,24 @@ public class ExtractDeepChildTests
         </main>
         """;
 
-        string[] expected = [
-            "<b> Ipsum </b>",
-            "<b> Ipsum </b>"];
+        var expected = """
+        [
+            {
+                "key": "div.container b",
+                "values": [
+                    { "value": "Ipsum" },
+                    { "value": "Ipsum" }
+                ]
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
@@ -61,23 +81,31 @@ public class ExtractDeepChildTests
         var html = """
         <main class="container">
             <div class="container">
-                <p> Lorem <b> Ipsum </b> </p>
-                <b> Clatu <b> Barata <b> Nictu </b> </b> </b>
+                <p> Lorem <b>Ipsum</b> </p>
+                <b> Clatu <b>Barata<b> Nictu</b></b></b>
             </div>
         </main>
         """;
-
-        string[] expected = [
-            "<b> Ipsum </b>",
-            "<b> Clatu <b> Barata <b> Nictu </b> </b> </b>",
-            "<b> Barata <b> Nictu </b> </b>",
-            "<b> Nictu </b>"];
+        var expected = """
+        [
+            {
+                "key": "main.container b",
+                "values": [
+                    { "value": "Ipsum" },
+                    { "value": "Nictu" },
+                    { "value": "Barata Nictu" },
+                    { "value": "Clatu Barata Nictu" }
+                ]
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 
     [Test]
@@ -104,16 +132,24 @@ public class ExtractDeepChildTests
             </main>
         """;
 
-        string[] expected = [
-            """<span class="bar"> Two </span>""",
-            """<span class="bar buzz"> Three </span>""",
-            """<span id="four" class="bar buzz"> Four </span>"""
-        ];
+        var expected = """
+        [
+            {
+                "key": "main>div>p#foo span.bar",
+                "values": [
+                    { "value": "Two" },
+                    { "value": "Three" },
+                    { "value": "Four" },
+                ]
+            }
+        ]
+        """;
 
-        var htmlEntries = new Scrapper()
+        var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(htmlEntries, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 }
