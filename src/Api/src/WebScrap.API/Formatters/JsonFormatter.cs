@@ -5,14 +5,14 @@ namespace WebScrap.API.Formatters;
 
 internal static class JsonFormatter
 {
-    internal static JsonArray Format((ReadOnlyMemory<char>, JsonArray)[] arrays)
+    internal static JsonArray Format((string, JsonArray)[] arrays)
     {
         var result = new List<JsonNode>();
         foreach (var item in arrays)
         {
             var obj = new
             {
-                key = item.Item1.ToString(),
+                key = item.Item1,
                 values = item.Item2
             };
             result.Add(JsonSerializer.SerializeToNode(obj)!);

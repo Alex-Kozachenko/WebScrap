@@ -8,28 +8,28 @@ public class Scrapper
     /// <summary>
     /// Processes the html and returns css-compliant tags.
     /// </summary>
-    public ScrapResult Scrap(
-        ReadOnlySpan<char> html,
+    public IScrapResult Scrap(
+        string html,
         string css)
     {
         html = html.TrimStart(' ');
-        var tagRanges = CssAPI.GetTagRanges(css.AsSpan(), html);
-        var item = (css.AsMemory(), tagRanges.ToArray());
-        return new ScrapResult(html, item);
+        var tagRanges = CssAPI.GetTagRanges(css, html);
+        var cssTagRanges = new CssTagRanges(css, [..tagRanges]);
+        return new ScrapResult(html, cssTagRanges);
     }
 
     /// <summary>
     /// Processes the html and returns groups of css-compliant tags.
     /// </summary>
-    public ScrapResult Scrap(ReadOnlySpan<char> html, string[] css)
+    public IScrapResult Scrap(string html, string[] css)
     {
-        var items = new List<(ReadOnlyMemory<char>, Range[])>();
+        var cssTagRanges = new List<CssTagRanges>();
         foreach (var cssItem in css)
         {
-            var tagRanges = CssAPI.GetTagRanges(cssItem.AsSpan(), html).ToArray();
-            items.Add((cssItem.AsMemory(), tagRanges));
+            var tagRanges = CssAPI.GetTagRanges(cssItem, html);
+            cssTagRanges.Add(new(cssItem, [..tagRanges]));
         }
 
-        return new(html, [.. items]);
+        return new ScrapResult(html, [..cssTagRanges]);
     }
 }

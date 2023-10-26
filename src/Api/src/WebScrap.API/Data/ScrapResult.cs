@@ -8,14 +8,14 @@ namespace WebScrap.API.Data;
 /// <summary>
 /// Represents the result of scrapping.
 /// </summary>
-public readonly ref struct ScrapResult
+internal readonly struct ScrapResult : IScrapResult
 {
-    private readonly ReadOnlySpan<char> html;
-    readonly (ReadOnlyMemory<char>, Range[])[] cssTagRanges;
+    readonly string html;
+    readonly CssTagRanges[] cssTagRanges;
 
     internal ScrapResult(
-        ReadOnlySpan<char> html,
-        params (ReadOnlyMemory<char>, Range[])[] cssTagRanges)
+        string html,
+        params CssTagRanges[] cssTagRanges)
     {
         this.html = html;
         this.cssTagRanges = cssTagRanges;
@@ -31,28 +31,21 @@ public readonly ref struct ScrapResult
     /// </returns>
     public JsonArray AsJson()
     {
-        var arrays = new List<(ReadOnlyMemory<char> css, JsonArray)>();
+        var arrays = new List<(string css, JsonArray)>();
         foreach (var cssTagRange in cssTagRanges)
         {
-            var tagStrings = ExtractStrings(html.ToString(), cssTagRange.Item2);
-            arrays.Add((cssTagRange.Item1, JsonApi.Export(tagStrings)));
+            var tagStrings = ExtractStrings(html, cssTagRange.TagRanges);
+            arrays.Add((cssTagRange.Css, JsonApi.Export(tagStrings)));
         }
         
         return JsonFormatter.Format([..arrays]);
     }
 
-    public ImmutableArray<string> AsHtml()
-        => ExtractStrings(html.ToString(), cssTagRanges.First().Item2)
-            .Select(x => x.ToString())
-            .ToImmutableArray();
-
-    private static ImmutableArray<ReadOnlyMemory<char>> ExtractStrings(
+    static string[] ExtractStrings(
         string html,
         IEnumerable<Range> tagRanges)
         => tagRanges
             .Select(range => html[range])
-            .Select(x => x.ToString())
             .Select(x => x.Trim())
-            .Select(x => x.AsMemory())
-            .ToImmutableArray();
+            .ToArray();
 }

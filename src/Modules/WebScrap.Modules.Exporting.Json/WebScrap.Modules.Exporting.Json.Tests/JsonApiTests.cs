@@ -5,10 +5,28 @@ namespace WebScrap.Modules.Exporting.Json.Tests;
 public class JsonApiTests
 {
     [Test]
+    public void Export_EmptyTag_ShouldWork()
+    {
+        var html = "<div></div>";
+        var expected = """[]""";
+        var actual = JsonApi.Export([html]).ToJsonString();
+        AssertJson(expected, actual);
+    }
+
+    [Test]
     public void Export_Tag_ShouldWork()
     {
-        var html = "<div>foo</div>".AsMemory();
+        var html = "<div>foo</div>";
         var expected = """[{"value":"foo"}]""";
+        var actual = JsonApi.Export([html]).ToJsonString();
+        AssertJson(expected, actual);
+    }
+
+    [Test]
+    public void Export_NestedTag_ShouldWork()
+    {
+        var html = "<p>One cup of <strong>a caffeine</strong> for a <i>good</i> start! </p>";
+        var expected = """[{"value":"One cup of a caffeine for a good start!"}]""";
         var actual = JsonApi.Export([html]).ToJsonString();
         AssertJson(expected, actual);
     }
@@ -31,7 +49,7 @@ public class JsonApiTests
                 <td>td22</td>
             </tr>
         </table>
-        """.AsMemory();
+        """;
 
         var expected = """
         [
@@ -58,6 +76,6 @@ public class JsonApiTests
         var exArr = JsonArray.Parse(expected);
         var acArr = JsonArray.Parse(actual);
         var equals = JsonNode.DeepEquals(exArr, acArr);
-        Assert.That(equals, Is.True);
+        Assert.That(equals, Is.True, () => $"Incorrect Json: {expected}");
     }
 }
