@@ -1,8 +1,8 @@
 *\bin
 *\obj
 
-# Ignore all linux-hidden folders. .hidden/
-.*/
+# Ignore all hidden files
+.*
 
 # Don't store html files.
 # Store tar.gz instead.

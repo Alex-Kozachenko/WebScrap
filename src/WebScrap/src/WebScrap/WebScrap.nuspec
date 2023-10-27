@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>DevOvercome.WebScrap</id>
+    <title>DevOvercome.WebScrap</title>
+    <version>1.0.0-rc.4</version>
+    <authors>Alex Kozachenko</authors>
+    <owners>Alex Kozachenko</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <readme type="file">docs\Readme.md</readme>
+    <description>A HTML parser, for extracting the text from a web pages, with CSS selectors.</description>
+    <dependencies>
+      <group targetFramework="net8.0" />
+    </dependencies>
+    <tags> webscrap extraction html json </tags>
+  </metadata>
+  <files>
+     <file src="bin\Release\net8.0\WebScrap*.dll" target="lib\net8.0" />
+     <file src="..\..\..\..\Readme.md" target="docs\" />
+  </files>
+</package>
