@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>WebScrap</id>
-    <version>1.0.0-rc.3</version>
-    <title>WebScrap.Json</title>
+    <id>DevOvercome.WebScrap</id>
+    <title>DevOvercome.WebScrap</title>
+    <version>1.0.0-rc.4</version>
     <authors>Alex Kozachenko</authors>
     <owners>Alex Kozachenko</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
