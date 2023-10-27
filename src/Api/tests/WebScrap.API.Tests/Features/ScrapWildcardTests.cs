@@ -1,3 +1,5 @@
+using static WebScrap.API.Tests.Helpers;
+
 namespace WebScrap.API.Tests.Features;
 
 [TestFixture(Category=Categories.Features)]
@@ -7,34 +9,42 @@ public class ExtractWildcardTests
     public void Test1()
     {
         var css = "*.bar";
-        var html ="""
+        var html = """
         <main>
             <div>
                 <p> <div> <span class="bar"> One </span> </div> </p>
-                <p> <div class="bar"> Two <span class="bar"> One </span> </div> </p>
+                <p> <div class="bar"> Two <span class="bar">One</span></div></p>
                 <p>
-                <ul>
-                    <li> <span> One </span> </li>
-                    <li> <span class="bar"> Two </span> </li>
-                    <li> <span class="bar buzz"> Three </span> </li>
-                </ul>
+                    <ul>
+                        <li> <span> One </span> </li>
+                        <li> <span class="bar"> Two </span> </li>
+                        <li> <span class="bar buzz"> Three </span> </li>
+                    </ul>
                 </p>
             </div>
         </main>
         """;
 
-        string[] expected = [
-            """<span class="bar"> One </span>""",
-            """<span class="bar"> One </span>""",
-            """<div class="bar"> Two <span class="bar"> One </span> </div>""",
-            """<span class="bar"> Two </span>""",
-            """<span class="bar buzz"> Three </span>"""
-        ];
+        var expected = """
+        [
+            {
+                "key": "*.bar",
+                "values": [
+                    { "value": "One" },
+                    { "value": "One" },
+                    { "value": "Two One" },
+                    { "value": "Two" },
+                    { "value": "Three" },
+                ]
+            }
+        ]
+        """;
 
         var actual = new Scrapper()
             .Scrap(html, css)
-            .AsHtml();
+            .AsJson()
+            .ToJsonString();
 
-        Assert.That(actual, Is.EquivalentTo(expected));
+        AssertJson(expected, actual);
     }
 }

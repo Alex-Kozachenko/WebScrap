@@ -1,4 +1,6 @@
 using System.Collections.Immutable;
+using System.Text.Json.Nodes;
+using WebScrap.API.Formatters;
 using WebScrap.Modules.Exporting.Json;
 
 namespace WebScrap.API.Data;
@@ -6,17 +8,17 @@ namespace WebScrap.API.Data;
 /// <summary>
 /// Represents the result of scrapping.
 /// </summary>
-public readonly ref struct ScrapResult
+internal readonly struct ScrapResult : IScrapResult
 {
-    private readonly ReadOnlySpan<char> html;
-    private readonly ImmutableArray<Range> tagRanges;
+    readonly string html;
+    readonly CssTagRanges[] cssTagRanges;
 
     internal ScrapResult(
-        ReadOnlySpan<char> html,
-        ImmutableArray<Range> tagRanges)
+        string html,
+        params CssTagRanges[] cssTagRanges)
     {
         this.html = html;
-        this.tagRanges = tagRanges;
+        this.cssTagRanges = cssTagRanges;
     }
 
     /// <summary>
@@ -27,26 +29,23 @@ public readonly ref struct ScrapResult
     /// { value: %JsonValue% }
     /// where %JsonValue% is any JsonObject.
     /// </returns>
-    public ImmutableArray<string> AsJson()
+    public JsonArray AsJson()
     {
-        var tagStrings = ExtractStrings(html.ToString(), tagRanges);
-        return JsonApi.Export(tagStrings)
-            .Select(x => x!.ToJsonString())
-            .ToImmutableArray();
+        var arrays = new List<(string css, JsonArray)>();
+        foreach (var cssTagRange in cssTagRanges)
+        {
+            var tagStrings = ExtractStrings(html, cssTagRange.TagRanges);
+            arrays.Add((cssTagRange.Css, JsonApi.Export(tagStrings)));
+        }
+        
+        return JsonFormatter.Format([..arrays]);
     }
 
-    public ImmutableArray<string> AsHtml()
-        => ExtractStrings(html.ToString(), tagRanges)
-            .Select(x => x.ToString())
-            .ToImmutableArray();
-
-    private static ImmutableArray<ReadOnlyMemory<char>> ExtractStrings(
+    static string[] ExtractStrings(
         string html,
         IEnumerable<Range> tagRanges)
         => tagRanges
             .Select(range => html[range])
-            .Select(x => x.ToString())
             .Select(x => x.Trim())
-            .Select(x => x.AsMemory())
-            .ToImmutableArray();
+            .ToArray();
 }

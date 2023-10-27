@@ -16,21 +16,29 @@ public class ParseTableTests
         """;
 
         string expected = """
-        {
-            "value": 
+        [
             {
-                "headers": ["Key", "Value"],
-                "values": [
-                    ["Width", "2"],
-                    ["Height", "3"]
+                "key": "table",
+                "values" : 
+                [
+                    {
+                        "value": 
+                        {
+                            "headers": ["Key", "Value"],
+                            "values": [
+                                ["Width", "2"],
+                                ["Height", "3"]
+                            ]
+                        }
+                    }
                 ]
             }
-        }
+        ]
         """;
 
         var actual = new Scrapper().Scrap(html, css)
             .AsJson()
-            .First();
+            .ToJsonString();
 
         Helpers.AssertJson(expected, actual);
     }

@@ -7,7 +7,7 @@ public class TextExtractor : ITextExtractor
     public string ExtractText(ReadOnlySpan<char> html)
         => ExtractTextInternal(html).Trim();
 
-    private string ExtractTextInternal(ReadOnlySpan<char> html)
+    string ExtractTextInternal(ReadOnlySpan<char> html)
     {
         var (open, close) = (html.IndexOf('<'), html.IndexOf('>'));
         return (open, close) switch 
@@ -23,6 +23,6 @@ public class TextExtractor : ITextExtractor
         };
     }
 
-    internal string SkipTag(ReadOnlySpan<char> html, int tagEnd)
-        => ExtractText(html[1..][tagEnd..]);
+    string SkipTag(ReadOnlySpan<char> html, int tagEnd)
+        => ExtractTextInternal(html[1..][tagEnd..]);
 }
