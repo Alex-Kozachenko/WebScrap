@@ -17,4 +17,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>WebScrap.Json</PackageId>
+    <Version>1.0.0-rc.2</Version>
+    <Authors>Alex Kozachenko</Authors>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageLicenseFile>License</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Readme.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\..\..\License" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>
