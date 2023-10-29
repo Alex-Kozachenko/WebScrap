@@ -7,6 +7,6 @@ public class CssSelectors_KnownIssues
     public void ExtractHtml_FailsToDetect_SomeCss(string css)
     {
         var html = "<div> LoremIpsum </div>";
-        Assert.That(() => new WebScrapper().Run(html, css), Throws.Exception);
+        Assert.That(() => new WebScrapper(html).Run(css), Throws.Exception);
     }
 }
