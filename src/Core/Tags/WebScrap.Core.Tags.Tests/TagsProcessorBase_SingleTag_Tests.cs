@@ -81,4 +81,17 @@ public class TagsProcessorBase_SingleTag_Tests
             Assert.That(result[0].TagInfo.Attributes["data-id"], Contains.Item("id"));
         });
     }
+
+    [Test]
+    public void Process_MultipleTags_WithComment()
+    {
+        var html = "<div><!-- <div> Ignored </div> --></div>";
+
+        var result = processor.Process(html);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Has.Length.EqualTo(1));
+            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+        });
+    }
 }

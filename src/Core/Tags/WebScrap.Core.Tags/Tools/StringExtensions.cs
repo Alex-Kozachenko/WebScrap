@@ -9,6 +9,10 @@ internal static class StringExtensions
         bool strip = false)
     {
         var begin = html.IndexOfAny(beginAny);
+        if (begin == -1)
+        {
+            throw new ArgumentException($"Incorrect html:\n {html.ToString()}");
+        }
         var end = begin + html[begin..][1..].IndexOfAny(endAny) + 2;
 
         var result = html[begin..end];

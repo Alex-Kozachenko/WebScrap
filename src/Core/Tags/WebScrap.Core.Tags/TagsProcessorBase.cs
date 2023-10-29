@@ -51,6 +51,12 @@ public class TagsProcessorBase
     private int Process(ReadOnlySpan<char> html, int charsProcessed)
     {
         var currentHtml = html[charsProcessed..];
+
+        if (currentHtml.StartsWith("<!--"))
+        {
+            return SkipComment(currentHtml);
+        }
+
         openedTags.TryPeek(out var lastOpenedTag);
 
         var detector = new TagDetector(
@@ -62,5 +68,18 @@ public class TagsProcessorBase
         detector.Detect(currentHtml);
 
         return TagsNavigator.GetNextTagIndex(currentHtml[1..]) + 1;
+    }
+
+    private int SkipComment(ReadOnlySpan<char> html)
+    {
+        var specialCharIndex = html.IndexOf('-');
+        if (html[specialCharIndex + 1] == '>')
+        {
+            return specialCharIndex + 2;
+        }
+        else
+        {
+            return specialCharIndex + 1 +  SkipComment(html[1..][specialCharIndex..]);
+        }
     }
 }
