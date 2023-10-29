@@ -59,6 +59,7 @@ The project currently under active development, and there are some issues, some 
 ### HTML
 - multiple root tags are not supported.
 - object model returns tags in reverse order.
+- non-unicode text is not converted.
 
 Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozachenko%2FWebScrap+KnownIssues.cs&type=code) tests sets, for actual list of current well-known issues.
 
