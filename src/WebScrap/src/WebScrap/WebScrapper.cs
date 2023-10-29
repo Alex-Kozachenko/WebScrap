@@ -3,23 +3,10 @@ using WebScrap.Css.API;
 
 namespace DevOvercome.WebScrap;
 
-public interface IWebScrapper
-{
-    static IWebScrapper Create(string html) => new WebScrapper(html);
-    IScrapResult Run(string css);
-    IScrapResult Run(IEnumerable<string> css);
-}
-
-/// <summary>
-/// Main engine, which extracts queried text from html.
-/// </summary>
 public class WebScrapper(string html) : IWebScrapper
 {
     private readonly string html = html.TrimStart(' ');
 
-    /// <summary>
-    /// Processes the html and returns css-compliant tags.
-    /// </summary>
     public IScrapResult Run(string css)
     {
         var tagRanges = CssAPI.GetTagRanges(css, html);
@@ -27,9 +14,6 @@ public class WebScrapper(string html) : IWebScrapper
         return new ScrapResult(html, cssTagRanges);
     }
 
-    /// <summary>
-    /// Processes the html and returns groups of css-compliant tags.
-    /// </summary>
     public IScrapResult Run(IEnumerable<string> css)
     {
         var cssTagRanges = new List<CssTagRanges>();

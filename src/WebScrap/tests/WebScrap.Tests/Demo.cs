@@ -1,5 +1,3 @@
-using WebScrap.Tests;
-
 namespace WebScrap.Tests.IntegrationTests;
 
 public class Demo
