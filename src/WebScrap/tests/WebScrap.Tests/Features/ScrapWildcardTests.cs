@@ -3,7 +3,7 @@ using static WebScrap.Tests.Helpers;
 namespace WebScrap.Tests.Features;
 
 [TestFixture(Category=Categories.Features)]
-public class ExtractWildcardTests
+public class ScrapWildcardTests
 {
     [Test]
     public void Test1()

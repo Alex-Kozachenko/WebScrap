@@ -19,6 +19,7 @@ internal static class AttributeExtractor
                 .GetValues(out var values);
             keyValues.AddRange(ToKeyValues(key, values));
         }
+
         return keyValues.ToLookup(x => x.Key, x => x.Value);
     }
 
@@ -35,7 +36,8 @@ internal static class AttributeExtractor
         this ReadOnlySpan<char> tagContent, 
         out string[] values)
     {
-        var result = new AttributeValuesExtractor().Extract(tagContent, out var innerValues);
+        var result = new AttributeValuesExtractor()
+            .Extract(tagContent, out var innerValues);
         values = innerValues;
         return result;
     }
@@ -47,8 +49,11 @@ internal static class AttributeExtractor
         var result = new List<KeyValuePair<string, string>>();
         foreach (var value in values)
         {
-            result.Add(new(key.ToString(), value));
+            result.Add(new(Trim(key.ToString()), Trim(value)));
         }
         return [.. result];
     }
+
+    private static string Trim(string attr)
+        => attr.Trim('\'','"');
 }

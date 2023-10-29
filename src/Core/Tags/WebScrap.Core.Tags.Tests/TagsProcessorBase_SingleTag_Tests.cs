@@ -56,7 +56,7 @@ public class TagsProcessorBase_SingleTag_Tests
     [Test]
     public void Process_Single_Filled_Attributed_Tag()
     {
-        var html = "<main id='idmain' class='bar buzz' data-id='id' >Lorem</main>";
+        var html = "<main id='idmain' class='bar buzz' data-id=id data-value=\"value\">Lorem</main>";
         var result = processor.Process(html);
 
         Assert.Multiple(() =>
@@ -79,6 +79,7 @@ public class TagsProcessorBase_SingleTag_Tests
             Assert.That(result[0].TagInfo.Attributes["class"], Contains.Item("bar"));
             Assert.That(result[0].TagInfo.Attributes["class"], Contains.Item("buzz"));
             Assert.That(result[0].TagInfo.Attributes["data-id"], Contains.Item("id"));
+            Assert.That(result[0].TagInfo.Attributes["data-value"], Contains.Item("value"));
         });
     }
 

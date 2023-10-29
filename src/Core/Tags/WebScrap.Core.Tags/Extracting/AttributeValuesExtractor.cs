@@ -31,11 +31,11 @@ internal sealed class AttributeValuesExtractor
         ReadOnlySpan<char> tagContent)
     {
         const int maxAttributeValuesCount = 100;
-        Span<Range> ranges = stackalloc Range[maxAttributeValuesCount];
-        return tagContent.Split(ranges, ' ') switch
+        Span<Range> rangesBuffer = stackalloc Range[maxAttributeValuesCount];
+        return tagContent.Split(rangesBuffer, ' ') switch
         {
             0 => [0..tagContent.Length],
-            _ => [..ranges]
+            _ => [..rangesBuffer]
         };
     }
 
@@ -46,7 +46,8 @@ internal sealed class AttributeValuesExtractor
         var result = new List<string>();
         foreach (var range in ranges)
         {
-            result.Add(tagContent[range].ToString());
+            var str = tagContent[range].ToString();
+            result.Add(str);
         }
         return [.. result];
     }
