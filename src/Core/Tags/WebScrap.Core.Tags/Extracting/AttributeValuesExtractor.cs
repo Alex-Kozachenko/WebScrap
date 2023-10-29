@@ -20,16 +20,11 @@ internal sealed class AttributeValuesExtractor
         ReadOnlySpan<char> valuesString, 
         out string[] values)
     {
-        const string valueScreen = "\"'";
-
-        var clipped = valuesString
-            .Clip(valueScreen, valueScreen, true);
-
-        var ranges = GetRanges(clipped)
+        var ranges = GetRanges(valuesString)
             .Where(x => x.End.Value != 0);
 
-        values = [..GetStrings(clipped, ranges)];
-        return valuesString[clipped.Length..][2..];
+        values = [..GetStrings(valuesString, ranges)];
+        return valuesString;
     }
 
     private static Range[] GetRanges(

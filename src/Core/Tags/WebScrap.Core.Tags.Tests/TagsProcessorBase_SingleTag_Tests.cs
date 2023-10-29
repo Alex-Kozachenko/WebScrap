@@ -85,7 +85,7 @@ public class TagsProcessorBase_SingleTag_Tests
     [Test]
     public void Process_MultipleTags_WithComment()
     {
-        var html = "<div><!-- <div> Ignored </div> --></div>";
+        var html = "<div>\r\n<!-- <div> Ignored </div> -->\r\n</div>";
 
         var result = processor.Process(html);
         Assert.Multiple(() =>

@@ -75,11 +75,11 @@ public class TagsProcessorBase
         var specialCharIndex = html.IndexOf('-');
         if (html[specialCharIndex + 1] == '>')
         {
-            return specialCharIndex + 2;
+            return TagsNavigator.GetNextTagIndex(html[specialCharIndex..]);
         }
         else
         {
-            return specialCharIndex + 1 +  SkipComment(html[1..][specialCharIndex..]);
+            return specialCharIndex + 1 + SkipComment(html[1..][specialCharIndex..]);
         }
     }
 }
