@@ -3,6 +3,7 @@ namespace WebScrap.Tests.IntegrationTests;
 public class Demo
 {
     [Test]
+    [Explicit]
     public void Demo1()
     {
         var css = ".target";
@@ -51,6 +52,7 @@ public class Demo
     }
 
     [Test]
+    [Explicit]
     public async Task Demo_Url()
     {
         var request = "https://www.gpucheck.com/gpu-benchmark-graphics-card-comparison-chart";
