@@ -36,7 +36,8 @@ public class ParseTableTests
         ]
         """;
 
-        var actual = new WebScrapper().Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 

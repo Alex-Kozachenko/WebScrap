@@ -5,7 +5,6 @@ public class ExtractJsonResultTests
     [Test]
     public void Scrap_SingleTag_AsJson_ShouldWork()
     {
-        var scrapper = new WebScrapper();
         var css = "p";
         var html = """
         <main>
@@ -29,8 +28,8 @@ public class ExtractJsonResultTests
         ]
         """;
 
-        var actual = scrapper
-            .Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 
@@ -40,7 +39,6 @@ public class ExtractJsonResultTests
     [Test]
     public void Scrap_SingleTag_MultipleCss_AsJson_ShouldWork()
     {
-        var scrapper = new WebScrapper();
         string[] css = [ ".preface", ".content" ];
         var html = """
         <main>
@@ -70,8 +68,8 @@ public class ExtractJsonResultTests
         ]
         """;
 
-        var actual = scrapper
-            .Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 

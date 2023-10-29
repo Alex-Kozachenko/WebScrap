@@ -44,8 +44,8 @@ public class Demo
         ]
         """;
 
-        var actual = new WebScrapper()
-            .Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 

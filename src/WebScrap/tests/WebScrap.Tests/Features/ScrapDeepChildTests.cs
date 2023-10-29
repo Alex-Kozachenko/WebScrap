@@ -31,8 +31,8 @@ public class ExtractDeepChildTests
         ]
         """;
 
-        var actual = new WebScrapper()
-            .Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 
@@ -66,8 +66,8 @@ public class ExtractDeepChildTests
         ]
         """;
 
-        var actual = new WebScrapper()
-            .Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 
@@ -100,8 +100,8 @@ public class ExtractDeepChildTests
         ]
         """;
 
-        var actual = new WebScrapper()
-            .Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 
@@ -145,8 +145,8 @@ public class ExtractDeepChildTests
         ]
         """;
 
-        var actual = new WebScrapper()
-            .Run(html, css)
+        var actual = new WebScrapper(html)
+            .Run(css)
             .AsJson()
             .ToJsonString();
 
