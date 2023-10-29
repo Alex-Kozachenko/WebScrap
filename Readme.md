@@ -13,55 +13,36 @@ It could be further used for:
 
 ## Usage
 
-1. Use the `WebScrap.API` namespace as entry point.
-1. Call the `Extract.Html` with `html` and `css`.
-1. Get the raw html as result.
+Let's make a console demo:
+> ` dotnet new console -n WebScrap.Demo.CLI `
+> ` cd WebScrap.Demo.CLI `
 
+Install the package:
+> ` dotnet add package DevOvercome.WebScrap --version 1.0.0-rc.5 `
+
+And try the following code:
 ```csharp
-using WebScrap.API;
+using DevOvercome.WebScrap;
 
-var css = ".target";
-var html = """
-    <main>
-        <span class="target"> Two </span>
-        <span class="target buzz"> Three </span>
-        <span id="four" class="target buzz"> Four </span>
-        <table class="target">
-            <tr> <th> Key </th> <th> Value </th> </tr>
-            <tr> <td> Width </td> <td> 2 </td> </tr>
-            <tr> <td> Height </td> <td> 3 </td> </tr>
-        </table>
-    </main>
-""";
+var request = "https://en.wikipedia.org/wiki/Food_energy";
 
-var result = new Scrapper()
-    .Scrap(html, css)
+// Download the html:
+using var client = new HttpClient();
+using var response = await client.GetAsync(request);
+var html = await response.Content.ReadAsStringAsync();
+
+// Run the WebScrapper:
+var css = "#firstHeading";
+var result = new WebScrapper(html)
+    .Run(css)
     .AsJson()
     .ToJsonString();
-```
 
-> OUTPUT:
-```json
-[
-    {
-        "key": ".target",
-        "values": 
-        [
-            { "value": "Two" },
-            { "value": "Three" },
-            { "value": "Four" },
-            { "value": 
-                {
-                    "headers": ["Key", "Value"],
-                    "values": [
-                        ["Width", "2"],
-                        ["Height", "3"]
-                    ]
-                }
-            }
-        ]
-    }
-]
+// Get the results:
+Console.WriteLine(result);
+// OUTPUT:
+// [{"key":"#firstHeading","values":[{"value":"Food energy"}]}]
+Console.Read();
 ```
 
 ## Known Issues
