@@ -1,3 +1,4 @@
+using WebScrap.Core.Tags.Data;
 using WebScrap.Core.Tags.Extracting;
 
 namespace WebScrap.Core.Tags.Creating;

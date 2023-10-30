@@ -46,7 +46,10 @@ internal sealed class AttributeValuesExtractor
         var result = new List<string>();
         foreach (var range in ranges)
         {
-            var str = tagContent[range].ToString();
+            var str = tagContent[range]
+                .ToString()
+                .Trim('\'','"');
+            
             result.Add(str);
         }
         return [.. result];

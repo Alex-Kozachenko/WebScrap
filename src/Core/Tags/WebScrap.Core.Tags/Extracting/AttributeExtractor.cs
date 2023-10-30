@@ -49,11 +49,8 @@ internal static class AttributeExtractor
         var result = new List<KeyValuePair<string, string>>();
         foreach (var value in values)
         {
-            result.Add(new(Trim(key.ToString()), Trim(value)));
+            result.Add(new(key.ToString(), value));
         }
         return [.. result];
     }
-
-    private static string Trim(string attr)
-        => attr.Trim('\'','"');
 }

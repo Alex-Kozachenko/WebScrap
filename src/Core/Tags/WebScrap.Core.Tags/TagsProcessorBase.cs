@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using WebScrap.Core.Tags.Creating;
+using WebScrap.Core.Tags.Data;
 
 namespace WebScrap.Core.Tags;
 
@@ -52,9 +53,9 @@ public class TagsProcessorBase
     {
         var currentHtml = html[charsProcessed..];
 
-        if (currentHtml.StartsWith("<!--"))
+        if (CommentsSkipper.TrySkipComment(currentHtml, out var processed))
         {
-            return SkipComment(currentHtml);
+            return processed;
         }
 
         openedTags.TryPeek(out var lastOpenedTag);
@@ -68,18 +69,5 @@ public class TagsProcessorBase
         detector.Detect(currentHtml);
 
         return TagsNavigator.GetNextTagIndex(currentHtml[1..]) + 1;
-    }
-
-    private int SkipComment(ReadOnlySpan<char> html)
-    {
-        var specialCharIndex = html.IndexOf('-');
-        if (html[specialCharIndex + 1] == '>')
-        {
-            return TagsNavigator.GetNextTagIndex(html[specialCharIndex..]);
-        }
-        else
-        {
-            return specialCharIndex + 1 + SkipComment(html[1..][specialCharIndex..]);
-        }
     }
 }

@@ -1,5 +1,8 @@
-namespace WebScrap.Core.Tags;
+namespace WebScrap.Core.Tags.Data;
 
+/// <summary>
+/// Represents the completed tag with metadata and offsets from begin to end.
+/// </summary>
 public record class ProcessedTag(
     TagInfo TagInfo, 
     Range TagRange, 

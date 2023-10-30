@@ -1,4 +1,5 @@
 using WebScrap.Core.Tags;
+using WebScrap.Core.Tags.Data;
 using WebScrap.Css.Data;
 using WebScrap.Css.Data.Selectors;
 

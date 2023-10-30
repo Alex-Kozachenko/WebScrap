@@ -1,3 +1,5 @@
+using WebScrap.Core.Tags.Data;
+
 namespace WebScrap.Core.Tags.Creating;
 
 internal class ProcessedTagCreator(

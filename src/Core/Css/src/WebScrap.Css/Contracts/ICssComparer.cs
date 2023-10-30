@@ -1,5 +1,5 @@
 using WebScrap.Css.Data;
-using WebScrap.Core.Tags;
+using WebScrap.Core.Tags.Data;
 
 namespace WebScrap.Css.Contracts;
 
