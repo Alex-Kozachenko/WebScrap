@@ -17,7 +17,7 @@ internal class CommentsSkipper
     {
         return (html.IndexOf('-'), html.IndexOf('>')) switch
         {
-            (0, 1) => TagsNavigator.GetNextTagIndex(html),
+            (0, 1) => TagsNavigator.GetNextTagIndex(html), // HACK: it actually skips usefull chars right after the comment. It should return "->".Length. It's the design issue, unfortunately.
             (0, _) => 1 + SkipComment(html[1..]),
             (var x, _) => x + SkipComment(html[x..])
         };

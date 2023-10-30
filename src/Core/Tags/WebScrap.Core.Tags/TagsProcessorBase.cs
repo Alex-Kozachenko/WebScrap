@@ -49,7 +49,7 @@ public class TagsProcessorBase
         UnprocessedTag[] openedTags, 
         ProcessedTag tag) { }
 
-    private int Process(ReadOnlySpan<char> html, int charsProcessed)
+    int Process(ReadOnlySpan<char> html, int charsProcessed)
     {
         var currentHtml = html[charsProcessed..];
 
@@ -58,15 +58,17 @@ public class TagsProcessorBase
             return processed;
         }
 
+        // TODO: refactor this.
+        #region HACK
         openedTags.TryPeek(out var lastOpenedTag);
-
         var detector = new TagDetector(
             unprocessedTagListeners,
             processedTagListeners,
             new UnprocessedTagCreator(charsProcessed),
             new ProcessedTagCreator(charsProcessed, lastOpenedTag!));
-        
+    
         detector.Detect(currentHtml);
+        #endregion
 
         return TagsNavigator.GetNextTagIndex(currentHtml[1..]) + 1;
     }

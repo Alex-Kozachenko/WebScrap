@@ -11,7 +11,7 @@ internal static class StringExtensions
         var begin = html.IndexOfAny(beginAny);
         if (begin == -1)
         {
-            throw new ArgumentException($"Incorrect html:\n {html.ToString()}");
+            throw new ArgumentException($"Unable to Clip html. Incorrect html met:\n {html.ToString()}");
         }
         var end = begin + html[begin..][1..].IndexOfAny(endAny) + 2;
 
