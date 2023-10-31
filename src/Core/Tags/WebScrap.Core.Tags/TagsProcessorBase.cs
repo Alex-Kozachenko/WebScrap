@@ -35,7 +35,7 @@ public class TagsProcessorBase
 
         do
         {
-            charsProcessed += Process(html, charsProcessed);
+            charsProcessed += Process(html[charsProcessed..], charsProcessed);
         } while (charsProcessed < html.Length && openedTags.Count != 0);
 
         return [.. processedTags.Reverse()];
@@ -49,27 +49,47 @@ public class TagsProcessorBase
         UnprocessedTag[] openedTags, 
         ProcessedTag tag) { }
 
-    int Process(ReadOnlySpan<char> html, int charsProcessed)
+    int Process(ReadOnlySpan<char> currentHtml, int charsProcessed)
     {
-        var currentHtml = html[charsProcessed..];
-
-        if (CommentsSkipper.TrySkipComment(currentHtml, out var processed))
+        if (!currentHtml.StartsWith("<"))
         {
-            return processed;
+            throw new ArgumentException($"Html should start with tag. {currentHtml}");
         }
 
-        // TODO: refactor this.
-        #region HACK
-        openedTags.TryPeek(out var lastOpenedTag);
-        var detector = new TagDetector(
-            unprocessedTagListeners,
-            processedTagListeners,
-            new UnprocessedTagCreator(charsProcessed),
-            new ProcessedTagCreator(charsProcessed, lastOpenedTag!));
-    
-        detector.Detect(currentHtml);
-        #endregion
+        return currentHtml.Clip("<", ">", true) switch
+        {
+            var a when a[0] == '!' => ProcessComment(currentHtml),
+            var a when a[^1] == '/' => ProcessSelfClosingTag(currentHtml),
+            var a when a[0] == '/' => ProcessClosingTag(currentHtml, charsProcessed),
+            _ => ProcessOpeningTag(currentHtml, charsProcessed)
+        };
+    }
 
-        return TagsNavigator.GetNextTagIndex(currentHtml[1..]) + 1;
+    int ProcessComment(ReadOnlySpan<char> currentHtml)
+        => CommentsSkipper.TrySkipComment(currentHtml, out var processed)
+            ? processed
+            : 0;
+
+    int ProcessSelfClosingTag(ReadOnlySpan<char> currentHtml)
+        => 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
+
+    int ProcessClosingTag(ReadOnlySpan<char> currentHtml, int charsProcessed)
+    {
+        // Extract
+        openedTags.TryPeek(out var lastOpenedTag);
+        var processedTagCreator = new ProcessedTagCreator(charsProcessed, lastOpenedTag!);
+        var result = processedTagCreator.Create(currentHtml);
+        processedTagListeners.ForEach(x => x(result));
+        return 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
+    }
+
+    int ProcessOpeningTag(ReadOnlySpan<char> currentHtml, int charsProcessed)
+    {
+        // Extract
+        var unprocessedTagCreator = new UnprocessedTagCreator(charsProcessed);
+        // TODO: Please make consistant names, why two names for same object?
+        var result = unprocessedTagCreator.Create(currentHtml);
+        unprocessedTagListeners.ForEach(x => x(result));
+        return 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
     }
 }
