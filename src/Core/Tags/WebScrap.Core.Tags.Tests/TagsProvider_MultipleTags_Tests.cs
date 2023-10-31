@@ -1,13 +1,13 @@
 namespace WebScrap.Core.Tags.Tests;
 
-public class TagsProcessorBase_MultipleTags_Tests
+public class TagsProvider_MultipleTags_Tests
 {
-    private TagsProcessorBase processor;
+    private TagsProvider tagsProvider;
 
     [SetUp]
     public void Setup()
     {
-        processor = new();
+        tagsProvider = new();
     }
 
     [Test]
@@ -15,7 +15,7 @@ public class TagsProcessorBase_MultipleTags_Tests
     {
         var text = "LoremIpsum";
         var html = $"<main> <div> <p>{text}</p> </div> </main>";
-        var result = processor.Process(html);
+        var result = tagsProvider.Process(html);
 
         Assert.Multiple(() =>
         {

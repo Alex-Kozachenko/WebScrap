@@ -1,20 +1,20 @@
 namespace WebScrap.Core.Tags.Tests;
 
-public class TagsProcessorBase_SingleTag_Tests
+public class TagsProvider_SingleTag_Tests
 {
-    private TagsProcessorBase processor;
+    private TagsProvider tagsProvider;
 
     [SetUp]
     public void Setup()
     {
-        processor = new();
+        tagsProvider = new();
     }
 
     [Test]
     public void Process_Single_Empty_Tag()
     {
         var html = "<main></main>";
-        var result = processor.Process(html);
+        var result = tagsProvider.Process(html);
 
         Assert.Multiple(() =>
         {
@@ -35,7 +35,7 @@ public class TagsProcessorBase_SingleTag_Tests
     public void Process_Single_Filled_Tag()
     {
         var html = "<main>Lorem</main>";
-        var result = processor.Process(html);
+        var result = tagsProvider.Process(html);
 
         Assert.Multiple(() =>
         {
@@ -57,7 +57,7 @@ public class TagsProcessorBase_SingleTag_Tests
     public void Process_Single_Filled_Attributed_Tag()
     {
         var html = "<main id='idmain' class='bar buzz' data-id=id data-value=\"value\">Lorem</main>";
-        var result = processor.Process(html);
+        var result = tagsProvider.Process(html);
 
         Assert.Multiple(() =>
         {
@@ -88,7 +88,7 @@ public class TagsProcessorBase_SingleTag_Tests
     {
         var html = "<div>\r\n<!-- <div> Ignored </div> -->\r\n</div>";
 
-        var result = processor.Process(html);
+        var result = tagsProvider.Process(html);
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));

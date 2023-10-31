@@ -17,10 +17,10 @@ public class TagsProcessorBase_KnownIssues
     /// </summary>
     public void Process_MultipleTags_Returns_ReversedOrder()
     {
-        TagsProcessorBase processor = new();
+        TagsProvider tagsProvider = new();
         var text = "LoremIpsum";
         var html = $"<main> <p>{text}</p> <aside></aside> </main>";
-        var result = processor.Process(html);
+        var result = tagsProvider.Process(html);
 
         Assert.Multiple(() => {
             Assert.That(result[2].TagInfo.Name, Is.EqualTo("p"));
@@ -35,9 +35,9 @@ public class TagsProcessorBase_KnownIssues
     /// </summary>
     public void Process_SelfClosingTag_Returns_Null()
     {
-        TagsProcessorBase processor = new();
+        TagsProvider tagsProvider = new();
         var html = "<br />";
-        var result = processor.Process(html);
+        var result = tagsProvider.Process(html);
 
         Assert.That(result, Has.Length.EqualTo(0));
     }

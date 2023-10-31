@@ -3,27 +3,32 @@ using WebScrap.Core.Tags.Data;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 
-internal class TableValuesProcessor : TagsProcessorBase
+internal class TableValuesProcessor : IObserver<ProcessedTag>
 {
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
+    private TagsProvider tagsProvider = new();
     
     internal Range[][] ProcessValues(ReadOnlySpan<char> html)
     {
         valuesRanges.Clear();
-        Process(html);
+        tagsProvider = new TagsProvider();
+        tagsProvider.Subscribe(this);
+        tagsProvider.Process(html);
         return [..valuesRanges];
     }
 
-    protected override void Process(
-        UnprocessedTag[] openedTags, 
-        ProcessedTag tag)
+    public void OnNext(ProcessedTag tag)
     {
         _ = TryProcessCell(tag) 
             || TryProcessRow(tag.TagInfo);
     }
 
-    private bool TryProcessCell(ProcessedTag tag)
+    public void OnCompleted() { }
+
+    public void OnError(Exception error) { }
+
+    bool TryProcessCell(ProcessedTag tag)
     {
         if (tag.TagInfo.Name != "td")
         {
@@ -34,7 +39,7 @@ internal class TableValuesProcessor : TagsProcessorBase
         return true;
     }
 
-    private bool TryProcessRow(TagInfo tagInfo)
+    bool TryProcessRow(TagInfo tagInfo)
     {
         var isCurrentRowFilled = currentRowRanges.Count != 0;
         if (tagInfo.Name != "tr" || isCurrentRowFilled is false)

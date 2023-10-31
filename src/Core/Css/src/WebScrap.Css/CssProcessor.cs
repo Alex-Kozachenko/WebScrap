@@ -14,26 +14,31 @@ namespace WebScrap.Css;
 public sealed class CssProcessor(
     ICssComparer comparer,
     ITokensBuilder tokensBuilder,
-    ReadOnlySpan<char> css) 
-    : TagsProcessorBase
+    ReadOnlySpan<char> css)
+    : IObserver<ProcessedTag>
 {
     private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
     private readonly List<Range> cssCompliantTagRanges = [];
+    private TagsProvider tagsProvider = new();
 
     /// <summary>
     /// Processes the html and returns tags which are compliant against the css selectors.
     /// </summary>
     public ImmutableArray<Range> ProcessCss(ReadOnlySpan<char> html)
     {
-        Process(html);
+        tagsProvider = new();
+        tagsProvider.Subscribe(this);
+        tagsProvider.Process(html);
         return [..cssCompliantTagRanges];
     }
 
-    protected override void Process(
-        UnprocessedTag[] openedTags, 
-        ProcessedTag tag)
+    public void OnCompleted() { }
+
+    public void OnError(Exception error) { }
+
+    public void OnNext(ProcessedTag tag)
     {
-        var tagInfos = openedTags
+        var tagInfos = tagsProvider.OpenedTags
             .Select(x => x.TagInfo)
             .ToArray();
 
