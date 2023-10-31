@@ -4,27 +4,15 @@ using WebScrap.Core.Tags.Data;
 
 namespace WebScrap.Core.Tags;
 
-public class TagsProcessorBase
+public class TagsProcessorBase // Or TagsProvider?
 {
     private readonly Stack<UnprocessedTag> openedTags;
     private readonly Queue<ProcessedTag> processedTags;
-
-    private readonly List<Action<UnprocessedTag>> unprocessedTagListeners;
-    private readonly List<Action<ProcessedTag>> processedTagListeners;
 
     public TagsProcessorBase()
     {
         openedTags = new();
         processedTags = new();
-
-        unprocessedTagListeners = [
-                o => Process([.. openedTags.Reverse()], o),
-                o => openedTags.Push(o)];
-        
-        processedTagListeners = [
-                o => Process([.. openedTags.Reverse()], o),
-                o => openedTags.Pop(),
-                o => processedTags.Enqueue(o)];
     }
 
     public ImmutableArray<ProcessedTag> Process(ReadOnlySpan<char> html)
@@ -58,38 +46,53 @@ public class TagsProcessorBase
 
         return currentHtml.Clip("<", ">", true) switch
         {
-            var a when a[0] == '!' => ProcessComment(currentHtml),
-            var a when a[^1] == '/' => ProcessSelfClosingTag(currentHtml),
-            var a when a[0] == '/' => ProcessClosingTag(currentHtml, charsProcessed),
+            var a when a[0] == '!' 
+                => ProcessComment(currentHtml),
+            var a when a[^1] == '/' 
+                => ProcessSelfClosingTag(currentHtml),
+            var a when a[0] == '/' 
+                => ProcessClosingTag(currentHtml, charsProcessed, openedTags.Peek()),
             _ => ProcessOpeningTag(currentHtml, charsProcessed)
         };
     }
 
-    int ProcessComment(ReadOnlySpan<char> currentHtml)
+    static int ProcessComment(ReadOnlySpan<char> currentHtml)
         => CommentsSkipper.TrySkipComment(currentHtml, out var processed)
             ? processed
             : 0;
 
-    int ProcessSelfClosingTag(ReadOnlySpan<char> currentHtml)
+    static int ProcessSelfClosingTag(ReadOnlySpan<char> currentHtml)
         => 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
 
-    int ProcessClosingTag(ReadOnlySpan<char> currentHtml, int charsProcessed)
+    int ProcessClosingTag(
+        ReadOnlySpan<char> currentHtml, 
+        int charsProcessed, 
+        UnprocessedTag lastOpenedTag)
     {
-        // Extract
-        openedTags.TryPeek(out var lastOpenedTag);
-        var processedTagCreator = new ProcessedTagCreator(charsProcessed, lastOpenedTag!);
+        var processedTagCreator = new ProcessedTagCreator(charsProcessed, lastOpenedTag);
         var result = processedTagCreator.Create(currentHtml);
-        processedTagListeners.ForEach(x => x(result));
+        ProcessResult(result);
         return 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
     }
 
     int ProcessOpeningTag(ReadOnlySpan<char> currentHtml, int charsProcessed)
     {
-        // Extract
         var unprocessedTagCreator = new UnprocessedTagCreator(charsProcessed);
-        // TODO: Please make consistant names, why two names for same object?
         var result = unprocessedTagCreator.Create(currentHtml);
-        unprocessedTagListeners.ForEach(x => x(result));
+        ProcessResult(result);
         return 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
+    }
+
+    void ProcessResult(ProcessedTag result)
+    {
+        Process([.. openedTags.Reverse()], result);
+        openedTags.Pop();
+        processedTags.Enqueue(result);
+    }
+
+    void ProcessResult(UnprocessedTag result)
+    {
+        Process([.. openedTags.Reverse()], result);
+        openedTags.Push(result);
     }
 }
