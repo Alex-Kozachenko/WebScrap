@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using WebScrap.Core.Tags.Creating;
 using WebScrap.Core.Tags.Data;
 using WebScrap.Core.Tags.Providing;
@@ -8,12 +7,9 @@ namespace WebScrap.Core.Tags;
 public class TagsProvider : IObservable<TagsProviderMessage>
 {
     private readonly Stack<UnprocessedTag> openedTags = new();
-
-    // TODO: Telling which tags has been met ever. Do I need this?
-    private readonly Queue<ProcessedTag> processedTags = new();
     private readonly HashSet<IObserver<TagsProviderMessage>> observers = [];
 
-    public ImmutableArray<ProcessedTag> Process(ReadOnlySpan<char> html)
+    public void Process(ReadOnlySpan<char> html)
     {
         var charsProcessed = 0;
         do
@@ -22,8 +18,6 @@ public class TagsProvider : IObservable<TagsProviderMessage>
         } while (charsProcessed < html.Length && openedTags.Count != 0);
 
         ForEach(observers, o => o.OnCompleted());
-
-        return [.. processedTags.Reverse()];
     }
 
     public IDisposable Subscribe(IObserver<TagsProviderMessage> observer)
@@ -81,9 +75,7 @@ public class TagsProvider : IObservable<TagsProviderMessage>
     void ProcessResult(ProcessedTag result)
     {
         NotifyResult(result);
-
         openedTags.Pop();
-        processedTags.Enqueue(result);
     }
 
     void NotifyResult(ProcessedTag result)

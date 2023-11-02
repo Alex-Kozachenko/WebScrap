@@ -1,20 +1,29 @@
+using WebScrap.Core.Tags.Tests.TestHelpers;
+
 namespace WebScrap.Core.Tags.Tests;
 
 public class TagsProvider_SingleTag_Tests
 {
     private TagsProvider tagsProvider;
+    private TagsProviderListener listener;
 
     [SetUp]
     public void Setup()
     {
         tagsProvider = new();
+        listener = new();
+        listener.Subscribe(tagsProvider);
     }
 
     [Test]
     public void Process_Single_Empty_Tag()
     {
         var html = "<main></main>";
-        var result = tagsProvider.Process(html);
+
+        tagsProvider.Process(html);
+        var result = listener.Messages
+            .Select(x => x.CurrentTag)
+            .ToArray();
 
         Assert.Multiple(() =>
         {
@@ -35,7 +44,11 @@ public class TagsProvider_SingleTag_Tests
     public void Process_Single_Filled_Tag()
     {
         var html = "<main>Lorem</main>";
-        var result = tagsProvider.Process(html);
+
+        tagsProvider.Process(html);
+        var result = listener.Messages
+            .Select(x => x.CurrentTag)
+            .ToArray();
 
         Assert.Multiple(() =>
         {
@@ -57,7 +70,11 @@ public class TagsProvider_SingleTag_Tests
     public void Process_Single_Filled_Attributed_Tag()
     {
         var html = "<main id='idmain' class='bar buzz' data-id=id data-value=\"value\">Lorem</main>";
-        var result = tagsProvider.Process(html);
+
+        tagsProvider.Process(html);
+        var result = listener.Messages
+            .Select(x => x.CurrentTag)
+            .ToArray();
 
         Assert.Multiple(() =>
         {
@@ -87,8 +104,12 @@ public class TagsProvider_SingleTag_Tests
     public void Process_MultipleTags_WithComment()
     {
         var html = "<div>\r\n<!-- <div> Ignored </div> -->\r\n</div>";
+        
+        tagsProvider.Process(html);
+        var result = listener.Messages
+            .Select(x => x.CurrentTag)
+            .ToArray();
 
-        var result = tagsProvider.Process(html);
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
