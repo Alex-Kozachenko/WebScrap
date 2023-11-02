@@ -1,4 +1,4 @@
-namespace WebScrap.Core.Tags;
+namespace WebScrap.Core.Tags.Providing;
 
 internal sealed class Unsubscriber<T>(
         ICollection<IObserver<T>> observers, 

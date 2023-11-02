@@ -1,18 +1,17 @@
 using System.Collections.Immutable;
 using WebScrap.Core.Tags.Creating;
 using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags.Providing;
 
 namespace WebScrap.Core.Tags;
 
-public class TagsProvider : IObservable<ProcessedTag>, IObservable<UnprocessedTag>
+public class TagsProvider : IObservable<TagsProviderMessage>
 {
     private readonly Stack<UnprocessedTag> openedTags = new();
-    private readonly Queue<ProcessedTag> processedTags = new();
-    private readonly HashSet<IObserver<ProcessedTag>> processedTagObservers = [];
-    private readonly HashSet<IObserver<UnprocessedTag>> unprocessedTagObservers = [];
 
-    public UnprocessedTag[] OpenedTags => openedTags.Reverse().ToArray(); // TODO: fix this exposure.
-    public Queue<ProcessedTag> ProcessedTags => processedTags; // TODO: fix this exposure.
+    // TODO: Telling which tags has been met ever. Do I need this?
+    private readonly Queue<ProcessedTag> processedTags = new();
+    private readonly HashSet<IObserver<TagsProviderMessage>> observers = [];
 
     public ImmutableArray<ProcessedTag> Process(ReadOnlySpan<char> html)
     {
@@ -22,29 +21,15 @@ public class TagsProvider : IObservable<ProcessedTag>, IObservable<UnprocessedTa
             charsProcessed += Process(html[charsProcessed..], charsProcessed);
         } while (charsProcessed < html.Length && openedTags.Count != 0);
 
-        ForEach(processedTagObservers, o => o.OnCompleted());
-        ForEach(unprocessedTagObservers, o => o.OnCompleted());
+        ForEach(observers, o => o.OnCompleted());
 
         return [.. processedTags.Reverse()];
     }
 
-    public IDisposable Subscribe(IObserver<ProcessedTag> observer)
+    public IDisposable Subscribe(IObserver<TagsProviderMessage> observer)
     {
-        if (processedTagObservers.Add(observer))
-        {
-            ForEach(processedTags, o => observer.OnNext(o));
-        }
-        return new Unsubscriber<ProcessedTag>(processedTagObservers, observer);
-    }
-
-    public IDisposable Subscribe(IObserver<UnprocessedTag> observer)
-    {
-        if (unprocessedTagObservers.Add(observer))
-        {
-            ForEach(openedTags, o => observer.OnNext(o));
-        }
-
-        return new Unsubscriber<UnprocessedTag>(unprocessedTagObservers, observer);
+        observers.Add(observer);
+        return new Unsubscriber<TagsProviderMessage>(observers, observer);
     }
 
     int Process(ReadOnlySpan<char> currentHtml, int charsProcessed)
@@ -66,12 +51,12 @@ public class TagsProvider : IObservable<ProcessedTag>, IObservable<UnprocessedTa
         };
     }
 
-    static int ProcessComment(ReadOnlySpan<char> currentHtml)
+    int ProcessComment(ReadOnlySpan<char> currentHtml)
         => CommentsSkipper.TrySkipComment(currentHtml, out var processed)
             ? processed
             : 0;
 
-    static int ProcessSelfClosingTag(ReadOnlySpan<char> currentHtml)
+    int ProcessSelfClosingTag(ReadOnlySpan<char> currentHtml)
         => 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
 
     int ProcessClosingTag(
@@ -95,14 +80,23 @@ public class TagsProvider : IObservable<ProcessedTag>, IObservable<UnprocessedTa
 
     void ProcessResult(ProcessedTag result)
     {
-        ForEach(processedTagObservers, o => o.OnNext(result));
+        NotifyResult(result);
+
         openedTags.Pop();
         processedTags.Enqueue(result);
     }
 
+    void NotifyResult(ProcessedTag result)
+    {
+        var history = openedTags.Reverse().Select(x => x.TagInfo);
+        var message = new TagsProviderMessage(
+            [..history], 
+            result);
+        ForEach(observers, o => o.OnNext(message));
+    }
+
     void ProcessResult(UnprocessedTag result)
     {
-        ForEach(unprocessedTagObservers, o => o.OnNext(result));
         openedTags.Push(result);
     }
 

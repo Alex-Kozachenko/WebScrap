@@ -1,9 +1,9 @@
 using WebScrap.Core.Tags;
-using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags.Providing;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 
-internal class TableHeadersProcessor : IObserver<ProcessedTag>
+internal class TableHeadersProcessor : IObserver<TagsProviderMessage>
 {
     private readonly List<Range> headerRanges = [];
     private TagsProvider tagsProvider = new();
@@ -17,8 +17,10 @@ internal class TableHeadersProcessor : IObserver<ProcessedTag>
         return [.. headerRanges];
     }
 
-    public void OnNext(ProcessedTag tag)
+    public void OnNext(TagsProviderMessage message)
     {
+        var tag = message.CurrentTag;
+
         if (tag.TagInfo.Name == "th")
         {
             headerRanges.Add(tag.InnerTextRange);

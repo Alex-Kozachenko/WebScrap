@@ -18,7 +18,7 @@
 		"tasks": [
 			{
 				"label": "dotnet: build",
-				"options": { "cwd": ".." },
+				"options": { "cwd": "." },
 				"type": "shell",
 				"command": "dotnet",
 				"args": [

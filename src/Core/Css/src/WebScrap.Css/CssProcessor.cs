@@ -1,8 +1,8 @@
 using WebScrap.Css.Data;
 using WebScrap.Css.Contracts;
 using WebScrap.Core.Tags;
-using WebScrap.Core.Tags.Data;
 using System.Collections.Immutable;
+using WebScrap.Core.Tags.Providing;
 
 namespace WebScrap.Css;
 
@@ -15,7 +15,7 @@ public sealed class CssProcessor(
     ICssComparer comparer,
     ITokensBuilder tokensBuilder,
     ReadOnlySpan<char> css)
-    : IObserver<ProcessedTag>
+    : IObserver<TagsProviderMessage>
 {
     private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
     private readonly List<Range> cssCompliantTagRanges = [];
@@ -36,23 +36,21 @@ public sealed class CssProcessor(
 
     public void OnError(Exception error) { }
 
-    public void OnNext(ProcessedTag tag)
+    public void OnNext(TagsProviderMessage message)
     {
-        var tagInfos = tagsProvider.OpenedTags
-            .Select(x => x.TagInfo)
-            .ToArray();
+        var tagInfos = message.TagsHistory;
 
         var namesMet = comparer.CompareNames(
                 expectedTags, 
-                tagInfos);
+                [..tagInfos]);
 
         var attributesMet = comparer.CompareAttributes(
                 expectedTags, 
-                tagInfos);
+                [..tagInfos]);
 
         if (namesMet && attributesMet)
         {
-            cssCompliantTagRanges.Add(tag.TagRange);
+            cssCompliantTagRanges.Add(message.CurrentTag.TagRange);
         }
     }
 }

@@ -1,9 +1,10 @@
 using WebScrap.Core.Tags;
 using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags.Providing;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 
-internal class TableValuesProcessor : IObserver<ProcessedTag>
+internal class TableValuesProcessor : IObserver<TagsProviderMessage>
 {
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
@@ -18,10 +19,10 @@ internal class TableValuesProcessor : IObserver<ProcessedTag>
         return [..valuesRanges];
     }
 
-    public void OnNext(ProcessedTag tag)
+    public void OnNext(TagsProviderMessage message)
     {
-        _ = TryProcessCell(tag) 
-            || TryProcessRow(tag.TagInfo);
+        _ = TryProcessCell(message.CurrentTag) 
+            || TryProcessRow(message.CurrentTag.TagInfo);
     }
 
     public void OnCompleted() { }
