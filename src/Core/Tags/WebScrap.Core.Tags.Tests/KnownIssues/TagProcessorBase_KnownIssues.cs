@@ -24,6 +24,6 @@ public class TagsProvider_KnownIssues
     {
         var html = "<br />";
         tagsProvider.Process(html);
-        Assert.That(listener.Messages, Has.Length.EqualTo(0));
+        Assert.That(listener.ProcessedTags, Has.Length.EqualTo(0));
     }
 }

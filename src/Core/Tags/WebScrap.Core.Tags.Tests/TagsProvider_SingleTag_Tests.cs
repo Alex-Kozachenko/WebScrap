@@ -21,17 +21,14 @@ public class TagsProvider_SingleTag_Tests
         var html = "<main></main>";
 
         tagsProvider.Process(html);
-        var result = listener.Messages
-            .Select(x => x.CurrentTag)
-            .ToArray();
+        var result = listener.ProcessedTags;
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
-            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
+            Assert.That(result[0].TextLength, Is.EqualTo(0));
         });
-
-        Assert.That(result[0].TextLength, Is.EqualTo(0));
         
         Assert.Multiple(() =>
         {
@@ -46,14 +43,12 @@ public class TagsProvider_SingleTag_Tests
         var html = "<main>Lorem</main>";
 
         tagsProvider.Process(html);
-        var result = listener.Messages
-            .Select(x => x.CurrentTag)
-            .ToArray();
+        var result = listener.ProcessedTags;
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
-            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
         });
 
         Assert.Multiple(() =>
@@ -72,14 +67,12 @@ public class TagsProvider_SingleTag_Tests
         var html = "<main id='idmain' class='bar buzz' data-id=id data-value=\"value\">Lorem</main>";
 
         tagsProvider.Process(html);
-        var result = listener.Messages
-            .Select(x => x.CurrentTag)
-            .ToArray();
+        var result = listener.ProcessedTags;
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
-            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
         });
 
         Assert.Multiple(() =>
@@ -104,16 +97,14 @@ public class TagsProvider_SingleTag_Tests
     public void Process_MultipleTags_WithComment()
     {
         var html = "<div>\r\n<!-- <div> Ignored </div> -->\r\n</div>";
-        
+
         tagsProvider.Process(html);
-        var result = listener.Messages
-            .Select(x => x.CurrentTag)
-            .ToArray();
+        var result = listener.ProcessedTags;
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
-            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
         });
     }
 }

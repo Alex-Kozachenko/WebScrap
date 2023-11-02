@@ -23,18 +23,19 @@ public class TagsProvider_MultipleTags_Tests
 
         tagsProvider.Process(html);
 
-        var result = listener.Messages;
+        var result = listener.ProcessedTags;
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(3));
-            Assert.That(result[0].CurrentTag, Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
         });
 
-        Assert.Multiple(() => {
-            Assert.That(result[2].CurrentTag.TextLength, 
+        Assert.Multiple(() => 
+        {
+            Assert.That(result[2].TextLength, 
                 Is.EqualTo(text.Length));
                 
-            Assert.That(html[result[2].CurrentTag.InnerTextRange], 
+            Assert.That(html[result[2].InnerTextRange], 
                 Is.EqualTo(text));
         });
     }

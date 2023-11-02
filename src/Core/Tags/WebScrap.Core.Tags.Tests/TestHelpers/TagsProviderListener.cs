@@ -1,3 +1,4 @@
+using WebScrap.Core.Tags.Data;
 using WebScrap.Core.Tags.Providing;
 
 namespace WebScrap.Core.Tags.Tests.TestHelpers;
@@ -7,7 +8,7 @@ internal class TagsProviderListener : IObserver<TagsProviderMessage>
     IDisposable? unsubscriber;
     // HACK: TagsProvider pushes the message from deepest tag.
     Stack<TagsProviderMessage> messages = new();
-    public TagsProviderMessage[] Messages => [.. messages];
+    public ProcessedTag[] ProcessedTags => [.. messages.Select(x => x.CurrentTag)];
 
     public void Subscribe(IObservable<TagsProviderMessage> source)
     {
