@@ -3,19 +3,26 @@ using WebScrap.Core.Tags.Extracting;
 
 namespace WebScrap.Core.Tags.Creating;
 
-internal class UnprocessedTagCreator(
-    int charsProcessed)
+internal readonly ref struct OpeningTagCreator(ReadOnlySpan<char> html, int charsProcessed)
 {
-    internal UnprocessedTag Create(ReadOnlySpan<char> tag) 
+    private readonly ReadOnlySpan<char> html = html;
+    private readonly int charsProcessed = charsProcessed;
+
+    internal OpeningTagCreator Create(out UnprocessedTag result) 
     {
-        tag = tag.Clip("<", ">");
-        return new UnprocessedTag(
+        var tag = html.Clip("<", ">");
+        result = new UnprocessedTag(
             CreateTagInfo(tag),
             TagOffset: charsProcessed,
             InnerOffset: charsProcessed + tag.Length);
+        
+        return this;
     }
 
-    private static TagInfo CreateTagInfo(ReadOnlySpan<char> tag)
+    internal int Proceed()
+        => 1 + TagsNavigator.GetNextTagIndex(html[1..]);
+
+    static TagInfo CreateTagInfo(ReadOnlySpan<char> tag)
     {
         if (tag.IndexOf(' ') == -1)
         {

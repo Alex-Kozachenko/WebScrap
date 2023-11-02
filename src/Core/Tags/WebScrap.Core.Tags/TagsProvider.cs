@@ -1,22 +1,30 @@
-using WebScrap.Core.Tags.Creating;
 using WebScrap.Core.Tags.Data;
-using WebScrap.Core.Tags.Providing;
+using WebScrap.Core.Tags.Tools;
 
 namespace WebScrap.Core.Tags;
 
-public class TagsProvider : IObservable<TagsProviderMessage>
+public class TagsProvider : 
+    IObservable<TagsProviderMessage>,
+    IObserver<ProcessedTag>
 {
-    private readonly Stack<UnprocessedTag> openedTags = new();
+    private readonly TagsDispatcher tagsDispatcher = new();
     private readonly HashSet<IObserver<TagsProviderMessage>> observers = [];
+    private readonly IDisposable? tagDispatcherUnsubscriber;
+
+    public TagsProvider()
+    {
+        tagDispatcherUnsubscriber = tagsDispatcher.Subscribe(this);
+    }
 
     public void Process(ReadOnlySpan<char> html)
     {
         var charsProcessed = 0;
         do
         {
-            charsProcessed += Process(html[charsProcessed..], charsProcessed);
-        } while (charsProcessed < html.Length && openedTags.Count != 0);
+            charsProcessed += tagsDispatcher.Process(html[charsProcessed..], charsProcessed);
+        } while (charsProcessed < html.Length);
 
+        tagDispatcherUnsubscriber?.Dispose();
         ForEach(observers, o => o.OnCompleted());
     }
 
@@ -26,70 +34,22 @@ public class TagsProvider : IObservable<TagsProviderMessage>
         return new Unsubscriber<TagsProviderMessage>(observers, observer);
     }
 
-    int Process(ReadOnlySpan<char> currentHtml, int charsProcessed)
+    public void OnCompleted()
     {
-        if (!currentHtml.StartsWith("<"))
-        {
-            throw new ArgumentException($"Html should start with tag. {currentHtml}");
-        }
-
-        return currentHtml.Clip("<", ">", true) switch
-        {
-            var a when a[0] == '!' 
-                => ProcessComment(currentHtml),
-            var a when a[^1] == '/' 
-                => ProcessSelfClosingTag(currentHtml),
-            var a when a[0] == '/' 
-                => ProcessClosingTag(currentHtml, charsProcessed, openedTags.Peek()),
-            _ => ProcessOpeningTag(currentHtml, charsProcessed)
-        };
+        tagDispatcherUnsubscriber?.Dispose();
     }
 
-    int ProcessComment(ReadOnlySpan<char> currentHtml)
-        => CommentsSkipper.TrySkipComment(currentHtml, out var processed)
-            ? processed
-            : 0;
+    public void OnError(Exception error) { }
 
-    int ProcessSelfClosingTag(ReadOnlySpan<char> currentHtml)
-        => 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
-
-    int ProcessClosingTag(
-        ReadOnlySpan<char> currentHtml, 
-        int charsProcessed, 
-        UnprocessedTag lastOpenedTag)
+    public void OnNext(ProcessedTag value)
     {
-        var processedTagCreator = new ProcessedTagCreator(charsProcessed, lastOpenedTag);
-        var result = processedTagCreator.Create(currentHtml);
-        ProcessResult(result);
-        return 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
-    }
-
-    int ProcessOpeningTag(ReadOnlySpan<char> currentHtml, int charsProcessed)
-    {
-        var unprocessedTagCreator = new UnprocessedTagCreator(charsProcessed);
-        var result = unprocessedTagCreator.Create(currentHtml);
-        ProcessResult(result);
-        return 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..]);
-    }
-
-    void ProcessResult(ProcessedTag result)
-    {
-        NotifyResult(result);
-        openedTags.Pop();
-    }
-
-    void NotifyResult(ProcessedTag result)
-    {
-        var history = openedTags.Reverse().Select(x => x.TagInfo);
+        var history = tagsDispatcher.OpenedTags
+            .Reverse()
+            .Select(x => x.TagInfo);
         var message = new TagsProviderMessage(
             [..history], 
-            result);
+            value);
         ForEach(observers, o => o.OnNext(message));
-    }
-
-    void ProcessResult(UnprocessedTag result)
-    {
-        openedTags.Push(result);
     }
 
     static void ForEach<T>(IEnumerable<T> set, Action<T> action)

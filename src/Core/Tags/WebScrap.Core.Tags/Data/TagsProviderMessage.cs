@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
-using WebScrap.Core.Tags.Data;
 
-namespace WebScrap.Core.Tags.Providing;
+namespace WebScrap.Core.Tags.Data;
 
 public record class TagsProviderMessage(
     ImmutableArray<TagInfo> TagsHistory,

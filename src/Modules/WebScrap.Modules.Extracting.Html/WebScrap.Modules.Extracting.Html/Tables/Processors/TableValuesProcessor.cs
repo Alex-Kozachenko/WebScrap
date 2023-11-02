@@ -1,6 +1,5 @@
 using WebScrap.Core.Tags;
 using WebScrap.Core.Tags.Data;
-using WebScrap.Core.Tags.Providing;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 

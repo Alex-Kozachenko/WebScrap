@@ -1,8 +1,15 @@
-namespace WebScrap.Core.Tags.Tools;
+namespace WebScrap.Core.Tags.Creating;
 
-internal class CommentsSkipper 
+internal readonly ref struct CommentTagCreator(ReadOnlySpan<char> html)
 {
-    internal static bool TrySkipComment(ReadOnlySpan<char> html, out int processed)
+    private readonly ReadOnlySpan<char> html = html;
+
+    internal int Proceed() 
+        => TrySkipComment(html, out var processed)
+            ? processed
+            : 0;
+
+    static bool TrySkipComment(ReadOnlySpan<char> html, out int processed)
     {
         const string comment = "<!--";
 

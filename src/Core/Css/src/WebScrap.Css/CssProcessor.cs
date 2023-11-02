@@ -1,8 +1,8 @@
 using WebScrap.Css.Data;
 using WebScrap.Css.Contracts;
 using WebScrap.Core.Tags;
+using WebScrap.Core.Tags.Data;
 using System.Collections.Immutable;
-using WebScrap.Core.Tags.Providing;
 
 namespace WebScrap.Css;
 
