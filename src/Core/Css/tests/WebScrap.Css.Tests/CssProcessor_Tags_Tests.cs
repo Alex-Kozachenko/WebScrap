@@ -64,16 +64,4 @@ public class CssProcessor_Tags_Tests
             }
         });
     }
-
-    [TestCase("_____<p></p>")]
-    [TestCase("p>__<p>")]
-    [TestCase("__</p>__")]
-    public void CalculateTagIndexes_IncorrectHtml_ShouldFail(
-        string sample)
-    {
-        var css = "p";
-        Assert.That(
-            () => CalculateTagRanges(sample, css),
-            Throws.ArgumentException);
-    }
 }

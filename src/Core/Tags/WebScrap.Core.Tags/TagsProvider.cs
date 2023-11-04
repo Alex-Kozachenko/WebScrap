@@ -1,4 +1,5 @@
 using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags.Messaging;
 
 namespace WebScrap.Core.Tags;
 
@@ -6,11 +7,11 @@ public class TagsProvider :
     IObservable<TagsProviderMessage>
 {
     readonly HistoryTracker historyTracker = new();
-    readonly HashSet<IObserver<TagsProviderMessage>> observers = [];
+    readonly Broadcaster broadcaster = new();
 
     public void Process(ReadOnlySpan<char> html)
     {
-        var charsProcessed = 0;
+        var charsProcessed = TagsNavigator.GetNextTagIndex(html);
         do
         {
             var currentHtml = html[charsProcessed..];
@@ -19,15 +20,14 @@ public class TagsProvider :
             charsProcessed += Proceed(currentHtml);
         } while (charsProcessed < html.Length);
 
-        ForEach(observers, o => o.OnCompleted());
-        observers.Clear();
+        broadcaster.OnCompleted();
     }    
 
     public IDisposable Subscribe(IObserver<TagsProviderMessage> observer)
-    {
-        observers.Add(observer);
-        return new Unsubscriber<TagsProviderMessage>(observers, observer);
-    }
+        => broadcaster.Subscribe(observer);
+
+    public IDisposable Subscribe(IObserver<TagsProviderMessage> observer, string tagName)
+        => broadcaster.Subscribe(observer, tagName);
 
     void Process(ReadOnlySpan<char> currentHtml, int charsProcessed)
     {
@@ -60,7 +60,7 @@ public class TagsProvider :
             [..history], 
             value);
 
-        ForEach(observers, o => o.OnNext(message));
+        broadcaster.OnNext(message, value.TagInfo.Name);
     }
 
     static int Proceed(ReadOnlySpan<char> currentHtml)
@@ -69,12 +69,4 @@ public class TagsProvider :
             TagKind.Comment => TagsNavigator.SkipComment(currentHtml),
             _ => 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..])
         };
-
-    static void ForEach<T>(IEnumerable<T> set, Action<T> action)
-    {
-        foreach (var item in set)
-        {
-            action(item);
-        }
-    }
 }
