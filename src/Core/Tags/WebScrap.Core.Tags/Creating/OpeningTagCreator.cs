@@ -8,19 +8,14 @@ internal readonly ref struct OpeningTagCreator(ReadOnlySpan<char> html, int char
     private readonly ReadOnlySpan<char> html = html;
     private readonly int charsProcessed = charsProcessed;
 
-    internal OpeningTagCreator Create(out UnprocessedTag result) 
+    internal UnprocessedTag Create() 
     {
         var tag = html.Clip("<", ">");
-        result = new UnprocessedTag(
+        return new(
             CreateTagInfo(tag),
             TagOffset: charsProcessed,
             InnerOffset: charsProcessed + tag.Length);
-        
-        return this;
     }
-
-    internal int Proceed()
-        => 1 + TagsNavigator.GetNextTagIndex(html[1..]);
 
     static TagInfo CreateTagInfo(ReadOnlySpan<char> tag)
     {

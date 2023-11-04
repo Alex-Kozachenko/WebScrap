@@ -1,32 +1,27 @@
+using WebScrap.Core.Tags.Creating;
 using WebScrap.Core.Tags.Data;
-using WebScrap.Core.Tags.Tools;
 
 namespace WebScrap.Core.Tags;
 
 public class TagsProvider : 
-    IObservable<TagsProviderMessage>,
-    IObserver<ProcessedTag>
+    IObservable<TagsProviderMessage>
 {
-    private readonly TagsDispatcher tagsDispatcher = new();
+    private readonly Stack<UnprocessedTag> openedTags = new();
     private readonly HashSet<IObserver<TagsProviderMessage>> observers = [];
-    private readonly IDisposable? tagDispatcherUnsubscriber;
-
-    public TagsProvider()
-    {
-        tagDispatcherUnsubscriber = tagsDispatcher.Subscribe(this);
-    }
 
     public void Process(ReadOnlySpan<char> html)
     {
         var charsProcessed = 0;
         do
         {
-            charsProcessed += tagsDispatcher.Process(html[charsProcessed..], charsProcessed);
+            var currentHtml = html[charsProcessed..];
+            Process(currentHtml, charsProcessed);
+            ProcessHistory(currentHtml, charsProcessed); // HACK: order matters!
+            charsProcessed += Proceed(currentHtml);
         } while (charsProcessed < html.Length);
 
-        tagDispatcherUnsubscriber?.Dispose();
         ForEach(observers, o => o.OnCompleted());
-    }
+    }    
 
     public IDisposable Subscribe(IObserver<TagsProviderMessage> observer)
     {
@@ -34,16 +29,41 @@ public class TagsProvider :
         return new Unsubscriber<TagsProviderMessage>(observers, observer);
     }
 
-    public void OnCompleted()
+    void Process(ReadOnlySpan<char> currentHtml, int charsProcessed)
     {
-        tagDispatcherUnsubscriber?.Dispose();
+        if (TagDetector.Detect(currentHtml) == TagKind.Closing)
+        {
+            var processedTag = new ClosingTagCreator(
+                currentHtml, 
+                charsProcessed, 
+                openedTags.Peek())
+                .Create();
+            OnProcessedTagMet(processedTag);
+        }
     }
 
-    public void OnError(Exception error) { }
-
-    public void OnNext(ProcessedTag value)
+    void ProcessHistory(ReadOnlySpan<char> currentHtml, int charsProcessed)
     {
-        var history = tagsDispatcher.OpenedTags
+        switch (TagDetector.Detect(currentHtml))
+        {
+            case TagKind.Opening:
+            {
+                var openedTag = new OpeningTagCreator(currentHtml, charsProcessed)
+                    .Create();
+                openedTags.Push(openedTag);
+                break;
+            }
+            case TagKind.Closing:
+            {
+                openedTags.Pop();
+                break;
+            }
+        }
+    }
+
+    void OnProcessedTagMet(ProcessedTag value)
+    {
+        var history = openedTags
             .Reverse()
             .Select(x => x.TagInfo);
         var message = new TagsProviderMessage(
@@ -51,6 +71,13 @@ public class TagsProvider :
             value);
         ForEach(observers, o => o.OnNext(message));
     }
+
+    static int Proceed(ReadOnlySpan<char> currentHtml)
+        => TagDetector.Detect(currentHtml) switch
+        {
+            TagKind.Comment => TagsNavigator.SkipComment(currentHtml),
+            _ => 1 + TagsNavigator.GetNextTagIndex(currentHtml[1..])
+        };
 
     static void ForEach<T>(IEnumerable<T> set, Action<T> action)
     {

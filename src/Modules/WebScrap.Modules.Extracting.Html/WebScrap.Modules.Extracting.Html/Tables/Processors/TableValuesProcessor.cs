@@ -7,13 +7,13 @@ internal class TableValuesProcessor : IObserver<TagsProviderMessage>
 {
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
-    private TagsProvider tagsProvider = new();
+    private IDisposable? unsubscriber;
     
     internal Range[][] ProcessValues(ReadOnlySpan<char> html)
     {
         valuesRanges.Clear();
-        tagsProvider = new TagsProvider();
-        tagsProvider.Subscribe(this);
+        var tagsProvider = new TagsProvider();
+        unsubscriber = tagsProvider.Subscribe(this);
         tagsProvider.Process(html);
         return [..valuesRanges];
     }
@@ -24,7 +24,10 @@ internal class TableValuesProcessor : IObserver<TagsProviderMessage>
             || TryProcessRow(message.CurrentTag.TagInfo);
     }
 
-    public void OnCompleted() { }
+    public void OnCompleted() 
+    {
+        unsubscriber?.Dispose();
+    }
 
     public void OnError(Exception error) { }
 

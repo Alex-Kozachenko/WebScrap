@@ -15,4 +15,15 @@ internal static class TagsNavigator
             0 => GetInnerTextIndex(html[1..]) + 1,
             _ => html.IndexOf('>') + 1
         };
+
+    internal static int SkipComment(ReadOnlySpan<char> html) 
+        => (html.IndexOf('-'), html.IndexOf('>')) switch
+        {   
+            // HACK: it actually skips usefull chars right after the comment. 
+            // It should return "->".Length. 
+            // It's the design issue, unfortunately.
+            (0, 1) => GetNextTagIndex(html), 
+            (0, _) => 1 + SkipComment(html[1..]),
+            (var x, _) => x + SkipComment(html[x..])
+        };
 }

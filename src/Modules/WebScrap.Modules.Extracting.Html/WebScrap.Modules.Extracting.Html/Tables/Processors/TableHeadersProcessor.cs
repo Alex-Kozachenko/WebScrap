@@ -6,13 +6,13 @@ namespace WebScrap.Modules.Extracting.Html.Tables;
 internal class TableHeadersProcessor : IObserver<TagsProviderMessage>
 {
     private readonly List<Range> headerRanges = [];
-    private TagsProvider tagsProvider = new();
+    private IDisposable? unsubscriber;
 
     internal Range[] ProcessHeaders(ReadOnlySpan<char> html)
     {
         headerRanges.Clear();
-        tagsProvider = new TagsProvider();
-        tagsProvider.Subscribe(this);
+        var tagsProvider = new TagsProvider();
+        unsubscriber = tagsProvider.Subscribe(this);
         tagsProvider.Process(html);
         return [.. headerRanges];
     }
@@ -27,7 +27,10 @@ internal class TableHeadersProcessor : IObserver<TagsProviderMessage>
         }
     }
 
-    public void OnCompleted() { }
+    public void OnCompleted() 
+    {
+        unsubscriber?.Dispose();
+    }
 
     public void OnError(Exception error) { }
 }

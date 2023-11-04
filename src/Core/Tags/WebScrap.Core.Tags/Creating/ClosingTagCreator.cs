@@ -8,10 +8,7 @@ internal readonly ref struct ClosingTagCreator(ReadOnlySpan<char> html, int char
     private readonly int charsProcessed = charsProcessed;
     private readonly UnprocessedTag latestTag = latestTag;
 
-    internal int Proceed()
-        => 1 + TagsNavigator.GetNextTagIndex(html[1..]);
-
-    internal ClosingTagCreator Create(out ProcessedTag result)
+    internal ProcessedTag Create()
     {
         var tag = html.Clip("<", ">");
         var tagLength = charsProcessed + tag.Length;
@@ -21,8 +18,6 @@ internal readonly ref struct ClosingTagCreator(ReadOnlySpan<char> html, int char
                 null => 0..0,
                 var o => o.Value..charsProcessed
             };
-        result = new ProcessedTag(latestTag.TagInfo, range, innerRange);
-
-        return this;
+        return new ProcessedTag(latestTag.TagInfo, range, innerRange);
     }
 }
