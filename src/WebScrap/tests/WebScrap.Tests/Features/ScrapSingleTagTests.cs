@@ -1,6 +1,6 @@
 namespace WebScrap.Tests.Features;
 
-public class ExtractJsonResultTests
+public class ScrapSingleTagTests
 {
     [Test]
     public void Scrap_SingleTag_AsJson_ShouldWork()

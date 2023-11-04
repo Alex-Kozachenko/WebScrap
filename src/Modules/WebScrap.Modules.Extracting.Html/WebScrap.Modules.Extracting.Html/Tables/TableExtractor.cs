@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using WebScrap.Core.Tags;
 using WebScrap.Modules.Extracting.Html.Contracts.Data;
 using WebScrap.Modules.Extracting.Html.Text;
 
@@ -9,19 +11,25 @@ public class TableExtractor : ITableExtractor
     
     public Table ExtractTable(ReadOnlySpan<char> html)
     {
-        var headersRanges = new TableHeadersProcessor().ProcessHeaders(html);
-        var valuesRanges = new TableValuesProcessor().ProcessValues(html);
+        var tagsProvider = new TagsProvider();
+        var tableHeadersProcessor = new TableHeadersProcessor();
+        tableHeadersProcessor.Subscribe(tagsProvider);
+
+        var tableValuesProcessor = new TableValuesProcessor();
+        tableValuesProcessor.Subscribe(tagsProvider);
+
+        tagsProvider.Process(html);
 
         return new(
-            ExtractRow(html.ToString(), headersRanges),
-            ExtractBody(html.ToString(), valuesRanges));
+            ExtractRow(html.ToString(), tableHeadersProcessor.HeaderRanges),
+            ExtractBody(html.ToString(), tableValuesProcessor.ValuesRanges));
     }
 
-    string[] ExtractRow(string html, Range[] cellRanges)
+    string[] ExtractRow(string html, IEnumerable<Range> cellRanges)
         => cellRanges
             .Select(x => textExtractor.ExtractText(html[x]))
             .ToArray();
 
-    string[][] ExtractBody(string html, Range[][] valueRowsRanges) 
+    string[][] ExtractBody(string html, IEnumerable<ImmutableArray<Range>> valueRowsRanges) 
         => [.. valueRowsRanges.Select(x => ExtractRow(html, x))];
 }

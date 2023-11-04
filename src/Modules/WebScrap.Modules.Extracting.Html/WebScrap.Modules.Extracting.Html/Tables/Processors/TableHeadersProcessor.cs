@@ -1,25 +1,32 @@
+using System.Collections.Immutable;
 using WebScrap.Core.Tags;
+using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags.Messaging;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 
-internal class TableHeadersProcessor : TagsProcessorBase
+internal class TableHeadersProcessor : IObserver<TagsProviderMessage>
 {
     private readonly List<Range> headerRanges = [];
+    private IDisposable? unsubscriber;
 
-    internal Range[] ProcessHeaders(ReadOnlySpan<char> html)
+    public ImmutableArray<Range> HeaderRanges => [.. headerRanges];
+
+    public void Subscribe(ITagObservable tagObservable)
     {
-        headerRanges.Clear();
-        Process(html);
-        return [.. headerRanges];
+        unsubscriber = tagObservable.Subscribe(this, "th");
     }
 
-    protected override void Process(
-        UnprocessedTag[] openedTags, 
-        ProcessedTag tag) 
-    { 
-        if (tag.TagInfo.Name == "th")
-        {
-            headerRanges.Add(tag.InnerTextRange);
-        }
+    public void OnNext(TagsProviderMessage message)
+    {
+        var th = message.CurrentTag;
+        headerRanges.Add(th.InnerTextRange);
     }
+
+    public void OnCompleted() 
+    {
+        unsubscriber?.Dispose();
+    }
+
+    public void OnError(Exception error) { }
 }

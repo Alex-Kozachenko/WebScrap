@@ -1,28 +1,35 @@
+using WebScrap.Core.Tags.Tests.TestHelpers;
+
 namespace WebScrap.Core.Tags.Tests;
 
-public class TagsProcessorBase_SingleTag_Tests
+public class TagsProvider_SingleTag_Tests
 {
-    private TagsProcessorBase processor;
+    private TagsProvider tagsProvider;
+    private TagsProviderListener listener;
+    
 
     [SetUp]
     public void Setup()
     {
-        processor = new();
+        tagsProvider = new();
+        listener = new();
+        listener.Subscribe(tagsProvider);
     }
 
     [Test]
     public void Process_Single_Empty_Tag()
     {
         var html = "<main></main>";
-        var result = processor.Process(html);
+
+        tagsProvider.Process(html);
+        var result = listener.ProcessedTags;
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
-            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
+            Assert.That(result[0].TextLength, Is.EqualTo(0));
         });
-
-        Assert.That(result[0].TextLength, Is.EqualTo(0));
         
         Assert.Multiple(() =>
         {
@@ -35,12 +42,14 @@ public class TagsProcessorBase_SingleTag_Tests
     public void Process_Single_Filled_Tag()
     {
         var html = "<main>Lorem</main>";
-        var result = processor.Process(html);
+
+        tagsProvider.Process(html);
+        var result = listener.ProcessedTags;
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
-            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
         });
 
         Assert.Multiple(() =>
@@ -56,13 +65,15 @@ public class TagsProcessorBase_SingleTag_Tests
     [Test]
     public void Process_Single_Filled_Attributed_Tag()
     {
-        var html = "<main id='idmain' class='bar buzz' data-id='id' >Lorem</main>";
-        var result = processor.Process(html);
+        var html = "<main id='idmain' class='bar buzz' data-id=id data-value=\"value\">Lorem</main>";
+
+        tagsProvider.Process(html);
+        var result = listener.ProcessedTags;
 
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(1));
-            Assert.That(result[0], Has.Length.EqualTo(html.Length));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
         });
 
         Assert.Multiple(() =>
@@ -79,6 +90,22 @@ public class TagsProcessorBase_SingleTag_Tests
             Assert.That(result[0].TagInfo.Attributes["class"], Contains.Item("bar"));
             Assert.That(result[0].TagInfo.Attributes["class"], Contains.Item("buzz"));
             Assert.That(result[0].TagInfo.Attributes["data-id"], Contains.Item("id"));
+            Assert.That(result[0].TagInfo.Attributes["data-value"], Contains.Item("value"));
+        });
+    }
+
+    [Test]
+    public void Process_MultipleTags_WithComment()
+    {
+        var html = "<div>\r\n<!-- <div> Ignored </div> -->\r\n</div>";
+
+        tagsProvider.Process(html);
+        var result = listener.ProcessedTags;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Has.Length.EqualTo(1));
+            Assert.That(result[0].TagLength, Is.EqualTo(html.Length));
         });
     }
 }

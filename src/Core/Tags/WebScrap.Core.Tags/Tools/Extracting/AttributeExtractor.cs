@@ -1,4 +1,4 @@
-namespace WebScrap.Core.Tags.Extracting;
+namespace WebScrap.Core.Tags.Tools.Extracting;
 
 internal static class AttributeExtractor
 {
@@ -19,6 +19,7 @@ internal static class AttributeExtractor
                 .GetValues(out var values);
             keyValues.AddRange(ToKeyValues(key, values));
         }
+
         return keyValues.ToLookup(x => x.Key, x => x.Value);
     }
 
@@ -35,7 +36,8 @@ internal static class AttributeExtractor
         this ReadOnlySpan<char> tagContent, 
         out string[] values)
     {
-        var result = new AttributeValuesExtractor().Extract(tagContent, out var innerValues);
+        var result = new AttributeValuesExtractor()
+            .Extract(tagContent, out var innerValues);
         values = innerValues;
         return result;
     }

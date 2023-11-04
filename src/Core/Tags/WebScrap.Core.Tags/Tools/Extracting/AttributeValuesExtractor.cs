@@ -1,4 +1,4 @@
-namespace WebScrap.Core.Tags.Extracting;
+namespace WebScrap.Core.Tags.Tools.Extracting;
 
 internal sealed class AttributeValuesExtractor
 {
@@ -20,27 +20,22 @@ internal sealed class AttributeValuesExtractor
         ReadOnlySpan<char> valuesString, 
         out string[] values)
     {
-        const string valueScreen = "\"'";
-
-        var clipped = valuesString
-            .Clip(valueScreen, valueScreen, true);
-
-        var ranges = GetRanges(clipped)
+        var ranges = GetRanges(valuesString)
             .Where(x => x.End.Value != 0);
 
-        values = [..GetStrings(clipped, ranges)];
-        return valuesString[clipped.Length..][2..];
+        values = [..GetStrings(valuesString, ranges)];
+        return valuesString;
     }
 
     private static Range[] GetRanges(
         ReadOnlySpan<char> tagContent)
     {
         const int maxAttributeValuesCount = 100;
-        Span<Range> ranges = stackalloc Range[maxAttributeValuesCount];
-        return tagContent.Split(ranges, ' ') switch
+        Span<Range> rangesBuffer = stackalloc Range[maxAttributeValuesCount];
+        return tagContent.Split(rangesBuffer, ' ') switch
         {
             0 => [0..tagContent.Length],
-            _ => [..ranges]
+            _ => [..rangesBuffer]
         };
     }
 
@@ -51,7 +46,11 @@ internal sealed class AttributeValuesExtractor
         var result = new List<string>();
         foreach (var range in ranges)
         {
-            result.Add(tagContent[range].ToString());
+            var str = tagContent[range]
+                .ToString()
+                .Trim('\'','"');
+            
+            result.Add(str);
         }
         return [.. result];
     }

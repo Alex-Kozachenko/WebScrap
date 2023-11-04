@@ -1,6 +1,6 @@
 using WebScrap.Css.Data;
 using WebScrap.Css.Contracts;
-using WebScrap.Core.Tags;
+using WebScrap.Core.Tags.Data;
 using System.Collections.Immutable;
 
 namespace WebScrap.Css;
@@ -12,41 +12,43 @@ namespace WebScrap.Css;
 /// </summary>
 public sealed class CssProcessor(
     ICssComparer comparer,
-    ITokensBuilder tokensBuilder,
-    ReadOnlySpan<char> css) 
-    : TagsProcessorBase
+    CssToken[] expectedTags)
+    : IObserver<TagsProviderMessage>
 {
-    private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
+    private readonly CssToken[] expectedTags = expectedTags;
     private readonly List<Range> cssCompliantTagRanges = [];
+    private IDisposable? unsubscriber;
 
-    /// <summary>
-    /// Processes the html and returns tags which are compliant against the css selectors.
-    /// </summary>
-    public ImmutableArray<Range> ProcessCss(ReadOnlySpan<char> html)
+    public ImmutableArray<Range> CssCompliantTagRanges => [..cssCompliantTagRanges];
+
+    public CssProcessor Subscribe(IObservable<TagsProviderMessage> observer)
     {
-        Process(html);
-        return [..cssCompliantTagRanges];
+        unsubscriber = observer.Subscribe(this);
+        return this;
     }
 
-    protected override void Process(
-        UnprocessedTag[] openedTags, 
-        ProcessedTag tag)
+    public void OnCompleted() 
     {
-        var tagInfos = openedTags
-            .Select(x => x.TagInfo)
-            .ToArray();
+         unsubscriber?.Dispose(); 
+    }
+
+    public void OnError(Exception error) { }
+
+    public void OnNext(TagsProviderMessage message)
+    {
+        var tagInfos = message.TagsHistory;
 
         var namesMet = comparer.CompareNames(
                 expectedTags, 
-                tagInfos);
+                [..tagInfos]);
 
         var attributesMet = comparer.CompareAttributes(
                 expectedTags, 
-                tagInfos);
+                [..tagInfos]);
 
         if (namesMet && attributesMet)
         {
-            cssCompliantTagRanges.Add(tag.TagRange);
+            cssCompliantTagRanges.Add(message.CurrentTag.TagRange);
         }
     }
 }

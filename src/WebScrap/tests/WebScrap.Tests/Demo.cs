@@ -53,14 +53,14 @@ public class Demo
 
     [Test]
     [Explicit]
-    public async Task Demo_Url()
+    public void Demo_Url()
     {
         var request = "https://www.gpucheck.com/gpu-benchmark-graphics-card-comparison-chart";
 
         // Download the html:
         using var client = new HttpClient();
-        using var response = await client.GetAsync(request);
-        var html = await response.Content.ReadAsStringAsync();
+        using var response = client.GetAsync(request).Result;
+        var html = response.Content.ReadAsStringAsync().Result;
 
         // Run the WebScrapper:
         var css = "table";
