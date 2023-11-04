@@ -1,6 +1,5 @@
 using WebScrap.Css.Data;
 using WebScrap.Css.Contracts;
-using WebScrap.Core.Tags;
 using WebScrap.Core.Tags.Data;
 using System.Collections.Immutable;
 
@@ -13,26 +12,25 @@ namespace WebScrap.Css;
 /// </summary>
 public sealed class CssProcessor(
     ICssComparer comparer,
-    ITokensBuilder tokensBuilder,
-    ReadOnlySpan<char> css)
+    CssToken[] expectedTags)
     : IObserver<TagsProviderMessage>
 {
-    private readonly CssToken[] expectedTags = tokensBuilder.Build(css);
+    private readonly CssToken[] expectedTags = expectedTags;
     private readonly List<Range> cssCompliantTagRanges = [];
-    private TagsProvider tagsProvider = new();
+    private IDisposable? unsubscriber;
 
-    /// <summary>
-    /// Processes the html and returns tags which are compliant against the css selectors.
-    /// </summary>
-    public ImmutableArray<Range> ProcessCss(ReadOnlySpan<char> html)
+    public ImmutableArray<Range> CssCompliantTagRanges => [..cssCompliantTagRanges];
+
+    public CssProcessor Subscribe(IObservable<TagsProviderMessage> observer)
     {
-        tagsProvider = new();
-        tagsProvider.Subscribe(this);
-        tagsProvider.Process(html);
-        return [..cssCompliantTagRanges];
+        unsubscriber = observer.Subscribe(this);
+        return this;
     }
 
-    public void OnCompleted() { }
+    public void OnCompleted() 
+    {
+         unsubscriber?.Dispose(); 
+    }
 
     public void OnError(Exception error) { }
 
