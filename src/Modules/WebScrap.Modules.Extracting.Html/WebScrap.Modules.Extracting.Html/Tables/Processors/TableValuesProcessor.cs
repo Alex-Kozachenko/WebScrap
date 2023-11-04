@@ -12,9 +12,10 @@ internal class TableValuesProcessor : IObserver<TagsProviderMessage>
 
     public ImmutableArray<ImmutableArray<Range>> ValuesRanges => [..valuesRanges.Select(x => x.ToImmutableArray())];
     
-    public void Subscribe(ITagObservable tagObservable)
+    public TableValuesProcessor Subscribe(ITagObservable tagObservable)
     {
         unsubscriber = tagObservable.Subscribe(this, "tr", "td");
+        return this;
     }
 
     public void OnNext(TagsProviderMessage message)
