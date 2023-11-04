@@ -1,5 +1,6 @@
-using WebScrap.Core.Tags;
+using System.Collections.Immutable;
 using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags.Messaging;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 
@@ -8,14 +9,12 @@ internal class TableValuesProcessor : IObserver<TagsProviderMessage>
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
     private IDisposable? unsubscriber;
+
+    public ImmutableArray<ImmutableArray<Range>> ValuesRanges => [..valuesRanges.Select(x => x.ToImmutableArray())];
     
-    internal Range[][] ProcessValues(ReadOnlySpan<char> html)
+    public void Subscribe(ITagObservable tagObservable)
     {
-        valuesRanges.Clear();
-        var tagsProvider = new TagsProvider();
-        unsubscriber = tagsProvider.Subscribe(this);
-        tagsProvider.Process(html);
-        return [..valuesRanges];
+        unsubscriber = tagObservable.Subscribe(this, "tr", "td");
     }
 
     public void OnNext(TagsProviderMessage message)

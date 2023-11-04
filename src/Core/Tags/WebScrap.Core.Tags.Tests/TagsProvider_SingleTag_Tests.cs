@@ -6,6 +6,7 @@ public class TagsProvider_SingleTag_Tests
 {
     private TagsProvider tagsProvider;
     private TagsProviderListener listener;
+    
 
     [SetUp]
     public void Setup()

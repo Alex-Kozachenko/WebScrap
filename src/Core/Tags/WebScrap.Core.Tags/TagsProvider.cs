@@ -3,8 +3,7 @@ using WebScrap.Core.Tags.Messaging;
 
 namespace WebScrap.Core.Tags;
 
-public class TagsProvider : 
-    IObservable<TagsProviderMessage>
+public class TagsProvider : ITagObservable
 {
     readonly HistoryTracker historyTracker = new();
     readonly Broadcaster broadcaster = new();
@@ -26,8 +25,8 @@ public class TagsProvider :
     public IDisposable Subscribe(IObserver<TagsProviderMessage> observer)
         => broadcaster.Subscribe(observer);
 
-    public IDisposable Subscribe(IObserver<TagsProviderMessage> observer, string tagName)
-        => broadcaster.Subscribe(observer, tagName);
+    public IDisposable Subscribe(IObserver<TagsProviderMessage> observer, params string[] tagNames)
+        => broadcaster.Subscribe(observer, tagNames);
 
     void Process(ReadOnlySpan<char> currentHtml, int charsProcessed)
     {

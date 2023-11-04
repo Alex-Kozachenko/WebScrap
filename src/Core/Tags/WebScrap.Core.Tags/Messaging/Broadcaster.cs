@@ -27,27 +27,40 @@ internal class Broadcaster
     {
         var tagObserver = new TagObserver(observer, null);
         observers.Add(tagObserver);
-        return new Unsubscriber<TagsProviderMessage>(observers, tagObserver);
+        return new Unsubscriber<TagsProviderMessage>(observers, [tagObserver]);
     }
 
-    internal IDisposable Subscribe(IObserver<TagsProviderMessage> observer, string tagName)
+    internal IDisposable Subscribe(IObserver<TagsProviderMessage> observer, params string[] tagNames)
     {
-        var tagObserver = new TagObserver(observer, tagName);
-        observers.Add(tagObserver);
-        return new Unsubscriber<TagsProviderMessage>(observers, tagObserver);
+        if (tagNames == null)
+        {
+            return Subscribe(observer);
+        }
+
+        var tagObservers = new List<TagObserver>();
+        foreach (var tagName in tagNames)
+        {
+            var tagObserver = new TagObserver(observer, tagName);
+            observers.Add(tagObserver);
+            tagObservers.Add(tagObserver);
+        }
+        return new Unsubscriber<TagsProviderMessage>(observers, tagObservers);
     }
 
     private sealed class Unsubscriber<T>(
         ICollection<TagObserver> observers, 
-        TagObserver target)
+        List<TagObserver> targets)
         : IDisposable
     {
         private readonly ICollection<TagObserver> observers = observers;
-        private readonly TagObserver target = target;
+        private readonly List<TagObserver> targets = targets;
 
         public void Dispose()
         {
-            observers.Remove(target);
+            foreach (var target in targets)
+            {
+                observers.Remove(target);
+            }
         }
     }
 }
