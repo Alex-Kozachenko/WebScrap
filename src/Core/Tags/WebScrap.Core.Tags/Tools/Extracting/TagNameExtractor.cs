@@ -1,4 +1,4 @@
-namespace WebScrap.Core.Tags.Extracting;
+namespace WebScrap.Core.Tags.Tools.Extracting;
 
 internal sealed class TagNameExtractor
 {

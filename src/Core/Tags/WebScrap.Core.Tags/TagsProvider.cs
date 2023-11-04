@@ -1,4 +1,3 @@
-using WebScrap.Core.Tags.Creating;
 using WebScrap.Core.Tags.Data;
 
 namespace WebScrap.Core.Tags;
@@ -6,8 +5,8 @@ namespace WebScrap.Core.Tags;
 public class TagsProvider : 
     IObservable<TagsProviderMessage>
 {
-    private readonly Stack<UnprocessedTag> openedTags = new();
-    private readonly HashSet<IObserver<TagsProviderMessage>> observers = [];
+    readonly HistoryTracker historyTracker = new();
+    readonly HashSet<IObserver<TagsProviderMessage>> observers = [];
 
     public void Process(ReadOnlySpan<char> html)
     {
@@ -16,11 +15,12 @@ public class TagsProvider :
         {
             var currentHtml = html[charsProcessed..];
             Process(currentHtml, charsProcessed);
-            ProcessHistory(currentHtml, charsProcessed); // HACK: order matters!
+            historyTracker.Update(currentHtml, charsProcessed);
             charsProcessed += Proceed(currentHtml);
         } while (charsProcessed < html.Length);
 
         ForEach(observers, o => o.OnCompleted());
+        observers.Clear();
     }    
 
     public IDisposable Subscribe(IObserver<TagsProviderMessage> observer)
@@ -31,44 +31,35 @@ public class TagsProvider :
 
     void Process(ReadOnlySpan<char> currentHtml, int charsProcessed)
     {
-        if (TagDetector.Detect(currentHtml) == TagKind.Closing)
+        if (TagDetector.Detect(currentHtml) != TagKind.Closing)
         {
-            var processedTag = new ClosingTagCreator(
-                currentHtml, 
-                charsProcessed, 
-                openedTags.Peek())
-                .Create();
-            OnProcessedTagMet(processedTag);
+            return;
         }
-    }
 
-    void ProcessHistory(ReadOnlySpan<char> currentHtml, int charsProcessed)
-    {
-        switch (TagDetector.Detect(currentHtml))
-        {
-            case TagKind.Opening:
+        var tag = currentHtml.Clip("<", ">");
+        var tagLength = charsProcessed + tag.Length;
+        var latestTag = historyTracker.History.Last();
+        var range = latestTag.TagOffset..tagLength;
+        var innerRange = latestTag.InnerOffset switch 
             {
-                var openedTag = new OpeningTagCreator(currentHtml, charsProcessed)
-                    .Create();
-                openedTags.Push(openedTag);
-                break;
-            }
-            case TagKind.Closing:
-            {
-                openedTags.Pop();
-                break;
-            }
-        }
+                null => 0..0,
+                var o => o.Value..charsProcessed
+            };
+        var processedTag = new ProcessedTag(latestTag.TagInfo, range, innerRange);
+
+        OnProcessedTagMet(processedTag);
     }
 
     void OnProcessedTagMet(ProcessedTag value)
     {
-        var history = openedTags
-            .Reverse()
+        var history = historyTracker
+            .History
             .Select(x => x.TagInfo);
+
         var message = new TagsProviderMessage(
             [..history], 
             value);
+
         ForEach(observers, o => o.OnNext(message));
     }
 

@@ -1,8 +1,8 @@
 using WebScrap.Core.Tags.Data;
 
-namespace WebScrap.Core.Tags;
+namespace WebScrap.Core.Tags.Tools;
 
-internal class TagDetector
+internal static class TagDetector
 {
     internal static TagKind Detect(ReadOnlySpan<char> currentHtml)
     {
