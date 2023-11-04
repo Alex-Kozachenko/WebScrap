@@ -12,11 +12,11 @@ public class TableExtractor : ITableExtractor
     public Table ExtractTable(ReadOnlySpan<char> html)
     {
         var tagsProvider = new TagsProvider();
-        var tableHeadersProcessor = new TableHeadersProcessor();
-        tableHeadersProcessor.Subscribe(tagsProvider);
+        var tableHeadersProcessor = new TableHeadersProcessor()
+            .Subscribe(tagsProvider);
 
-        var tableValuesProcessor = new TableValuesProcessor();
-        tableValuesProcessor.Subscribe(tagsProvider);
+        var tableValuesProcessor = new TableValuesProcessor()
+            .Subscribe(tagsProvider);
 
         tagsProvider.Process(html);
 

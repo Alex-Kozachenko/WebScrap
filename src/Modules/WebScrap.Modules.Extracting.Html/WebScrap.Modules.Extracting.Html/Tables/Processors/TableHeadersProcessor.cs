@@ -12,9 +12,10 @@ internal class TableHeadersProcessor : IObserver<TagsProviderMessage>
 
     public ImmutableArray<Range> HeaderRanges => [.. headerRanges];
 
-    public void Subscribe(ITagObservable tagObservable)
+    public TableHeadersProcessor Subscribe(ITagObservable tagObservable)
     {
         unsubscriber = tagObservable.Subscribe(this, "th");
+        return this;
     }
 
     public void OnNext(TagsProviderMessage message)
