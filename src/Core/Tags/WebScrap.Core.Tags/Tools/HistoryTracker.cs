@@ -24,7 +24,11 @@ internal class HistoryTracker
             }
             case TagKind.Closing:
             {
-                openedTags.Pop();
+                if (openedTags.Any())
+                {
+                    // TODO: LOG: consider logging the case when the stack is empty, and tries to pop.
+                    openedTags.Pop();
+                }
                 break;
             }
         }

@@ -26,7 +26,7 @@ internal readonly ref struct CssTagReader(ReadOnlySpan<char> css)
         var processed = 0;
         for (int i = css.Length - 1; i >= 0; i--)
         {
-            if (char.IsLetter(css[i]))
+            if (char.IsLetter(css[i]) || char.IsDigit(css[i]))
             {
                 processed++;
             }

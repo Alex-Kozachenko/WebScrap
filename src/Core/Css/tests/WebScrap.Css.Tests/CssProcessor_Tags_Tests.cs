@@ -34,6 +34,10 @@ public class CssProcessor_Tags_Tests
         "div>p", 
         "<div><div> <p>_</p> </div></div>",
         "           ^^^^^^^^             ")]
+    [TestCase(
+        "div>h1", 
+        "<div><div> <h1>_</h1> </div></div>",
+        "           ^^^^^^^^^^             ")]
     public void CalculateTagIndexes_WithTags_ShouldReturn_Ranges(
         string css, 
         string html, 

@@ -34,10 +34,16 @@ public class TagsProvider : ITagObservable
         {
             return;
         }
+        var latestTag = historyTracker.History.LastOrDefault();
+
+        if (latestTag == null)
+        {
+            // TODO: log a warning here!
+            return;
+        }
 
         var tag = currentHtml.Clip("<", ">");
         var tagLength = charsProcessed + tag.Length;
-        var latestTag = historyTracker.History.Last();
         var range = latestTag.TagOffset..tagLength;
         var innerRange = latestTag.InnerOffset switch 
             {
