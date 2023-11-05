@@ -13,12 +13,13 @@ It could be further used for:
 
 ## Usage
 
-Let's make a console demo:
-> ` dotnet new console -n WebScrap.Demo.CLI `
-> ` cd WebScrap.Demo.CLI `
+Let's make a console demo and install the package:
 
-Install the package:
-> ` dotnet add package ProSol.WebScrap `
+``` 
+dotnet new console -n WebScrap.Demo.CLI
+cd WebScrap.Demo.CLI
+dotnet add package ProSol.WebScrap
+```
 
 And try the following code:
 ```csharp
