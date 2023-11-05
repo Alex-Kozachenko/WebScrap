@@ -4,24 +4,17 @@ namespace WebScrap.Core.Tags.Tests;
 
 public class TagsProvider_MultipleTags_Tests
 {
-    private TagsProvider tagsProvider;
-    private TagsProviderListener listener;
-
-    [SetUp]
-    public void Setup()
-    {
-        tagsProvider = new();
-        listener = new();
-        listener.Subscribe(tagsProvider);
-    }
-
     [Test]
     public void Process_MultipleTags()
     {
         var html = $"<main> <div> <p>LoremIpsum</p> </div> </main>";
+        
+        var tagsProvider = new TagsProvider();
+        var listener = new TagsProviderListener();
+        tagsProvider.Subscribe(listener);
         tagsProvider.Process(html);
-
         var result = listener.ProcessedTags;
+
         Assert.Multiple(() =>
         {
             Assert.That(result, Has.Length.EqualTo(3));
@@ -36,9 +29,13 @@ public class TagsProvider_MultipleTags_Tests
     public void Process_ShouldReturn_DeepestTag_Text()
     {
         var html = $"<main> <div> <p>LoremIpsum</p> </div> </main>";
-        tagsProvider.Process(html);
 
+        var tagsProvider = new TagsProvider();
+        var listener = new TagsProviderListener();
+        tagsProvider.Subscribe(listener);
+        tagsProvider.Process(html);
         var result = listener.ProcessedTags;
+
         Assert.Multiple(() => 
         {
             Assert.That(result[0].TagInfo.Name, 
@@ -49,6 +46,37 @@ public class TagsProvider_MultipleTags_Tests
                 
             Assert.That(html[result[0].InnerTextRange], 
                 Is.EqualTo("LoremIpsum"));
+        });
+    }
+
+    [Test]
+    public void Process_Rootless_ShouldReturn_Tags()
+    {
+        var html = """
+            <p> Foo <b>Bar</b> </p>
+            <p> Foo <b>Bar</b> </p>
+        """;
+
+        var tagsProvider = new TagsProvider();
+        var listener = new TagsProviderListener();
+        tagsProvider.Subscribe(listener, "b");
+        tagsProvider.Process(html);
+        var result = listener.ProcessedTags;
+
+        Assert.Multiple(() => 
+        {
+            Assert.That(result[0].TagInfo.Name, 
+                Is.EqualTo("b"));
+
+            Assert.That(html[result[0].InnerTextRange], 
+                Is.EqualTo("Bar"));                
+
+            Assert.That(result[1].TagInfo.Name, 
+                Is.EqualTo("b"));
+
+            Assert.That(html[result[1].InnerTextRange], 
+                Is.EqualTo("Bar"));                
+            
         });
     }
 }
