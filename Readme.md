@@ -1,4 +1,4 @@
-# WebScrap
+# ProSol.WebScrap
 
 A `HTML` parser, for extracting the text from a web pages, with `CSS` selectors.
 
@@ -18,11 +18,11 @@ Let's make a console demo:
 > ` cd WebScrap.Demo.CLI `
 
 Install the package:
-> ` dotnet add package DevOvercome.WebScrap --version 1.0.0-rc.5 `
+> ` dotnet add package ProSol.WebScrap `
 
 And try the following code:
 ```csharp
-using DevOvercome.WebScrap;
+using ProSol.WebScrap;
 
 var request = "https://en.wikipedia.org/wiki/Food_energy";
 
@@ -49,19 +49,13 @@ Console.Read();
 
 The project currently under active development, and there are some issues, some of the obvious, which are not the priority right now.
 
-### Global
-- `No SDK found`: VSCode reports "No SDK found" if second workspace is opened. @2023.11.19
-
 ### CSS
-- multiple css entries, comma-separated, are not supported.
-- attribute-based css are not supported.
+- multiple css entries, comma-separated, are *not supported*.
+- attribute-based css are *not supported*.
 
 ### HTML
-- multiple root tags are not supported.
 - object model returns tags in reverse order.
 - non-unicode text is not converted.
-
-Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozachenko%2FWebScrap+KnownIssues.cs&type=code) tests sets, for actual list of current well-known issues.
 
 ## Goals
 
