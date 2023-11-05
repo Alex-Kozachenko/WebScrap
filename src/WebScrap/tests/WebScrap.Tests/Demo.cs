@@ -55,12 +55,12 @@ public class Demo
     [Explicit]
     public void Demo_Url()
     {
-        var request = "https://en.wikipedia.org/wiki/Food_energy";
+        var request = "https://github.com/Alex-Kozachenko/WebScrap/tree/dev";
         using var client = new HttpClient();
         using var response = client.GetAsync(request).Result;
         var html = response.Content.ReadAsStringAsync().Result;
 
-        var css = "table.wikitable"; 
+        var css = "h2"; 
         var result = new WebScrapper(html)
             .Run(css)
             .AsJson();

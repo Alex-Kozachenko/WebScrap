@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using WebScrap.Formatters;
 using WebScrap.Modules.Exporting.Json;
 
-namespace DevOvercome.WebScrap.Data;
+namespace ProSol.WebScrap.Data;
 
 /// <summary>
 /// Represents the result of scrapping.

@@ -1,6 +1,6 @@
-using DevOvercome.WebScrap.Data;
+using ProSol.WebScrap.Data;
 
-namespace DevOvercome.WebScrap;
+namespace ProSol.WebScrap;
 
 /// <summary>
 /// Main engine, which extracts queried text from html.

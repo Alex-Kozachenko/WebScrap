@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace DevOvercome.WebScrap.Data;
+namespace ProSol.WebScrap.Data;
 
 public interface IScrapResult
 {

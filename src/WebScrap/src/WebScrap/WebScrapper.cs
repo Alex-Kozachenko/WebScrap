@@ -1,7 +1,7 @@
-using DevOvercome.WebScrap.Data;
+using ProSol.WebScrap.Data;
 using WebScrap.Css.API;
 
-namespace DevOvercome.WebScrap;
+namespace ProSol.WebScrap;
 
 public class WebScrapper(string html) : IWebScrapper
 {

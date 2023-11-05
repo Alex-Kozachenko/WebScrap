@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>DevOvercome.WebScrap</id>
-    <title>DevOvercome.WebScrap</title>
-    <version>1.0.0-rc.5</version>
+    <id>ProSol.WebScrap</id>
+    <title>ProSol.WebScrap</title>
+    <version>1.0.0</version>
     <authors>Alex Kozachenko</authors>
     <owners>Alex Kozachenko</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
