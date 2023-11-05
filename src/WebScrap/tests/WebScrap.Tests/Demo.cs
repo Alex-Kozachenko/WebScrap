@@ -55,19 +55,15 @@ public class Demo
     [Explicit]
     public void Demo_Url()
     {
-        var request = "https://www.gpucheck.com/gpu-benchmark-graphics-card-comparison-chart";
-
-        // Download the html:
+        var request = "https://en.wikipedia.org/wiki/Food_energy";
         using var client = new HttpClient();
         using var response = client.GetAsync(request).Result;
         var html = response.Content.ReadAsStringAsync().Result;
 
-        // Run the WebScrapper:
-        var css = "table";
-        var resultJson = new WebScrapper(html)
+        var css = "table.wikitable"; 
+        var result = new WebScrapper(html)
             .Run(css)
             .AsJson();
-
-        var result = resultJson.ToJsonString();
+        var str = result.ToJsonString();
     }
 }

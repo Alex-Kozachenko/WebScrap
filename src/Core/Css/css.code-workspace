@@ -32,7 +32,7 @@
 			},
 			{
 				"label": "dotnet: test",
-				"options": { "cwd": ".." },
+				"options": { "cwd": "." },
 				"type": "shell",
 				"command": "dotnet",
 				"args": [
