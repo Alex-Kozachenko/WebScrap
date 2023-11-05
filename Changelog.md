@@ -1,3 +1,5 @@
+`v1.0.0` - Fixed minor bugs.
+
 `v1.0.0-rc` - Added support for multiple `css` queries, multi-result in `json` format.
 
 `v0.5` - Added `json` support.

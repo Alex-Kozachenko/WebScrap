@@ -1,37 +1,36 @@
+using System.Collections.Immutable;
+using WebScrap.Core.Tags;
 using WebScrap.Modules.Extracting.Html.Contracts.Data;
+using WebScrap.Modules.Extracting.Html.Text;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 
 public class TableExtractor : ITableExtractor
 {
+    readonly TextExtractor textExtractor = new();
+    
     public Table ExtractTable(ReadOnlySpan<char> html)
     {
-        var headersRanges = new TableHeadersProcessor().ProcessHeaders(html);
-        var valuesRanges = new TableValuesProcessor().ProcessValues(html);
+        var tagsProvider = new TagsProvider();
+
+        var tableHeadersProcessor = new TableHeadersProcessor()
+            .Subscribe(tagsProvider);
+
+        var tableValuesProcessor = new TableValuesProcessor()
+            .Subscribe(tagsProvider);
+
+        tagsProvider.Process(html);
 
         return new(
-            ExtractHeader(html.ToString(), headersRanges),
-            ExtractValueRows(html.ToString(), valuesRanges));
+            ExtractRow(html.ToString(), tableHeadersProcessor.HeaderRanges),
+            ExtractBody(html.ToString(), tableValuesProcessor.ValuesRanges));
     }
 
-    private static string[] ExtractHeader(string html, Range[] headersRanges)
-        => headersRanges.Select(x => html[x].Trim(' ')).ToArray();
+    string[] ExtractRow(string html, IEnumerable<Range> cellRanges)
+        => cellRanges
+            .Select(x => textExtractor.ExtractText(html[x]))
+            .ToArray();
 
-    private static string[][] ExtractValueRows(
-        string html, 
-        Range[][] valueRowsRanges)
-    {
-        var valuesRows = new List<string[]>();
-        foreach (var rowValuesRange in valueRowsRanges)
-        {
-            var row = new List<string>();
-            foreach (var valuesRange in rowValuesRange)
-            {
-                row.Add(html[valuesRange].Trim(' '));
-            }
-            valuesRows.Add([.. row]);
-        }
-
-        return [..valuesRows];
-    }
+    string[][] ExtractBody(string html, IEnumerable<ImmutableArray<Range>> valueRowsRanges) 
+        => [.. valueRowsRanges.Select(x => ExtractRow(html, x))];
 }

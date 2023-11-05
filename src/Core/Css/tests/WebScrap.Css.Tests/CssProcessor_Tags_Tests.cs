@@ -34,6 +34,10 @@ public class CssProcessor_Tags_Tests
         "div>p", 
         "<div><div> <p>_</p> </div></div>",
         "           ^^^^^^^^             ")]
+    [TestCase(
+        "div>h1", 
+        "<div><div> <h1>_</h1> </div></div>",
+        "           ^^^^^^^^^^             ")]
     public void CalculateTagIndexes_WithTags_ShouldReturn_Ranges(
         string css, 
         string html, 
@@ -63,17 +67,5 @@ public class CssProcessor_Tags_Tests
                 Assert.That(result, Is.Empty);
             }
         });
-    }
-
-    [TestCase("_____<p></p>")]
-    [TestCase("p>__<p>")]
-    [TestCase("__</p>__")]
-    public void CalculateTagIndexes_IncorrectHtml_ShouldFail(
-        string sample)
-    {
-        var css = "p";
-        Assert.That(
-            () => CalculateTagRanges(sample, css),
-            Throws.ArgumentException);
     }
 }

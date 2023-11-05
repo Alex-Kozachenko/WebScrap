@@ -1,4 +1,4 @@
-# WebScrap
+# ProSol.WebScrap
 
 A `HTML` parser, for extracting the text from a web pages, with `CSS` selectors.
 
@@ -13,73 +13,49 @@ It could be further used for:
 
 ## Usage
 
-1. Use the `WebScrap.API` namespace as entry point.
-1. Call the `Extract.Html` with `html` and `css`.
-1. Get the raw html as result.
+Let's make a console demo:
+> ` dotnet new console -n WebScrap.Demo.CLI `
+> ` cd WebScrap.Demo.CLI `
 
+Install the package:
+> ` dotnet add package ProSol.WebScrap `
+
+And try the following code:
 ```csharp
-using WebScrap.API;
+using ProSol.WebScrap;
 
-var css = ".target";
-var html = """
-    <main>
-        <span class="target"> Two </span>
-        <span class="target buzz"> Three </span>
-        <span id="four" class="target buzz"> Four </span>
-        <table class="target">
-            <tr> <th> Key </th> <th> Value </th> </tr>
-            <tr> <td> Width </td> <td> 2 </td> </tr>
-            <tr> <td> Height </td> <td> 3 </td> </tr>
-        </table>
-    </main>
-""";
+var request = "https://en.wikipedia.org/wiki/Food_energy";
 
-var result = new Scrapper()
-    .Scrap(html, css)
+// Download the html:
+using var client = new HttpClient();
+using var response = await client.GetAsync(request);
+var html = await response.Content.ReadAsStringAsync();
+
+// Run the WebScrapper:
+var css = "#firstHeading";
+var result = new WebScrapper(html)
+    .Run(css)
     .AsJson()
     .ToJsonString();
-```
 
-> OUTPUT:
-```json
-[
-    {
-        "key": ".target",
-        "values": 
-        [
-            { "value": "Two" },
-            { "value": "Three" },
-            { "value": "Four" },
-            { "value": 
-                {
-                    "headers": ["Key", "Value"],
-                    "values": [
-                        ["Width", "2"],
-                        ["Height", "3"]
-                    ]
-                }
-            }
-        ]
-    }
-]
+// Get the results:
+Console.WriteLine(result);
+// OUTPUT:
+// [{"key":"#firstHeading","values":[{"value":"Food energy"}]}]
+Console.Read();
 ```
 
 ## Known Issues
 
 The project currently under active development, and there are some issues, some of the obvious, which are not the priority right now.
 
-### Global
-- `No SDK found`: VSCode reports "No SDK found" if second workspace is opened. @2023.11.19
-
 ### CSS
-- multiple css entries, comma-separated, are not supported.
-- attribute-based css are not supported.
+- multiple css entries, comma-separated, are *not supported*.
+- attribute-based css are *not supported*.
 
 ### HTML
-- multiple root tags are not supported.
 - object model returns tags in reverse order.
-
-Please look for a [Known issues](https://github.com/search?q=repo%3AAlex-Kozachenko%2FWebScrap+KnownIssues.cs&type=code) tests sets, for actual list of current well-known issues.
+- non-unicode text is not converted.
 
 ## Goals
 

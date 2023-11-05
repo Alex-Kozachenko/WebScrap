@@ -1,28 +1,37 @@
-using WebScrap.Core.Tags;
+using System.Collections.Immutable;
+using WebScrap.Core.Tags.Data;
+using WebScrap.Core.Tags.Messaging;
 
 namespace WebScrap.Modules.Extracting.Html.Tables;
 
-internal class TableValuesProcessor : TagsProcessorBase
+internal class TableValuesProcessor : IObserver<TagsProviderMessage>
 {
     private readonly List<Range> currentRowRanges = [];
     private readonly List<Range[]> valuesRanges = [];
+    private IDisposable? unsubscriber;
+
+    public ImmutableArray<ImmutableArray<Range>> ValuesRanges => [..valuesRanges.Select(x => x.ToImmutableArray())];
     
-    internal Range[][] ProcessValues(ReadOnlySpan<char> html)
+    public TableValuesProcessor Subscribe(ITagObservable tagObservable)
     {
-        valuesRanges.Clear();
-        Process(html);
-        return [..valuesRanges];
+        unsubscriber = tagObservable.Subscribe(this, "tr", "td");
+        return this;
     }
 
-    protected override void Process(
-        UnprocessedTag[] openedTags, 
-        ProcessedTag tag)
+    public void OnNext(TagsProviderMessage message)
     {
-        _ = TryProcessCell(tag) 
-            || TryProcessRow(tag.TagInfo);
+        _ = TryProcessCell(message.CurrentTag) 
+            || TryProcessRow(message.CurrentTag.TagInfo);
     }
 
-    private bool TryProcessCell(ProcessedTag tag)
+    public void OnCompleted() 
+    {
+        unsubscriber?.Dispose();
+    }
+
+    public void OnError(Exception error) { }
+
+    bool TryProcessCell(ProcessedTag tag)
     {
         if (tag.TagInfo.Name != "td")
         {
@@ -33,7 +42,7 @@ internal class TableValuesProcessor : TagsProcessorBase
         return true;
     }
 
-    private bool TryProcessRow(TagInfo tagInfo)
+    bool TryProcessRow(TagInfo tagInfo)
     {
         var isCurrentRowFilled = currentRowRanges.Count != 0;
         if (tagInfo.Name != "tr" || isCurrentRowFilled is false)

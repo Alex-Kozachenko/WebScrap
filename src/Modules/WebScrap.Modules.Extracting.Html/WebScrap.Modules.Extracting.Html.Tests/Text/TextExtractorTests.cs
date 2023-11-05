@@ -10,4 +10,14 @@ public class TextExtractorTests
         var actual = new TextExtractor().ExtractText(html);
         Assert.That(actual, Is.EquivalentTo(expected));
     }
+
+    [Test]
+    public void ExtractText_SpecialChars_ShouldWork()
+    {
+        var html = "<div>One cup of cofee for \u0026#36;300.</div>";
+        var expected = "One cup of cofee for $300.";
+        var actual = new TextExtractor().ExtractText(html);
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
+
 }

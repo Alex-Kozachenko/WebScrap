@@ -1,15 +1,13 @@
 {
 	"folders": [
 		{
-			"path": "./src"
+			"path": "."
 		},
-		{
-			"path": "./tests"
-		}
 	],
 	"settings": 
 	{
-		"dotnet.defaultSolution": "tests/tests.sln",
+		"dotnet.automaticallyCreateSolutionInWorkspace": false,
+		"dotnet.defaultSolution": "Core.Css.sln",
 		"dotnet-test-explorer.testProjectPath":"**/*Test.@(csproj|vbproj|fsproj)"
 	},
 	"tasks": {
@@ -20,7 +18,7 @@
 		"tasks": [
 			{
 				"label": "dotnet: build",
-				"options": { "cwd": "../src" },
+				"options": { "cwd": "." },
 				"type": "shell",
 				"command": "dotnet",
 				"args": [
@@ -34,7 +32,7 @@
 			},
 			{
 				"label": "dotnet: test",
-				"options": { "cwd": "../tests" },
+				"options": { "cwd": "." },
 				"type": "shell",
 				"command": "dotnet",
 				"args": [
